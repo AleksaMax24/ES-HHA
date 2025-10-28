@@ -1,7 +1,7 @@
 import numpy as np
 import math
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Callable
 
 
 # Абстрактный базовый класс для всех LLH
