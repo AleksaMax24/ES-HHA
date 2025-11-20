@@ -245,16 +245,54 @@ class ES_HHA:
                                 for i in range(len(population)) for j in range(self.dimensions)])
         return diversity_sum / (len(population) * self.dimensions)
 
-    def calculate_P1(self, FDC, PD):
-        P1 = self.w1 * FDC + (1 - self.w1) * PD
-        return max(0.1, min(0.9, P1))
+    def select_LLH(self, FDC: float, PD: float) -> LLHOperator:
+        # Нормализация FDC и PD к диапазону [0, 1] 
+        FDC_norm = (FDC + 1) / 2  # FDC ∈ [-1, 1] -> [0, 1]
+        PD_norm = PD  # PD уже ∈ [0, 1]
 
-    def select_LLH(self, P1) -> LLHOperator:
-        if np.random.random() < P1:
+        FDC_threshold = 0.6  # Порог для "высокого" FDC
+        PD_threshold = 0.4  # Порог для "высокого" PD
+
+        FDC_high = FDC_norm > FDC_threshold
+        PD_high = PD_norm > PD_threshold
+
+        if FDC_high and PD_high:
+            # Случай (a): FDC высокий, PD высокий -> Эксплуатация
             pool = self.exploitation_pool
+            pool_type = "exploitation"
+
+        elif FDC_high and not PD_high:
+            # Случай (b): FDC высокий, PD низкий -> Сбалансированная стратегия
+            # FDC высокий склоняет к эксплуатации, PD низкий склоняет к исследованию
+            P_exploit = self.w1 * FDC_norm + (1 - self.w1) * (1 - PD_norm)
+
+            if np.random.random() < P_exploit:
+                pool = self.exploitation_pool
+                pool_type = "balanced_exploitation"
+            else:
+                pool = self.exploration_pool
+                pool_type = "balanced_exploration"
+
+        elif not FDC_high and PD_high:
+            # Случай (c): FDC низкий, PD высокий -> Сбалансированная стратегия
+            # FDC низкий склоняет к исследованию, PD высокий склоняет к эксплуатации
+            P_exploit = self.w1 * PD_norm + (1 - self.w1) * (1 - FDC_norm)
+
+            if np.random.random() < P_exploit:
+                pool = self.exploitation_pool
+                pool_type = "balanced_exploitation"
+            else:
+                pool = self.exploration_pool
+                pool_type = "balanced_exploration"
+
         else:
+            # Случай (d): FDC низкий, PD низкий -> Исследование
             pool = self.exploration_pool
-        return np.random.choice(pool)
+            pool_type = "exploration"
+
+        selected_operator = np.random.choice(pool)
+
+        return selected_operator
 
     def apply_LLH(self, operator: LLHOperator, population: np.ndarray,
                   best_solution: np.ndarray, current_index: int, fitness: np.ndarray = None) -> np.ndarray:
@@ -268,14 +306,13 @@ class ES_HHA:
         """Создает новое поколение вместо замены в текущем"""
         FDC = self.calculate_FDC(population, fitness, best_solution)
         PD = self.calculate_PD(population, lb, ub)
-        P1 = self.calculate_P1(FDC, PD)
 
         new_population = []
         new_fitness = []
 
         # Генерируем новых индивидов и сразу вычисляем fitness
         for i in range(self.population_size):
-            operator = self.select_LLH(P1)
+            operator = self.select_LLH(FDC, PD)
             new_individual = self.apply_LLH(operator, population, best_solution, i, fitness)
             new_individual = np.clip(new_individual, lb, ub)
             new_fitness_val = self.objective_function(new_individual)
