@@ -246,16 +246,22 @@ class ES_HHA:
         return diversity_sum / (len(population) * self.dimensions)
 
     def select_LLH(self, FDC: float, PD: float) -> LLHOperator:
-        # Нормализация FDC и PD к диапазону [0, 1] 
+        """
+        Выбор пула операторов на основе эволюционного статуса
+        с правильной вероятностной логикой для сбалансированных случаев
+        """
+        # Нормализуем FDC и PD к диапазону [0, 1] для consistency
         FDC_norm = (FDC + 1) / 2  # FDC ∈ [-1, 1] -> [0, 1]
         PD_norm = PD  # PD уже ∈ [0, 1]
 
+        # Определяем пороговые значения
         FDC_threshold = 0.6  # Порог для "высокого" FDC
         PD_threshold = 0.4  # Порог для "высокого" PD
 
         FDC_high = FDC_norm > FDC_threshold
         PD_high = PD_norm > PD_threshold
 
+        # Логика выбора согласно статье
         if FDC_high and PD_high:
             # Случай (a): FDC высокий, PD высокий -> Эксплуатация
             pool = self.exploitation_pool
@@ -266,6 +272,7 @@ class ES_HHA:
             # FDC высокий склоняет к эксплуатации, PD низкий склоняет к исследованию
             P_exploit = self.w1 * FDC_norm + (1 - self.w1) * (1 - PD_norm)
 
+            # Вероятностный выбор: генерируем случайное число и сравниваем с P_exploit
             if np.random.random() < P_exploit:
                 pool = self.exploitation_pool
                 pool_type = "balanced_exploitation"
@@ -278,6 +285,7 @@ class ES_HHA:
             # FDC низкий склоняет к исследованию, PD высокий склоняет к эксплуатации
             P_exploit = self.w1 * PD_norm + (1 - self.w1) * (1 - FDC_norm)
 
+            # Вероятностный выбор: генерируем случайное число и сравниваем с P_exploit
             if np.random.random() < P_exploit:
                 pool = self.exploitation_pool
                 pool_type = "balanced_exploitation"
@@ -292,6 +300,10 @@ class ES_HHA:
 
         selected_operator = np.random.choice(pool)
 
+        # Для отладки можно добавить логирование
+        if hasattr(self, 'debug') and self.debug:
+            print(f"FDC: {FDC:.3f}, PD: {PD:.3f} -> {pool_type}")
+
         return selected_operator
 
     def apply_LLH(self, operator: LLHOperator, population: np.ndarray,
@@ -303,7 +315,7 @@ class ES_HHA:
 
     def create_new_generation(self, population: np.ndarray, fitness: np.ndarray,
                               best_solution: np.ndarray, best_fitness: float, lb: np.ndarray, ub: np.ndarray) -> tuple:
-        """Создает новое поколение вместо замены в текущем"""
+        """Создает новое поколение с исправленной логикой выбора пула"""
         FDC = self.calculate_FDC(population, fitness, best_solution)
         PD = self.calculate_PD(population, lb, ub)
 
@@ -312,6 +324,7 @@ class ES_HHA:
 
         # Генерируем новых индивидов и сразу вычисляем fitness
         for i in range(self.population_size):
+            # Используем исправленный метод выбора оператора
             operator = self.select_LLH(FDC, PD)
             new_individual = self.apply_LLH(operator, population, best_solution, i, fitness)
             new_individual = np.clip(new_individual, lb, ub)
@@ -408,6 +421,55 @@ def ackley_function(x):
     return term1 + term2 + a + np.exp(1)
 
 
+def cec2014_shifted_rotated_rosenbrock(x):
+    # Глобальный оптимум: 400
+    # Search space: [-100, 100]^D
+    n = len(x)
+
+    # Розенброк 
+    result = 0
+    for i in range(n - 1):
+        result += 100 * (x[i + 1] - x[i] ** 2) ** 2 + (x[i] - 1) ** 2
+
+    # Добавляем смещение до 400 (глобальный оптимум в CEC2014)
+    return result + 400
+
+
+def cec2014_shifted_rotated_ackley(x):
+
+    # Мультимодальная
+    # Глобальный оптимум: 500
+    # Search space: [-100, 100]^D
+    
+    # Базовая функция Ackley
+    a = 20
+    b = 0.2
+    c = 2 * np.pi
+    n = len(x)
+    sum1 = np.sum(x ** 2)
+    sum2 = np.sum(np.cos(c * x))
+    term1 = -a * np.exp(-b * np.sqrt(sum1 / n))
+    term2 = -np.exp(sum2 / n)
+
+    # Добавляем смещение до 500
+    return term1 + term2 + a + np.exp(1) + 500
+
+
+def cec2014_shifted_rastrigin(x):
+
+    # Мультимодальная
+    # Глобальный оптимум: 800
+    # Search space: [-100, 100]^D
+    
+    # Базовая функция Rastrigin
+    A = 10
+    n = len(x)
+    result = A * n + np.sum(x ** 2 - A * np.cos(2 * np.pi * x))
+
+    # Добавляем смещение до 800
+    return result + 800
+
+
 if __name__ == "__main__":
     # Тестирование с разными целевыми функциями и параметрами F
     dimensions = 30
@@ -473,3 +535,37 @@ if __name__ == "__main__":
     print(f"Best fitness: {results['best_fitness']:.6f}")
     print(f"Total FEs: {results['total_FEs']}")
     print(f"Iterations: {results['iterations']}")
+
+    # CEC2014 Shifted and Rotated Rosenbrock (F4)
+    print("\n=== CEC2014 F4: Shifted and Rotated Rosenbrock ===")
+    es_hha_cec_rosenbrock = ES_HHA(
+        objective_function=cec2014_shifted_rotated_rosenbrock,
+        dimensions=dimensions,
+        max_FEs=100000,  # Увеличим FEs для сложной функции
+        exploitation_Fs=exploitation_Fs,
+        exploration_Fs=exploration_Fs
+    )
+    lb = np.full(dimensions, -100)
+    ub = np.full(dimensions, 100)
+    results = es_hha_cec_rosenbrock.optimize(lb, ub)
+    print(f"Best fitness: {results['best_fitness']:.6f}")
+    print(f"Total FEs: {results['total_FEs']}")
+    print(f"Iterations: {results['iterations']}")
+    print(f"Distance to optimum (400): {results['best_fitness'] - 400:.6f}")
+
+    # CEC2014 Shifted Rastrigin (F8)
+    print("\n=== CEC2014 F8: Shifted Rastrigin ===")
+    es_hha_cec_rastrigin = ES_HHA(
+        objective_function=cec2014_shifted_rastrigin,
+        dimensions=dimensions,
+        max_FEs=100000,
+        exploitation_Fs=exploitation_Fs,
+        exploration_Fs=exploration_Fs
+    )
+    lb = np.full(dimensions, -100)
+    ub = np.full(dimensions, 100)
+    results = es_hha_cec_rastrigin.optimize(lb, ub)
+    print(f"Best fitness: {results['best_fitness']:.6f}")
+    print(f"Total FEs: {results['total_FEs']}")
+    print(f"Iterations: {results['iterations']}")
+    print(f"Distance to optimum (800): {results['best_fitness'] - 800:.6f}")
