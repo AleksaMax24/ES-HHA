@@ -68,15 +68,11 @@ class DEBest1LLH(LLHOperator):
               current_index: int, **kwargs) -> np.ndarray:
         n = len(population)
 
-        # Создаем список индексов 
-        if not hasattr(self, '_available_indices'):
-            self._available_indices = [i for i in range(n)]
-
-        indices = self._available_indices.copy()
-        if current_index in indices:
-            indices.remove(current_index)
-
-        r1, r2 = np.random.choice(indices, 2, replace=False)
+        # Оптимизированный выбор индексов
+        indices = np.arange(n)
+        mask = indices != current_index
+        available_indices = indices[mask]
+        r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
         return best_solution + self.F * (population[r1] - population[r2])
 
@@ -90,15 +86,11 @@ class DERand1LLH(LLHOperator):
               current_index: int, **kwargs) -> np.ndarray:
         n = len(population)
 
-        # Создаем список индексов 
-        if not hasattr(self, '_available_indices'):
-            self._available_indices = [i for i in range(n)]
-
-        indices = self._available_indices.copy()
-        if current_index in indices:
-            indices.remove(current_index)
-
-        r1, r2, r3 = np.random.choice(indices, 3, replace=False)
+        # Оптимизированный выбор индексов
+        indices = np.arange(n)
+        mask = indices != current_index
+        available_indices = indices[mask]
+        r1, r2, r3 = np.random.choice(available_indices, 3, replace=False)
 
         return population[r1] + self.F * (population[r2] - population[r3])
 
@@ -112,15 +104,11 @@ class DECurrent1LLH(LLHOperator):
         n = len(population)
         current_ind = population[current_index]
 
-        # Создаем список индексов 
-        if not hasattr(self, '_available_indices'):
-            self._available_indices = [i for i in range(n)]
-
-        indices = self._available_indices.copy()
-        if current_index in indices:
-            indices.remove(current_index)
-
-        r1, r2 = np.random.choice(indices, 2, replace=False)
+        # Оптимизированный выбор индексов
+        indices = np.arange(n)
+        mask = indices != current_index
+        available_indices = indices[mask]
+        r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
         return current_ind + self.F * (population[r1] - population[r2])
 
@@ -134,15 +122,11 @@ class DECurrentToBest1LLH(LLHOperator):
         n = len(population)
         current_ind = population[current_index]
 
-        # Создаем список индексов 
-        if not hasattr(self, '_available_indices'):
-            self._available_indices = [i for i in range(n)]
-
-        indices = self._available_indices.copy()
-        if current_index in indices:
-            indices.remove(current_index)
-
-        r1, r2 = np.random.choice(indices, 2, replace=False)
+        # Оптимизированный выбор индексов
+        indices = np.arange(n)
+        mask = indices != current_index
+        available_indices = indices[mask]
+        r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
         return current_ind + self.F * (best_solution - current_ind) + self.F * (population[r1] - population[r2])
 
@@ -161,20 +145,17 @@ class DECurrentToPBest1LLH(LLHOperator):
         fitness = kwargs.get('fitness', None)
 
         if fitness is not None:
-            best_indices = np.argsort(fitness)[:p_size]
+            # Оптимизированный выбор pbest
+            best_indices = np.argpartition(fitness, p_size)[:p_size]
             pbest = population[np.random.choice(best_indices)]
         else:
             pbest = best_solution
 
-        # Создаем список индексов 
-        if not hasattr(self, '_available_indices'):
-            self._available_indices = [i for i in range(n)]
-
-        indices = self._available_indices.copy()
-        if current_index in indices:
-            indices.remove(current_index)
-
-        r1, r2 = np.random.choice(indices, 2, replace=False)
+        # Оптимизированный выбор индексов
+        indices = np.arange(n)
+        mask = indices != current_index
+        available_indices = indices[mask]
+        r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
         return current_ind + self.F * (pbest - current_ind) + self.F * (population[r1] - population[r2])
 
@@ -210,12 +191,13 @@ class LLHPoolManager:
         return self.exploration_pool
 
 
-# Основной класс ES-HHA 
+# Основной класс ES-HHA
 class ES_HHA:
-    def __init__(self, objective_function: Callable, population_size=100, dimensions=30,
+    def __init__(self, objective_function: Callable, population_size=3000, dimensions=30,  # Увеличена популяция до 3000
                  max_FEs=30000, w1=0.5, R=1.0,
                  exploitation_Fs: Dict[str, float] = None, exploration_Fs: Dict[str, float] = None,
-                 verbose=True, detailed_log=False):
+                 verbose=True, detailed_log=False, global_optimum=None,
+                 batch_size=100):  # Добавлен batch_size для оптимизации вычислений
 
         self.objective_function = objective_function
         self.population_size = population_size
@@ -225,6 +207,8 @@ class ES_HHA:
         self.R = R
         self.verbose = verbose
         self.detailed_log = detailed_log
+        self.global_optimum = global_optimum
+        self.batch_size = batch_size  # Размер батча для вычисления fitness
 
         # Статистика
         self.llh_usage_count = defaultdict(int)
@@ -232,6 +216,8 @@ class ES_HHA:
         self.fdc_history = []
         self.pd_history = []
         self.best_fitness_history = []
+        self.distance_to_optimum_history = []
+        self.optimum_comparison_history = []
 
         self.llh_manager = LLHPoolManager(exploitation_Fs, exploration_Fs)
         self.exploitation_pool = self.llh_manager.get_exploitation_pool()
@@ -239,34 +225,80 @@ class ES_HHA:
 
     def initialize_population(self, lb, ub):
         population = np.random.uniform(lb, ub, (self.population_size, self.dimensions))
-        fitness = np.array([self.objective_function(ind) for ind in population])
+        # Векторизованное вычисление fitness
+        fitness = self.batch_evaluate(population)
         best_idx = np.argmin(fitness)
         return population, fitness, population[best_idx], fitness[best_idx]
 
+    def batch_evaluate(self, population):
+        """Векторизованное вычисление fitness для батча особей"""
+        if hasattr(self.objective_function, '__call__'):
+            # Если функция поддерживает векторизацию, используем ее
+            try:
+                return np.array([self.objective_function(ind) for ind in population])
+            except:
+                # Fallback: вычисляем батчами
+                fitness = np.empty(len(population))
+                for i in range(0, len(population), self.batch_size):
+                    batch = population[i:i + self.batch_size]
+                    fitness[i:i + self.batch_size] = [self.objective_function(ind) for ind in batch]
+                return fitness
+        return np.array([self.objective_function(ind) for ind in population])
+
     def calculate_FDC(self, population, fitness, best_solution):
-        distances = np.array([np.sqrt(np.sum((ind - best_solution) ** 2)) for ind in population])
+        # Оптимизированное вычисление расстояний
+        differences = population - best_solution
+        distances = np.sqrt(np.einsum('ij,ij->i', differences, differences))
+
         f_mean, d_mean = np.mean(fitness), np.mean(distances)
-        numerator = np.sum((fitness - f_mean) * (distances - d_mean))
-        denominator = np.sqrt(np.sum((fitness - f_mean) ** 2) * np.sum((distances - d_mean) ** 2))
+        f_diff = fitness - f_mean
+        d_diff = distances - d_mean
+
+        numerator = np.dot(f_diff, d_diff)
+        denominator = np.sqrt(np.dot(f_diff, f_diff) * np.dot(d_diff, d_diff))
         fdc_value = numerator / denominator if denominator != 0 else 0
+
         self.fdc_history.append(fdc_value)
         return fdc_value
 
     def calculate_PD(self, population, lb, ub):
+        # Оптимизированное вычисление разнообразия популяции
         centroid = np.mean(population, axis=0)
-        diversity_sum = np.sum([abs(population[i, j] - centroid[j]) / (ub[j] - lb[j])
-                                for i in range(len(population)) for j in range(self.dimensions)])
-        pd_value = diversity_sum / (len(population) * self.dimensions)
+        ranges = ub - lb
+        normalized_diff = np.abs(population - centroid) / ranges
+        pd_value = np.mean(normalized_diff)
+
         self.pd_history.append(pd_value)
         return pd_value
 
-    def select_LLH(self, FDC: float, PD: float) -> tuple:
-        # Нормализуем FDC и PD к диапазону [0, 1] 
-        FDC_norm = (FDC + 1) / 2  # FDC ∈ [-1, 1] -> [0, 1]
-        PD_norm = PD  # PD уже ∈ [0, 1]
+    def calculate_distance_to_optimum(self, current_solution):
+        if self.global_optimum is not None:
+            distance = np.linalg.norm(current_solution - self.global_optimum)
+            self.distance_to_optimum_history.append(distance)
+            return distance
+        return None
 
-        FDC_threshold = 0.6  # Порог для "высокого" FDC
-        PD_threshold = 0.4  # Порог для "высокого" PD
+    def compare_with_optimum(self, current_solution, current_fitness):
+        if self.global_optimum is not None:
+            optimum_fitness = self.objective_function(self.global_optimum)
+
+            comparison = {
+                'current_fitness': current_fitness,
+                'optimum_fitness': optimum_fitness,
+                'fitness_difference': current_fitness - optimum_fitness,
+                'distance_to_optimum': np.linalg.norm(current_solution - self.global_optimum),
+                'is_optimal': np.allclose(current_solution, self.global_optimum, atol=1e-6)
+            }
+            self.optimum_comparison_history.append(comparison)
+            return comparison
+        return None
+
+    def select_LLH(self, FDC: float, PD: float) -> tuple:
+        FDC_norm = (FDC + 1) / 2
+        PD_norm = PD
+
+        FDC_threshold = 0.6
+        PD_threshold = 0.4
 
         FDC_high = FDC_norm > FDC_threshold
         PD_high = PD_norm > PD_threshold
@@ -284,14 +316,12 @@ class ES_HHA:
         }
 
         if FDC_high and PD_high:
-            # Случай (a): FDC высокий, PD высокий -> Эксплуатация
             pool = self.exploitation_pool
             pool_type = "exploitation"
             selection_info['case'] = 'a'
             selection_info['pool_type'] = pool_type
 
         elif FDC_high and not PD_high:
-            # Случай (b): FDC высокий, PD низкий -> Сбалансированная стратегия
             P_exploit = self.w1 * FDC_norm + (1 - self.w1) * (1 - PD_norm)
             selection_info['P_exploit'] = P_exploit
             selection_info['case'] = 'b'
@@ -305,7 +335,6 @@ class ES_HHA:
             selection_info['pool_type'] = pool_type
 
         elif not FDC_high and PD_high:
-            # Случай (c): FDC низкий, PD высокий -> Сбалансированная стратегия
             P_exploit = self.w1 * PD_norm + (1 - self.w1) * (1 - FDC_norm)
             selection_info['P_exploit'] = P_exploit
             selection_info['case'] = 'c'
@@ -319,7 +348,6 @@ class ES_HHA:
             selection_info['pool_type'] = pool_type
 
         else:
-            # Случай (d): FDC низкий, PD низкий -> Исследование
             pool = self.exploration_pool
             pool_type = "exploration"
             selection_info['case'] = 'd'
@@ -327,7 +355,6 @@ class ES_HHA:
 
         selected_operator = np.random.choice(pool)
 
-        # Обновляие статистики
         self.llh_usage_count[selected_operator.name] += 1
         self.pool_usage_count[pool_type] += 1
 
@@ -345,66 +372,63 @@ class ES_HHA:
         FDC = self.calculate_FDC(population, fitness, best_solution)
         PD = self.calculate_PD(population, lb, ub)
 
-        new_population = []
-        new_fitness = []
+        new_population = np.empty_like(population)
+        new_fitness = np.empty_like(fitness)
         iteration_llh_info = []
 
-        # Генерируем новых индивидов и сразу вычисляем fitness
-        for i in range(self.population_size):
-            operator, selection_info = self.select_LLH(FDC, PD)
-            new_individual = self.apply_LLH(operator, population, best_solution, i, fitness)
-            new_individual = np.clip(new_individual, lb, ub)
-            new_fitness_val = self.objective_function(new_individual)
+        # Генерируем новых индивидов батчами для оптимизации
+        for i in range(0, self.population_size, self.batch_size):
+            batch_indices = range(i, min(i + self.batch_size, self.population_size))
 
-            new_population.append(new_individual)
-            new_fitness.append(new_fitness_val)
-            iteration_llh_info.append({
-                'operator': operator.name,
-                'pool_type': selection_info['pool_type'],
-                'fitness': new_fitness_val
-            })
+            for j in batch_indices:
+                operator, selection_info = self.select_LLH(FDC, PD)
+                new_individual = self.apply_LLH(operator, population, best_solution, j, fitness)
+                new_individual = np.clip(new_individual, lb, ub)
+                new_population[j] = new_individual
 
-        new_fitness = np.array(new_fitness)
-        new_population = np.array(new_population)
+                iteration_llh_info.append({
+                    'operator': operator.name,
+                    'pool_type': selection_info['pool_type']
+                })
+
+        # Векторизованное вычисление fitness для всего нового поколения
+        new_fitness = self.batch_evaluate(new_population)
 
         # Жадный выбор между старым и новым поколением
-        final_population = []
-        final_fitness = []
-        new_best_solution = best_solution
-        new_best_fitness = best_fitness
-        improvements = 0
+        improvement_mask = new_fitness < fitness
+        improvements = np.sum(improvement_mask)
 
-        for i in range(self.population_size):
-            if new_fitness[i] < fitness[i]:
-                final_population.append(new_population[i])
-                final_fitness.append(new_fitness[i])
-                improvements += 1
+        final_population = np.where(improvement_mask[:, None], new_population, population)
+        final_fitness = np.where(improvement_mask, new_fitness, fitness)
 
-                if new_fitness[i] < new_best_fitness:
-                    new_best_solution = new_population[i].copy()
-                    new_best_fitness = new_fitness[i]
-            else:
-                final_population.append(population[i])
-                final_fitness.append(fitness[i])
+        # Обновление лучшего решения
+        best_new_idx = np.argmin(new_fitness)
+        if new_fitness[best_new_idx] < best_fitness:
+            new_best_solution = new_population[best_new_idx].copy()
+            new_best_fitness = new_fitness[best_new_idx]
+        else:
+            new_best_solution = best_solution.copy()
+            new_best_fitness = best_fitness
 
-        #  история лучшей приспособленности
+        # Вычисляем расстояние до оптимума и сравниваем
+        distance = self.calculate_distance_to_optimum(new_best_solution)
+        comparison = self.compare_with_optimum(new_best_solution, new_best_fitness)
+
         self.best_fitness_history.append(new_best_fitness)
 
-        return (np.array(final_population), np.array(final_fitness),
-                new_best_solution, new_best_fitness, improvements, iteration_llh_info)
+        return (final_population, final_fitness,
+                new_best_solution, new_best_fitness, improvements, iteration_llh_info, distance, comparison)
 
     def check_stopping_criteria(self, current_FEs):
         if current_FEs >= self.max_FEs:
             return True, "Max FEs"
         return False, "Continue"
 
-    def print_iteration_info(self, iteration, best_fitness, improvements, FDC, PD, llh_info):
-        """Вывод детальной информации об итерации"""
+    def print_iteration_info(self, iteration, best_fitness, improvements, FDC, PD, llh_info, distance, comparison):
         if not self.verbose:
             return
 
         if iteration % 10 == 0 or self.detailed_log:
-            # Анализ использования операторов в этой итерации
             op_count = {}
             pool_count = {}
             for info in llh_info:
@@ -415,11 +439,26 @@ class ES_HHA:
             print(f"Best fitness: {best_fitness:.6f}")
             print(f"Improvements: {improvements}/{self.population_size}")
             print(f"FDC: {FDC:.3f}, PD: {PD:.3f}")
-            print(f"Operators used: {dict(op_count)}")
-            print(f"Pool distribution: {dict(pool_count)}")
+
+            if distance is not None:
+                print(f"Distance to optimum: {distance:.6f}")
+
+            if comparison is not None:
+                print(f"Fitness difference from optimum: {comparison['fitness_difference']:.6f}")
+                if comparison['is_optimal']:
+                    print("*** REACHED GLOBAL OPTIMUM ***")
+
+            # Упрощенный вывод для больших популяций
+            if self.population_size > 1000:
+                top_ops = dict(sorted(op_count.items(), key=lambda x: x[1], reverse=True)[:3])
+                top_pools = dict(sorted(pool_count.items(), key=lambda x: x[1], reverse=True)[:2])
+                print(f"Top operators: {top_ops}")
+                print(f"Top pools: {top_pools}")
+            else:
+                print(f"Operators used: {dict(op_count)}")
+                print(f"Pool distribution: {dict(pool_count)}")
 
     def print_final_statistics(self, start_time, end_time):
-        """Вывод финальной статистики"""
         print("\n" + "=" * 60)
         print("FINAL STATISTICS")
         print("=" * 60)
@@ -431,9 +470,21 @@ class ES_HHA:
         print(f"Total iterations: {len(self.best_fitness_history)}")
         print(f"Final best fitness: {self.best_fitness_history[-1]:.6f}")
         print(f"Total FEs: {self.population_size * len(self.best_fitness_history)}")
+        print(f"Population size: {self.population_size}")
+
+        if self.global_optimum is not None and len(self.optimum_comparison_history) > 0:
+            final_comparison = self.optimum_comparison_history[-1]
+            print(f"\nOptimum Comparison:")
+            print(f"  Global optimum fitness: {final_comparison['optimum_fitness']:.6f}")
+            print(f"  Final fitness difference: {final_comparison['fitness_difference']:.6f}")
+            print(f"  Final distance to optimum: {final_comparison['distance_to_optimum']:.6f}")
+            print(f"  Reached global optimum: {final_comparison['is_optimal']}")
+
+            min_distance = min([comp['distance_to_optimum'] for comp in self.optimum_comparison_history])
+            print(f"  Minimum distance to optimum: {min_distance:.6f}")
 
         print(f"\nLLH Usage Statistics:")
-        for llh, count in sorted(self.llh_usage_count.items(), key=lambda x: x[1], reverse=True):
+        for llh, count in sorted(self.llh_usage_count.items(), key=lambda x: x[1], reverse=True)[:5]:  # Только топ-5
             percentage = (count / total_llh_uses) * 100
             print(f"  {llh}: {count} uses ({percentage:.1f}%)")
 
@@ -442,15 +493,10 @@ class ES_HHA:
             percentage = (count / total_pool_uses) * 100
             print(f"  {pool}: {count} uses ({percentage:.1f}%)")
 
-        print(f"\nFDC Statistics:")
-        print(f"  Average FDC: {np.mean(self.fdc_history):.3f}")
-        print(f"  Min FDC: {np.min(self.fdc_history):.3f}")
-        print(f"  Max FDC: {np.max(self.fdc_history):.3f}")
-
-        print(f"\nPD Statistics:")
-        print(f"  Average PD: {np.mean(self.pd_history):.3f}")
-        print(f"  Min PD: {np.min(self.pd_history):.3f}")
-        print(f"  Max PD: {np.max(self.pd_history):.3f}")
+        print(f"\nPerformance Metrics:")
+        print(
+            f"  FEs per second: {self.population_size * len(self.best_fitness_history) / (end_time - start_time):.0f}")
+        print(f"  Iterations per second: {len(self.best_fitness_history) / (end_time - start_time):.2f}")
 
         print(f"\nConvergence Analysis:")
         initial_fitness = self.best_fitness_history[0]
@@ -460,26 +506,39 @@ class ES_HHA:
         print(f"  Final fitness: {final_fitness:.6f}")
         print(f"  Total improvement: {improvement:.6f}")
 
+        if self.distance_to_optimum_history:
+            print(f"\nOptimum Convergence Analysis:")
+            print(f"  Initial distance to optimum: {self.distance_to_optimum_history[0]:.6f}")
+            print(f"  Final distance to optimum: {self.distance_to_optimum_history[-1]:.6f}")
+            print(
+                f"  Distance improvement: {self.distance_to_optimum_history[0] - self.distance_to_optimum_history[-1]:.6f}")
+
     def optimize(self, lb, ub):
         start_time = time.time()
         population, fitness, best_solution, best_fitness = self.initialize_population(lb, ub)
         current_FEs = self.population_size
         iteration = 0
 
+        if self.global_optimum is not None:
+            self.calculate_distance_to_optimum(best_solution)
+            self.compare_with_optimum(best_solution, best_fitness)
+
         if self.verbose:
             print(f"Initial best fitness: {best_fitness:.6f}")
+            print(f"Population size: {self.population_size}")
+            if self.global_optimum is not None:
+                distance = np.linalg.norm(best_solution - self.global_optimum)
+                print(f"Initial distance to optimum: {distance:.6f}")
 
         while True:
-            # Создаем новое поколение
-            population, fitness, best_solution, best_fitness, improvements, llh_info = self.create_new_generation(
+            population, fitness, best_solution, best_fitness, improvements, llh_info, distance, comparison = self.create_new_generation(
                 population, fitness, best_solution, best_fitness, lb, ub)
 
             current_FEs += self.population_size
 
-            # Вывод информации об итерации
             FDC = self.fdc_history[-1] if self.fdc_history else 0
             PD = self.pd_history[-1] if self.pd_history else 0
-            self.print_iteration_info(iteration, best_fitness, improvements, FDC, PD, llh_info)
+            self.print_iteration_info(iteration, best_fitness, improvements, FDC, PD, llh_info, distance, comparison)
 
             stop, reason = self.check_stopping_criteria(current_FEs)
             if stop:
@@ -502,11 +561,13 @@ class ES_HHA:
             'fdc_history': self.fdc_history,
             'pd_history': self.pd_history,
             'fitness_history': self.best_fitness_history,
+            'distance_to_optimum_history': self.distance_to_optimum_history,
+            'optimum_comparison_history': self.optimum_comparison_history,
             'execution_time': end_time - start_time
         }
 
 
-# Примеры целевых функций
+# Примеры целевых функций (остаются без изменений)
 def sphere_function(x):
     return np.sum(x ** 2)
 
@@ -559,39 +620,47 @@ if __name__ == "__main__":
         'DE_rand_1': 0.9, 'DE_cur_1': 0.8, 'DE_cur_to_best_1': 0.7, 'DE_cur_to_pbest_1': 0.6
     }
 
-    print("=== Testing ES-HHA Algorithm with Detailed Logging ===")
+    print("=== Testing ES-HHA Algorithm with LARGE POPULATION (3000) ===")
 
-   
     print("\n" + "=" * 50)
     print("SPHERE FUNCTION")
     print("=" * 50)
 
+    sphere_optimum = np.zeros(dimensions)
+
     es_hha_sphere = ES_HHA(
         objective_function=sphere_function,
+        population_size=3000,  # Увеличена популяция
         dimensions=dimensions,
-        max_FEs=10000,  
+        max_FEs=30000,  # Увеличено количество FEs для большей популяции
         exploitation_Fs=exploitation_Fs,
         exploration_Fs=exploration_Fs,
         verbose=True,
-        detailed_log=False 
+        detailed_log=False,
+        global_optimum=sphere_optimum,
+        batch_size=500  # Увеличен размер батча
     )
     lb = np.full(dimensions, -100)
     ub = np.full(dimensions, 100)
     results = es_hha_sphere.optimize(lb, ub)
 
-    
     print("\n" + "=" * 50)
     print("CEC2014 ROSENBROCK FUNCTION")
     print("=" * 50)
 
+    rosenbrock_optimum = np.ones(dimensions)
+
     es_hha_cec = ES_HHA(
         objective_function=cec2014_shifted_rotated_rosenbrock,
+        population_size=3000,  # Увеличена популяция
         dimensions=dimensions,
-        max_FEs=15000,
+        max_FEs=30000,
         exploitation_Fs=exploitation_Fs,
         exploration_Fs=exploration_Fs,
         verbose=True,
-        detailed_log=False
+        detailed_log=False,
+        global_optimum=rosenbrock_optimum,
+        batch_size=500
     )
     lb = np.full(dimensions, -100)
     ub = np.full(dimensions, 100)
