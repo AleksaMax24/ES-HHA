@@ -231,13 +231,10 @@ class ES_HHA:
         return population, fitness, population[best_idx], fitness[best_idx]
 
     def batch_evaluate(self, population):
-        """Векторизованное вычисление fitness для батча особей"""
         if hasattr(self.objective_function, '__call__'):
-            # Если функция поддерживает векторизацию, используем ее
             try:
                 return np.array([self.objective_function(ind) for ind in population])
             except:
-                # Fallback: вычисляем батчами
                 fitness = np.empty(len(population))
                 for i in range(0, len(population), self.batch_size):
                     batch = population[i:i + self.batch_size]
@@ -246,7 +243,6 @@ class ES_HHA:
         return np.array([self.objective_function(ind) for ind in population])
 
     def calculate_FDC(self, population, fitness, best_solution):
-        # Оптимизированное вычисление расстояний
         differences = population - best_solution
         distances = np.sqrt(np.einsum('ij,ij->i', differences, differences))
 
@@ -262,7 +258,6 @@ class ES_HHA:
         return fdc_value
 
     def calculate_PD(self, population, lb, ub):
-        # Оптимизированное вычисление разнообразия популяции
         centroid = np.mean(population, axis=0)
         ranges = ub - lb
         normalized_diff = np.abs(population - centroid) / ranges
@@ -376,7 +371,7 @@ class ES_HHA:
         new_fitness = np.empty_like(fitness)
         iteration_llh_info = []
 
-        # Генерируем новых индивидов батчами для оптимизации
+        # Генерация новых индивидов батчами
         for i in range(0, self.population_size, self.batch_size):
             batch_indices = range(i, min(i + self.batch_size, self.population_size))
 
@@ -410,7 +405,7 @@ class ES_HHA:
             new_best_solution = best_solution.copy()
             new_best_fitness = best_fitness
 
-        # Вычисляем расстояние до оптимума и сравниваем
+        # Вычисление расстояния до оптимума и сравнение
         distance = self.calculate_distance_to_optimum(new_best_solution)
         comparison = self.compare_with_optimum(new_best_solution, new_best_fitness)
 
@@ -448,7 +443,7 @@ class ES_HHA:
                 if comparison['is_optimal']:
                     print("*** REACHED GLOBAL OPTIMUM ***")
 
-            # Упрощенный вывод для больших популяций
+            # Упрощенный вывод
             if self.population_size > 1000:
                 top_ops = dict(sorted(op_count.items(), key=lambda x: x[1], reverse=True)[:3])
                 top_pools = dict(sorted(pool_count.items(), key=lambda x: x[1], reverse=True)[:2])
@@ -567,7 +562,7 @@ class ES_HHA:
         }
 
 
-# Примеры целевых функций (остаются без изменений)
+# Примеры целевых функций
 def sphere_function(x):
     return np.sum(x ** 2)
 
@@ -630,15 +625,15 @@ if __name__ == "__main__":
 
     es_hha_sphere = ES_HHA(
         objective_function=sphere_function,
-        population_size=3000,  # Увеличена популяция
+        population_size=3000, 
         dimensions=dimensions,
-        max_FEs=30000,  # Увеличено количество FEs для большей популяции
+        max_FEs=30000, 
         exploitation_Fs=exploitation_Fs,
         exploration_Fs=exploration_Fs,
         verbose=True,
         detailed_log=False,
         global_optimum=sphere_optimum,
-        batch_size=500  # Увеличен размер батча
+        batch_size=500  
     )
     lb = np.full(dimensions, -100)
     ub = np.full(dimensions, 100)
@@ -652,7 +647,7 @@ if __name__ == "__main__":
 
     es_hha_cec = ES_HHA(
         objective_function=cec2014_shifted_rotated_rosenbrock,
-        population_size=3000,  # Увеличена популяция
+        population_size=3000, 
         dimensions=dimensions,
         max_FEs=30000,
         exploitation_Fs=exploitation_Fs,
