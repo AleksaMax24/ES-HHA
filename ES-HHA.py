@@ -479,7 +479,7 @@ class ES_HHA:
             print(f"  Minimum distance to optimum: {min_distance:.6f}")
 
         print(f"\nLLH Usage Statistics:")
-        for llh, count in sorted(self.llh_usage_count.items(), key=lambda x: x[1], reverse=True)[:5]:  # Только топ-5
+        for llh, count in sorted(self.llh_usage_count.items(), key=lambda x: x[1], reverse=True)[:5]: 
             percentage = (count / total_llh_uses) * 100
             print(f"  {llh}: {count} uses ({percentage:.1f}%)")
 
