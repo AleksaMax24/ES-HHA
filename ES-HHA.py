@@ -362,6 +362,45 @@ class ES_HHA:
             kwargs['fitness'] = fitness
         return operator.apply(population, best_solution, current_index, **kwargs)
 
+    def smooth_constraint(self, x, lb, ub, method='sigmoid', adaptive=True):
+        if method == 'sigmoid':
+            return self._sigmoid_constraint(x, lb, ub)
+        elif method == 'tanh':
+            return self._tanh_constraint(x, lb, ub)
+        elif adaptive:
+            return self._adaptive_constraint(x, lb, ub)
+        else:
+            return np.clip(x, lb, ub)
+    
+    def _sigmoid_constraint(self, x, lb, ub, steepness=8.0):
+        center = (lb + ub) / 2
+        scale = (ub - lb) / 2
+        scale = np.maximum(scale, 1e-10)
+        
+        normalized = (x - center) / scale * (steepness / 2)
+        sigmoid = 1 / (1 + np.exp(-normalized))
+        return lb + sigmoid * (ub - lb)
+    
+    def _tanh_constraint(self, x, lb, ub, steepness=3.0):
+        center = (lb + ub) / 2
+        scale = (ub - lb) / 2
+        scale = np.maximum(scale, 1e-10)
+        
+        normalized = (x - center) / scale * steepness
+        tanh_val = np.tanh(normalized)
+        return center + tanh_val * scale
+    
+    def _adaptive_constraint(self, x, lb, ub, threshold=0.2):
+        relative_violation = np.maximum(
+            np.abs(x - lb) / (ub - lb + 1e-10),
+            np.abs(x - ub) / (ub - lb + 1e-10)
+        )
+        
+        if np.max(relative_violation) < threshold:
+            return self._sigmoid_constraint(x, lb, ub, steepness=6.0)
+        else:
+            return np.clip(x, lb, ub)
+
     def create_new_generation(self, population: np.ndarray, fitness: np.ndarray,
                               best_solution: np.ndarray, best_fitness: float, lb: np.ndarray, ub: np.ndarray) -> tuple:
         FDC = self.calculate_FDC(population, fitness, best_solution)
@@ -378,7 +417,7 @@ class ES_HHA:
             for j in batch_indices:
                 operator, selection_info = self.select_LLH(FDC, PD)
                 new_individual = self.apply_LLH(operator, population, best_solution, j, fitness)
-                new_individual = np.clip(new_individual, lb, ub)
+                new_individual = self.smooth_constraint(new_individual, lb, ub)
                 new_population[j] = new_individual
 
                 iteration_llh_info.append({
