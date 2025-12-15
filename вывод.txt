@@ -1,0 +1,1424 @@
+==================================================
+SPHERE FUNCTION
+==================================================
+Initial best fitness: 66492.250142
+Population size: 100
+Initial distance to optimum: 257.860912
+[FDC CALC] fitness std: 1.43e+04, distances std: 56.34
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 0:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'DE_cur_1', 'uniform', 'normal', 'DE_cur_1', 'levy', 'DE_rand_1', 'DE_cur_1', 'uniform', 'uniform', 'DE_rand_1', 'normal', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'uniform', 'levy', 'DE_cur_to_best_1', 'DE_best_1', 'DE_best_1', 'levy', 'DE_best_1', 'uniform', 'uniform', 'DE_best_1', 'normal', 'DE_cur_to_best_1', 'levy', 'DE_best_1', 'levy', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_best_1', 'levy', 'DE_rand_1', 'DE_cur_to_best_1', 'DE_best_1']
+Статистика использования:
+  levy: 23 раз (23.0%)
+  uniform: 18 раз (18.0%)
+  normal: 14 раз (14.0%)
+  DE_best_1: 14 раз (14.0%)
+  DE_rand_1: 11 раз (11.0%)
+  DE_cur_1: 9 раз (9.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 3 раз (3.0%)
+
+--- Iteration 0 ---
+Best fitness: 66492.250142
+Improvements: 3/100
+FDC: 0.464, PD: 0.249
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'levy': 23, 'DE_cur_1': 9, 'uniform': 18, 'normal': 14, 'DE_rand_1': 11, 'DE_best_1': 14, 'DE_cur_to_best_1': 8, 'DE_cur_to_pbest_1': 3}
+Pool distribution: {'balanced_exploitation': 69, 'balanced_exploration': 31}
+[FDC CALC] fitness std: 1.38e+04, distances std: 73.58
+[FDC CALC] fitness std: 1.38e+04, distances std: 73.94
+[FDC CALC] fitness std: 1.31e+04, distances std: 83.52
+[FDC CALC] fitness std: 1.30e+04, distances std: 84.62
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 10:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_1', 'levy', 'DE_cur_1', 'DE_cur_1', 'uniform', 'normal', 'DE_rand_1', 'DE_cur_1', 'DE_cur_1', 'levy', 'levy', 'DE_cur_to_best_1', 'levy', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_1', 'levy', 'DE_cur_1', 'uniform', 'DE_cur_1', 'uniform', 'DE_best_1', 'normal', 'normal', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'normal', 'DE_best_1', 'DE_best_1', 'normal', 'levy', 'levy', 'DE_cur_to_best_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'uniform', 'DE_cur_to_best_1', 'normal', 'normal']
+Статистика использования:
+  normal: 22 раз (22.0%)
+  levy: 18 раз (18.0%)
+  uniform: 17 раз (17.0%)
+  DE_best_1: 12 раз (12.0%)
+  DE_cur_1: 10 раз (10.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_rand_1: 5 раз (5.0%)
+
+--- Iteration 10 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.023, PD: 0.248
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_cur_1': 10, 'levy': 18, 'uniform': 17, 'normal': 22, 'DE_rand_1': 5, 'DE_cur_to_best_1': 8, 'DE_cur_to_pbest_1': 8, 'DE_best_1': 12}
+Pool distribution: {'balanced_exploration': 31, 'balanced_exploitation': 69}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 20:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'levy', 'DE_cur_1', 'levy', 'DE_rand_1', 'DE_best_1', 'DE_rand_1', 'normal', 'DE_cur_to_pbest_1', 'levy', 'DE_cur_to_best_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_to_pbest_1', 'levy', 'DE_cur_1', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'DE_cur_1', 'uniform', 'normal', 'DE_best_1', 'uniform', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_to_best_1', 'uniform', 'DE_best_1', 'normal', 'normal', 'DE_cur_1', 'uniform', 'DE_best_1', 'levy']
+Статистика использования:
+  normal: 22 раз (22.0%)
+  DE_best_1: 21 раз (21.0%)
+  uniform: 16 раз (16.0%)
+  DE_cur_to_pbest_1: 13 раз (13.0%)
+  levy: 9 раз (9.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_1: 7 раз (7.0%)
+  DE_rand_1: 4 раз (4.0%)
+
+--- Iteration 20 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.067, PD: 0.247
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'normal': 22, 'DE_cur_to_pbest_1': 13, 'DE_best_1': 21, 'levy': 9, 'DE_cur_1': 7, 'DE_rand_1': 4, 'DE_cur_to_best_1': 8, 'uniform': 16}
+Pool distribution: {'balanced_exploitation': 68, 'balanced_exploration': 32}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 30:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'DE_best_1', 'levy', 'DE_cur_to_pbest_1', 'uniform', 'DE_best_1', 'DE_cur_1', 'uniform', 'DE_rand_1', 'DE_cur_1', 'levy', 'normal', 'DE_cur_1', 'uniform', 'DE_rand_1', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'DE_cur_1', 'levy', 'levy', 'normal', 'DE_cur_to_pbest_1', 'DE_rand_1', 'normal', 'uniform', 'levy', 'levy', 'levy', 'DE_best_1', 'uniform', 'normal', 'levy', 'DE_best_1', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'normal']
+Статистика использования:
+  levy: 21 раз (21.0%)
+  uniform: 21 раз (21.0%)
+  normal: 17 раз (17.0%)
+  DE_best_1: 13 раз (13.0%)
+  DE_cur_1: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+  DE_rand_1: 4 раз (4.0%)
+
+--- Iteration 30 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.066, PD: 0.246
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'normal': 17, 'DE_best_1': 13, 'levy': 21, 'DE_cur_to_pbest_1': 8, 'uniform': 21, 'DE_cur_1': 11, 'DE_rand_1': 4, 'DE_cur_to_best_1': 5}
+Pool distribution: {'balanced_exploitation': 72, 'balanced_exploration': 28}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 40:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'uniform', 'uniform', 'normal', 'levy', 'levy', 'uniform', 'DE_cur_1', 'uniform', 'DE_cur_to_best_1', 'DE_rand_1', 'levy', 'DE_rand_1', 'levy', 'DE_best_1', 'DE_best_1', 'normal', 'DE_cur_to_pbest_1', 'DE_rand_1', 'normal', 'uniform', 'DE_cur_1', 'levy', 'levy', 'DE_cur_1', 'DE_cur_1', 'DE_rand_1', 'normal', 'DE_best_1', 'DE_best_1', 'DE_cur_1', 'levy', 'DE_cur_1', 'uniform', 'levy', 'DE_cur_to_pbest_1', 'DE_rand_1', 'uniform', 'normal', 'levy']
+Статистика использования:
+  levy: 20 раз (20.0%)
+  uniform: 19 раз (19.0%)
+  normal: 13 раз (13.0%)
+  DE_cur_1: 13 раз (13.0%)
+  DE_rand_1: 12 раз (12.0%)
+  DE_best_1: 10 раз (10.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 6 раз (6.0%)
+
+--- Iteration 40 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.059, PD: 0.246
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_best_1': 10, 'uniform': 19, 'normal': 13, 'levy': 20, 'DE_cur_1': 13, 'DE_cur_to_best_1': 6, 'DE_rand_1': 12, 'DE_cur_to_pbest_1': 7}
+Pool distribution: {'balanced_exploitation': 62, 'balanced_exploration': 38}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 50:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_1', 'normal', 'DE_best_1', 'uniform', 'DE_best_1', 'normal', 'levy', 'levy', 'DE_rand_1', 'DE_best_1', 'levy', 'uniform', 'levy', 'normal', 'DE_best_1', 'DE_cur_1', 'DE_rand_1', 'levy', 'DE_rand_1', 'normal', 'normal', 'DE_cur_to_best_1', 'DE_rand_1', 'DE_cur_1', 'DE_best_1', 'DE_rand_1', 'DE_cur_1', 'uniform', 'DE_rand_1', 'DE_rand_1', 'uniform', 'DE_cur_1', 'levy', 'levy', 'DE_cur_1', 'normal', 'DE_best_1', 'uniform', 'levy', 'levy']
+Статистика использования:
+  normal: 18 раз (18.0%)
+  levy: 17 раз (17.0%)
+  DE_best_1: 16 раз (16.0%)
+  uniform: 16 раз (16.0%)
+  DE_cur_1: 14 раз (14.0%)
+  DE_rand_1: 11 раз (11.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+  DE_cur_to_pbest_1: 4 раз (4.0%)
+
+--- Iteration 50 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.168, PD: 0.244
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_cur_1': 14, 'normal': 18, 'DE_best_1': 16, 'uniform': 16, 'levy': 17, 'DE_rand_1': 11, 'DE_cur_to_best_1': 4, 'DE_cur_to_pbest_1': 4}
+Pool distribution: {'balanced_exploration': 33, 'balanced_exploitation': 67}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 60:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'DE_cur_to_best_1', 'uniform', 'uniform', 'uniform', 'uniform', 'DE_best_1', 'uniform', 'DE_rand_1', 'DE_rand_1', 'uniform', 'DE_cur_to_best_1', 'uniform', 'uniform', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'DE_cur_1', 'normal', 'DE_rand_1', 'normal', 'DE_cur_1', 'uniform', 'DE_rand_1', 'DE_best_1', 'uniform', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'DE_cur_1', 'normal', 'levy', 'DE_rand_1', 'DE_cur_to_best_1']
+Статистика использования:
+  uniform: 23 раз (23.0%)
+  DE_best_1: 18 раз (18.0%)
+  levy: 15 раз (15.0%)
+  DE_cur_to_best_1: 11 раз (11.0%)
+  normal: 10 раз (10.0%)
+  DE_rand_1: 10 раз (10.0%)
+  DE_cur_1: 9 раз (9.0%)
+  DE_cur_to_pbest_1: 4 раз (4.0%)
+
+--- Iteration 60 ---
+Best fitness: 66492.250142
+Improvements: 1/100
+FDC: 0.142, PD: 0.243
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'normal': 10, 'DE_cur_to_best_1': 11, 'uniform': 23, 'DE_best_1': 18, 'DE_rand_1': 10, 'DE_cur_1': 9, 'DE_cur_to_pbest_1': 4, 'levy': 15}
+Pool distribution: {'balanced_exploitation': 66, 'balanced_exploration': 34}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 70:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_1', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'DE_cur_1', 'DE_rand_1', 'normal', 'levy', 'uniform', 'DE_best_1', 'uniform', 'normal', 'DE_best_1', 'DE_cur_to_best_1', 'DE_best_1', 'DE_rand_1', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'levy', 'levy', 'DE_best_1', 'DE_best_1', 'levy', 'normal', 'DE_cur_1', 'DE_cur_to_pbest_1', 'levy', 'DE_cur_to_best_1', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'levy', 'levy', 'uniform', 'levy', 'levy', 'DE_best_1', 'DE_cur_to_best_1', 'levy', 'DE_best_1']
+Статистика использования:
+  levy: 24 раз (24.0%)
+  DE_best_1: 17 раз (17.0%)
+  DE_cur_to_best_1: 13 раз (13.0%)
+  normal: 12 раз (12.0%)
+  uniform: 12 раз (12.0%)
+  DE_cur_1: 10 раз (10.0%)
+  DE_rand_1: 6 раз (6.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+
+--- Iteration 70 ---
+Best fitness: 66492.250142
+Improvements: 3/100
+FDC: 0.172, PD: 0.242
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_cur_1': 10, 'DE_cur_to_best_1': 13, 'DE_rand_1': 6, 'normal': 12, 'levy': 24, 'uniform': 12, 'DE_best_1': 17, 'DE_cur_to_pbest_1': 6}
+Pool distribution: {'balanced_exploration': 35, 'balanced_exploitation': 65}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 80:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'DE_rand_1', 'levy', 'uniform', 'DE_cur_to_best_1', 'levy', 'normal', 'DE_best_1', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'normal', 'levy', 'normal', 'normal', 'DE_cur_1', 'DE_cur_to_best_1', 'normal', 'DE_rand_1', 'DE_cur_1', 'levy', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'levy', 'DE_cur_to_best_1', 'DE_cur_1', 'uniform', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'levy', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'DE_best_1', 'DE_cur_to_best_1']
+Статистика использования:
+  normal: 20 раз (20.0%)
+  levy: 16 раз (16.0%)
+  DE_best_1: 15 раз (15.0%)
+  DE_cur_to_best_1: 15 раз (15.0%)
+  DE_cur_1: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  uniform: 8 раз (8.0%)
+  DE_rand_1: 6 раз (6.0%)
+
+--- Iteration 80 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.165, PD: 0.241
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_best_1': 15, 'DE_rand_1': 6, 'levy': 16, 'uniform': 8, 'DE_cur_to_best_1': 15, 'normal': 20, 'DE_cur_to_pbest_1': 9, 'DE_cur_1': 11}
+Pool distribution: {'balanced_exploitation': 59, 'balanced_exploration': 41}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 90:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'levy', 'DE_cur_to_pbest_1', 'uniform', 'DE_cur_1', 'uniform', 'normal', 'normal', 'DE_rand_1', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_1', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_1', 'DE_cur_1', 'normal', 'uniform', 'levy', 'DE_rand_1', 'DE_best_1', 'DE_best_1', 'uniform', 'levy', 'levy', 'normal', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'levy', 'levy', 'normal', 'DE_best_1', 'DE_best_1', 'levy', 'normal', 'normal', 'DE_rand_1']
+Статистика использования:
+  DE_best_1: 19 раз (19.0%)
+  normal: 17 раз (17.0%)
+  uniform: 16 раз (16.0%)
+  levy: 12 раз (12.0%)
+  DE_cur_to_pbest_1: 12 раз (12.0%)
+  DE_cur_1: 10 раз (10.0%)
+  DE_rand_1: 9 раз (9.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+
+--- Iteration 90 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.151, PD: 0.241
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'uniform': 16, 'levy': 12, 'DE_cur_to_pbest_1': 12, 'DE_cur_1': 10, 'normal': 17, 'DE_rand_1': 9, 'DE_best_1': 19, 'DE_cur_to_best_1': 5}
+Pool distribution: {'balanced_exploitation': 64, 'balanced_exploration': 36}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 100:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'uniform', 'levy', 'levy', 'DE_best_1', 'normal', 'DE_cur_to_best_1', 'DE_best_1', 'uniform', 'DE_cur_1', 'levy', 'uniform', 'levy', 'DE_best_1', 'DE_rand_1', 'levy', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'DE_best_1', 'levy', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'levy', 'levy', 'DE_best_1', 'uniform', 'DE_rand_1', 'DE_cur_to_pbest_1', 'normal', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'DE_best_1', 'levy', 'levy', 'uniform', 'uniform', 'levy']
+Статистика использования:
+  levy: 24 раз (24.0%)
+  uniform: 20 раз (20.0%)
+  DE_best_1: 18 раз (18.0%)
+  normal: 9 раз (9.0%)
+  DE_cur_1: 9 раз (9.0%)
+  DE_rand_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+
+--- Iteration 100 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.107, PD: 0.240
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'uniform': 20, 'levy': 24, 'DE_best_1': 18, 'normal': 9, 'DE_cur_to_best_1': 5, 'DE_cur_1': 9, 'DE_rand_1': 8, 'DE_cur_to_pbest_1': 7}
+Pool distribution: {'balanced_exploitation': 71, 'balanced_exploration': 29}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 110:
+Всего операторов: 100
+Первые 40 операторов: ['DE_rand_1', 'normal', 'DE_rand_1', 'DE_best_1', 'normal', 'normal', 'normal', 'uniform', 'DE_cur_1', 'levy', 'levy', 'DE_cur_to_best_1', 'DE_cur_1', 'uniform', 'levy', 'DE_best_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_to_pbest_1', 'levy', 'normal', 'uniform', 'DE_cur_to_pbest_1', 'levy', 'DE_best_1', 'normal', 'normal', 'normal', 'normal', 'normal', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_1', 'DE_cur_to_pbest_1', 'normal', 'DE_rand_1', 'DE_rand_1']
+Статистика использования:
+  normal: 29 раз (29.0%)
+  levy: 14 раз (14.0%)
+  DE_best_1: 12 раз (12.0%)
+  DE_cur_to_pbest_1: 12 раз (12.0%)
+  DE_rand_1: 9 раз (9.0%)
+  uniform: 9 раз (9.0%)
+  DE_cur_1: 9 раз (9.0%)
+  DE_cur_to_best_1: 6 раз (6.0%)
+
+--- Iteration 110 ---
+Best fitness: 66492.250142
+Improvements: 1/100
+FDC: 0.108, PD: 0.240
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_rand_1': 9, 'normal': 29, 'DE_best_1': 12, 'uniform': 9, 'DE_cur_1': 9, 'levy': 14, 'DE_cur_to_best_1': 6, 'DE_cur_to_pbest_1': 12}
+Pool distribution: {'balanced_exploration': 36, 'balanced_exploitation': 64}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 120:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'uniform', 'normal', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'DE_rand_1', 'DE_best_1', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'uniform', 'uniform', 'DE_rand_1', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_pbest_1', 'normal', 'uniform', 'DE_best_1', 'normal', 'uniform', 'uniform', 'levy', 'levy', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'DE_rand_1', 'levy', 'DE_rand_1', 'uniform', 'uniform', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'uniform']
+Статистика использования:
+  uniform: 24 раз (24.0%)
+  DE_best_1: 20 раз (20.0%)
+  normal: 17 раз (17.0%)
+  levy: 13 раз (13.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 7 раз (7.0%)
+  DE_rand_1: 6 раз (6.0%)
+  DE_cur_1: 6 раз (6.0%)
+
+--- Iteration 120 ---
+Best fitness: 66492.250142
+Improvements: 2/100
+FDC: 0.201, PD: 0.239
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'normal': 17, 'uniform': 24, 'DE_cur_to_pbest_1': 7, 'DE_rand_1': 6, 'DE_best_1': 20, 'DE_cur_to_best_1': 7, 'levy': 13, 'DE_cur_1': 6}
+Pool distribution: {'balanced_exploitation': 74, 'balanced_exploration': 26}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 130:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'normal', 'DE_cur_to_pbest_1', 'normal', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_cur_1', 'DE_cur_to_pbest_1', 'levy', 'DE_cur_1', 'DE_best_1', 'DE_rand_1', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'DE_best_1', 'normal', 'normal', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_rand_1', 'levy', 'levy', 'uniform', 'normal', 'DE_cur_1', 'levy', 'levy', 'levy']
+Статистика использования:
+  levy: 19 раз (19.0%)
+  uniform: 18 раз (18.0%)
+  normal: 17 раз (17.0%)
+  DE_best_1: 16 раз (16.0%)
+  DE_rand_1: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_cur_1: 6 раз (6.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+
+--- Iteration 130 ---
+Best fitness: 66492.250142
+Improvements: 1/100
+FDC: 0.203, PD: 0.239
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'levy': 19, 'normal': 17, 'DE_cur_to_pbest_1': 9, 'DE_best_1': 16, 'DE_cur_to_best_1': 4, 'uniform': 18, 'DE_cur_1': 6, 'DE_rand_1': 11}
+Pool distribution: {'balanced_exploitation': 70, 'balanced_exploration': 30}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 140:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'DE_best_1', 'DE_best_1', 'levy', 'uniform', 'normal', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'normal', 'normal', 'levy', 'normal', 'uniform', 'uniform', 'DE_cur_1', 'levy', 'uniform', 'normal', 'DE_best_1', 'levy', 'uniform', 'levy', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'DE_best_1', 'normal', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_rand_1', 'normal', 'DE_rand_1', 'DE_best_1']
+Статистика использования:
+  uniform: 25 раз (25.0%)
+  DE_best_1: 23 раз (23.0%)
+  normal: 15 раз (15.0%)
+  DE_cur_to_pbest_1: 12 раз (12.0%)
+  levy: 9 раз (9.0%)
+  DE_cur_to_best_1: 7 раз (7.0%)
+  DE_rand_1: 6 раз (6.0%)
+  DE_cur_1: 3 раз (3.0%)
+
+--- Iteration 140 ---
+Best fitness: 66492.250142
+Improvements: 1/100
+FDC: 0.294, PD: 0.238
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_cur_to_pbest_1': 12, 'uniform': 25, 'DE_cur_to_best_1': 7, 'DE_best_1': 23, 'levy': 9, 'normal': 15, 'DE_cur_1': 3, 'DE_rand_1': 6}
+Pool distribution: {'balanced_exploration': 28, 'balanced_exploitation': 72}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 150:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_pbest_1', 'DE_rand_1', 'normal', 'levy', 'levy', 'DE_cur_to_best_1', 'levy', 'DE_best_1', 'uniform', 'DE_rand_1', 'DE_cur_to_pbest_1', 'levy', 'uniform', 'DE_cur_1', 'DE_cur_1', 'normal', 'normal', 'levy', 'levy', 'levy', 'DE_cur_1', 'levy', 'normal', 'levy', 'DE_cur_to_pbest_1', 'DE_best_1', 'levy', 'DE_best_1', 'DE_best_1', 'levy', 'uniform', 'DE_best_1', 'DE_best_1', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'DE_best_1']
+Статистика использования:
+  normal: 21 раз (21.0%)
+  levy: 18 раз (18.0%)
+  DE_best_1: 17 раз (17.0%)
+  uniform: 14 раз (14.0%)
+  DE_cur_to_best_1: 11 раз (11.0%)
+  DE_cur_1: 9 раз (9.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_rand_1: 4 раз (4.0%)
+
+--- Iteration 150 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.282, PD: 0.237
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_cur_to_pbest_1': 6, 'DE_rand_1': 4, 'normal': 21, 'levy': 18, 'DE_cur_to_best_1': 11, 'DE_best_1': 17, 'uniform': 14, 'DE_cur_1': 9}
+Pool distribution: {'balanced_exploration': 30, 'balanced_exploitation': 70}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 160:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'DE_best_1', 'uniform', 'levy', 'DE_cur_to_best_1', 'levy', 'DE_rand_1', 'normal', 'uniform', 'uniform', 'normal', 'normal', 'DE_best_1', 'DE_rand_1', 'DE_best_1', 'DE_best_1', 'DE_cur_1', 'DE_cur_to_best_1', 'normal', 'levy', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_best_1', 'normal', 'normal', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'levy', 'DE_cur_to_best_1', 'DE_rand_1', 'DE_rand_1', 'DE_cur_to_best_1', 'DE_best_1', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'levy', 'normal']
+Статистика использования:
+  normal: 19 раз (19.0%)
+  uniform: 16 раз (16.0%)
+  DE_cur_to_best_1: 16 раз (16.0%)
+  DE_best_1: 15 раз (15.0%)
+  levy: 14 раз (14.0%)
+  DE_rand_1: 9 раз (9.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_cur_1: 5 раз (5.0%)
+
+--- Iteration 160 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.275, PD: 0.236
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'levy': 14, 'DE_best_1': 15, 'uniform': 16, 'DE_cur_to_best_1': 16, 'DE_rand_1': 9, 'normal': 19, 'DE_cur_1': 5, 'DE_cur_to_pbest_1': 6}
+Pool distribution: {'balanced_exploitation': 64, 'balanced_exploration': 36}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 170:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_cur_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'normal', 'levy', 'DE_best_1', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'levy', 'normal', 'normal', 'levy', 'DE_cur_1', 'DE_best_1', 'DE_cur_to_best_1', 'DE_best_1', 'normal', 'DE_best_1', 'normal', 'DE_best_1', 'normal', 'levy', 'DE_cur_to_pbest_1', 'levy', 'uniform', 'DE_cur_to_best_1', 'DE_cur_1', 'DE_cur_1', 'levy', 'levy', 'levy']
+Статистика использования:
+  DE_best_1: 26 раз (26.0%)
+  normal: 16 раз (16.0%)
+  uniform: 15 раз (15.0%)
+  levy: 15 раз (15.0%)
+  DE_cur_1: 10 раз (10.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 7 раз (7.0%)
+  DE_rand_1: 4 раз (4.0%)
+
+--- Iteration 170 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.271, PD: 0.236
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'uniform': 15, 'normal': 16, 'DE_cur_to_pbest_1': 7, 'DE_best_1': 26, 'DE_cur_1': 10, 'DE_rand_1': 4, 'levy': 15, 'DE_cur_to_best_1': 7}
+Pool distribution: {'balanced_exploitation': 72, 'balanced_exploration': 28}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 180:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_pbest_1', 'DE_cur_1', 'normal', 'DE_best_1', 'levy', 'uniform', 'DE_best_1', 'DE_cur_1', 'normal', 'DE_best_1', 'levy', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'levy', 'DE_best_1', 'levy', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'uniform', 'DE_best_1', 'levy', 'normal', 'DE_best_1', 'levy', 'DE_best_1', 'DE_best_1', 'uniform', 'normal', 'DE_best_1', 'DE_rand_1', 'normal', 'normal', 'DE_best_1', 'uniform', 'DE_cur_1', 'normal', 'levy', 'DE_best_1']
+Статистика использования:
+  DE_best_1: 28 раз (28.0%)
+  levy: 22 раз (22.0%)
+  uniform: 16 раз (16.0%)
+  normal: 12 раз (12.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_cur_1: 6 раз (6.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+  DE_rand_1: 3 раз (3.0%)
+
+--- Iteration 180 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.270, PD: 0.236
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_cur_to_pbest_1': 8, 'DE_cur_1': 6, 'normal': 12, 'DE_best_1': 28, 'levy': 22, 'uniform': 16, 'DE_rand_1': 3, 'DE_cur_to_best_1': 5}
+Pool distribution: {'balanced_exploration': 22, 'balanced_exploitation': 78}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 190:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'DE_cur_1', 'uniform', 'DE_cur_to_pbest_1', 'DE_best_1', 'normal', 'DE_best_1', 'DE_rand_1', 'levy', 'DE_cur_to_pbest_1', 'levy', 'uniform', 'levy', 'normal', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_best_1', 'DE_best_1', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'normal', 'levy', 'normal', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_1', 'DE_cur_1', 'DE_cur_to_best_1', 'levy', 'levy', 'uniform', 'DE_cur_to_best_1', 'levy', 'DE_cur_to_best_1', 'normal', 'DE_best_1', 'normal']
+Статистика использования:
+  normal: 20 раз (20.0%)
+  uniform: 19 раз (19.0%)
+  DE_best_1: 18 раз (18.0%)
+  levy: 16 раз (16.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_1: 7 раз (7.0%)
+  DE_rand_1: 3 раз (3.0%)
+
+--- Iteration 190 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.262, PD: 0.235
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'normal': 20, 'DE_cur_1': 7, 'uniform': 19, 'DE_cur_to_pbest_1': 9, 'DE_best_1': 18, 'DE_rand_1': 3, 'levy': 16, 'DE_cur_to_best_1': 8}
+Pool distribution: {'balanced_exploitation': 73, 'balanced_exploration': 27}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 200:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'DE_cur_1', 'normal', 'DE_cur_1', 'uniform', 'DE_best_1', 'normal', 'uniform', 'normal', 'DE_cur_to_best_1', 'levy', 'uniform', 'DE_cur_1', 'DE_cur_to_pbest_1', 'normal', 'DE_best_1', 'DE_rand_1', 'DE_best_1', 'uniform', 'DE_best_1', 'levy', 'levy', 'DE_best_1', 'levy', 'levy', 'uniform', 'DE_cur_1', 'normal', 'DE_best_1', 'levy', 'normal', 'levy', 'levy', 'normal', 'DE_rand_1', 'normal', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'levy']
+Статистика использования:
+  DE_best_1: 22 раз (22.0%)
+  normal: 18 раз (18.0%)
+  levy: 18 раз (18.0%)
+  uniform: 15 раз (15.0%)
+  DE_cur_1: 9 раз (9.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_rand_1: 6 раз (6.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+
+--- Iteration 200 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.255, PD: 0.235
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'normal': 18, 'DE_cur_1': 9, 'uniform': 15, 'DE_best_1': 22, 'DE_cur_to_best_1': 5, 'levy': 18, 'DE_cur_to_pbest_1': 7, 'DE_rand_1': 6}
+Pool distribution: {'balanced_exploitation': 73, 'balanced_exploration': 27}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 210:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'levy', 'normal', 'levy', 'uniform', 'DE_cur_to_best_1', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'uniform', 'levy', 'DE_best_1', 'DE_rand_1', 'normal', 'normal', 'uniform', 'DE_rand_1', 'DE_best_1', 'DE_cur_1', 'DE_best_1', 'DE_rand_1', 'levy', 'uniform', 'DE_best_1', 'levy', 'uniform', 'uniform', 'DE_rand_1', 'DE_best_1', 'DE_best_1', 'levy', 'uniform', 'DE_best_1', 'levy', 'levy', 'DE_best_1', 'uniform', 'uniform', 'normal']
+Статистика использования:
+  levy: 24 раз (24.0%)
+  DE_best_1: 20 раз (20.0%)
+  uniform: 19 раз (19.0%)
+  normal: 13 раз (13.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_rand_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 6 раз (6.0%)
+  DE_cur_1: 4 раз (4.0%)
+
+--- Iteration 210 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.349, PD: 0.235
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'DE_best_1': 20, 'levy': 24, 'normal': 13, 'uniform': 19, 'DE_cur_to_best_1': 6, 'DE_cur_to_pbest_1': 7, 'DE_rand_1': 7, 'DE_cur_1': 4}
+Pool distribution: {'balanced_exploitation': 76, 'balanced_exploration': 24}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 220:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'levy', 'DE_cur_to_best_1', 'normal', 'uniform', 'DE_best_1', 'levy', 'normal', 'levy', 'levy', 'DE_best_1', 'DE_best_1', 'uniform', 'levy', 'levy', 'DE_best_1', 'levy', 'levy', 'uniform', 'levy', 'uniform', 'uniform', 'DE_cur_1', 'uniform', 'normal', 'DE_cur_1', 'DE_best_1', 'DE_cur_to_best_1', 'levy', 'DE_best_1', 'levy', 'levy', 'DE_best_1', 'uniform', 'DE_best_1', 'uniform', 'DE_best_1', 'uniform', 'DE_best_1', 'normal']
+Статистика использования:
+  uniform: 25 раз (25.0%)
+  levy: 22 раз (22.0%)
+  DE_best_1: 19 раз (19.0%)
+  normal: 15 раз (15.0%)
+  DE_cur_1: 9 раз (9.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+  DE_rand_1: 4 раз (4.0%)
+  DE_cur_to_pbest_1: 1 раз (1.0%)
+
+--- Iteration 220 ---
+Best fitness: 66492.250142
+Improvements: 0/100
+FDC: 0.339, PD: 0.235
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'uniform': 25, 'levy': 22, 'DE_cur_to_best_1': 5, 'normal': 15, 'DE_best_1': 19, 'DE_cur_1': 9, 'DE_rand_1': 4, 'DE_cur_to_pbest_1': 1}
+Pool distribution: {'balanced_exploitation': 81, 'balanced_exploration': 19}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 230:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_to_pbest_1', 'normal', 'DE_rand_1', 'DE_rand_1', 'normal', 'levy', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_1', 'levy', 'DE_best_1', 'DE_rand_1', 'levy', 'normal', 'uniform', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'levy', 'DE_cur_1', 'uniform', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'normal', 'uniform', 'DE_rand_1', 'levy', 'normal', 'normal', 'uniform']
+Статистика использования:
+  DE_best_1: 18 раз (18.0%)
+  normal: 17 раз (17.0%)
+  levy: 16 раз (16.0%)
+  uniform: 15 раз (15.0%)
+  DE_rand_1: 12 раз (12.0%)
+  DE_cur_to_pbest_1: 10 раз (10.0%)
+  DE_cur_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+
+--- Iteration 230 ---
+Best fitness: 66492.250142
+Improvements: 1/100
+FDC: 0.352, PD: 0.234
+Distance to optimum: 257.860912
+Fitness difference from optimum: 66492.250142
+Operators used: {'levy': 16, 'DE_cur_to_pbest_1': 10, 'normal': 17, 'DE_rand_1': 12, 'uniform': 15, 'DE_cur_1': 7, 'DE_best_1': 18, 'DE_cur_to_best_1': 5}
+Pool distribution: {'balanced_exploitation': 66, 'balanced_exploration': 34}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 240:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'DE_rand_1', 'normal', 'DE_best_1', 'uniform', 'DE_cur_to_best_1', 'DE_cur_1', 'DE_cur_1', 'levy', 'levy', 'normal', 'DE_rand_1', 'normal', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'levy', 'normal', 'uniform', 'normal', 'DE_best_1', 'uniform', 'normal', 'DE_best_1', 'uniform', 'DE_cur_1', 'levy', 'DE_best_1', 'DE_rand_1', 'DE_rand_1', 'normal', 'normal', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'normal', 'DE_rand_1']
+Статистика использования:
+  uniform: 19 раз (19.0%)
+  levy: 16 раз (16.0%)
+  DE_best_1: 14 раз (14.0%)
+  normal: 13 раз (13.0%)
+  DE_rand_1: 12 раз (12.0%)
+  DE_cur_to_best_1: 12 раз (12.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_cur_1: 6 раз (6.0%)
+
+--- Iteration 240 ---
+Best fitness: 57778.725806
+Improvements: 2/100
+FDC: 0.129, PD: 0.232
+Distance to optimum: 240.372057
+Fitness difference from optimum: 57778.725806
+Operators used: {'uniform': 19, 'DE_rand_1': 12, 'normal': 13, 'DE_best_1': 14, 'DE_cur_to_best_1': 12, 'DE_cur_1': 6, 'levy': 16, 'DE_cur_to_pbest_1': 8}
+Pool distribution: {'balanced_exploitation': 62, 'balanced_exploration': 38}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 250:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_pbest_1', 'levy', 'DE_best_1', 'levy', 'levy', 'DE_best_1', 'DE_cur_1', 'normal', 'DE_rand_1', 'DE_rand_1', 'DE_best_1', 'uniform', 'normal', 'uniform', 'DE_best_1', 'uniform', 'uniform', 'DE_best_1', 'uniform', 'normal', 'normal', 'DE_best_1', 'normal', 'levy', 'DE_rand_1', 'DE_best_1', 'DE_cur_1', 'normal', 'DE_rand_1', 'levy', 'normal', 'DE_cur_1', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'levy', 'uniform', 'DE_cur_1', 'DE_cur_to_best_1', 'levy']
+Статистика использования:
+  normal: 21 раз (21.0%)
+  DE_best_1: 19 раз (19.0%)
+  uniform: 16 раз (16.0%)
+  levy: 15 раз (15.0%)
+  DE_rand_1: 9 раз (9.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_cur_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+
+--- Iteration 250 ---
+Best fitness: 57778.725806
+Improvements: 1/100
+FDC: 0.204, PD: 0.231
+Distance to optimum: 240.372057
+Fitness difference from optimum: 57778.725806
+Operators used: {'DE_cur_to_pbest_1': 8, 'levy': 15, 'DE_best_1': 19, 'DE_cur_1': 7, 'normal': 21, 'DE_rand_1': 9, 'uniform': 16, 'DE_cur_to_best_1': 5}
+Pool distribution: {'balanced_exploration': 29, 'balanced_exploitation': 71}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 260:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'uniform', 'normal', 'DE_best_1', 'levy', 'uniform', 'DE_best_1', 'DE_rand_1', 'DE_rand_1', 'DE_cur_to_best_1', 'levy', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'DE_rand_1', 'DE_best_1', 'DE_cur_1', 'DE_cur_1', 'levy', 'levy', 'DE_cur_to_pbest_1', 'DE_cur_1', 'normal', 'DE_cur_1', 'normal', 'levy', 'DE_best_1', 'uniform', 'DE_best_1', 'DE_cur_1', 'levy', 'DE_cur_1', 'uniform', 'DE_cur_1', 'uniform', 'DE_cur_1', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1']
+Статистика использования:
+  uniform: 17 раз (17.0%)
+  DE_best_1: 15 раз (15.0%)
+  levy: 15 раз (15.0%)
+  DE_cur_1: 13 раз (13.0%)
+  normal: 12 раз (12.0%)
+  DE_cur_to_best_1: 10 раз (10.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_rand_1: 9 раз (9.0%)
+
+--- Iteration 260 ---
+Best fitness: 57778.725806
+Improvements: 0/100
+FDC: 0.270, PD: 0.231
+Distance to optimum: 240.372057
+Fitness difference from optimum: 57778.725806
+Operators used: {'DE_cur_to_best_1': 10, 'DE_cur_to_pbest_1': 9, 'uniform': 17, 'normal': 12, 'DE_best_1': 15, 'levy': 15, 'DE_rand_1': 9, 'DE_cur_1': 13}
+Pool distribution: {'balanced_exploration': 41, 'balanced_exploitation': 59}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 270:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'uniform', 'DE_best_1', 'levy', 'normal', 'DE_cur_1', 'uniform', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'levy', 'levy', 'normal', 'DE_cur_to_best_1', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'uniform', 'normal', 'DE_cur_1', 'DE_best_1', 'DE_cur_1', 'DE_best_1', 'DE_rand_1', 'levy', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'DE_rand_1', 'levy', 'DE_cur_to_pbest_1', 'DE_best_1', 'normal', 'uniform', 'DE_rand_1', 'DE_cur_1', 'DE_cur_to_best_1', 'levy', 'DE_cur_1']
+Статистика использования:
+  DE_best_1: 23 раз (23.0%)
+  levy: 15 раз (15.0%)
+  uniform: 14 раз (14.0%)
+  DE_cur_1: 12 раз (12.0%)
+  DE_rand_1: 11 раз (11.0%)
+  normal: 10 раз (10.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+
+--- Iteration 270 ---
+Best fitness: 57778.725806
+Improvements: 0/100
+FDC: 0.328, PD: 0.231
+Distance to optimum: 240.372057
+Fitness difference from optimum: 57778.725806
+Operators used: {'DE_best_1': 23, 'uniform': 14, 'levy': 15, 'normal': 10, 'DE_cur_1': 12, 'DE_cur_to_pbest_1': 7, 'DE_cur_to_best_1': 8, 'DE_rand_1': 11}
+Pool distribution: {'balanced_exploitation': 62, 'balanced_exploration': 38}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 280:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'levy', 'normal', 'DE_cur_to_pbest_1', 'normal', 'DE_best_1', 'DE_cur_1', 'DE_cur_to_best_1', 'normal', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'levy', 'normal', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'uniform', 'DE_best_1', 'DE_best_1', 'normal', 'DE_best_1', 'normal', 'uniform', 'DE_cur_to_best_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_1', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'levy', 'levy']
+Статистика использования:
+  normal: 21 раз (21.0%)
+  DE_best_1: 18 раз (18.0%)
+  uniform: 18 раз (18.0%)
+  levy: 16 раз (16.0%)
+  DE_cur_to_best_1: 10 раз (10.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_cur_1: 5 раз (5.0%)
+  DE_rand_1: 4 раз (4.0%)
+
+--- Iteration 280 ---
+Best fitness: 57778.725806
+Improvements: 1/100
+FDC: 0.326, PD: 0.231
+Distance to optimum: 240.372057
+Fitness difference from optimum: 57778.725806
+Operators used: {'DE_best_1': 18, 'levy': 16, 'normal': 21, 'DE_cur_to_pbest_1': 8, 'DE_cur_1': 5, 'DE_cur_to_best_1': 10, 'uniform': 18, 'DE_rand_1': 4}
+Pool distribution: {'balanced_exploitation': 73, 'balanced_exploration': 27}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 290:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_best_1', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_pbest_1', 'levy', 'levy', 'uniform', 'uniform', 'levy', 'uniform', 'uniform', 'normal', 'DE_cur_to_pbest_1', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'normal', 'DE_rand_1', 'levy', 'levy', 'DE_rand_1', 'DE_best_1', 'levy', 'DE_best_1', 'normal', 'DE_cur_1', 'uniform', 'DE_best_1', 'DE_cur_1', 'DE_best_1', 'levy', 'levy', 'levy', 'DE_best_1', 'levy', 'normal', 'uniform', 'DE_rand_1', 'uniform', 'levy']
+Статистика использования:
+  levy: 19 раз (19.0%)
+  DE_best_1: 18 раз (18.0%)
+  uniform: 16 раз (16.0%)
+  normal: 13 раз (13.0%)
+  DE_rand_1: 13 раз (13.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_cur_1: 6 раз (6.0%)
+
+--- Iteration 290 ---
+Best fitness: 57778.725806
+Improvements: 0/100
+FDC: 0.252, PD: 0.230
+Distance to optimum: 240.372057
+Fitness difference from optimum: 57778.725806
+Operators used: {'DE_cur_to_best_1': 8, 'normal': 13, 'DE_cur_to_pbest_1': 7, 'levy': 19, 'uniform': 16, 'DE_rand_1': 13, 'DE_best_1': 18, 'DE_cur_1': 6}
+Pool distribution: {'balanced_exploration': 34, 'balanced_exploitation': 66}
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+Algorithm execution time: 20.75 seconds
+Total iterations: 299
+Final best fitness: 57778.725806
+Total FEs: 29900
+Population size: 100
+
+Optimum Comparison:
+  Global optimum fitness: 0.000000
+  Final fitness difference: 57778.725806
+  Final distance to optimum: 240.372057
+  Reached global optimum: False
+  Minimum distance to optimum: 240.372057
+
+LLH Usage Statistics:
+  DE_best_1: 5161 uses (17.3%)
+  uniform: 5159 uses (17.3%)
+  normal: 5126 uses (17.1%)
+  levy: 5012 uses (16.8%)
+  DE_rand_1: 2399 uses (8.0%)
+
+Pool Usage Statistics:
+  balanced_exploitation: 20458 uses (68.4%)
+  balanced_exploration: 9442 uses (31.6%)
+
+Performance Metrics:
+  FEs per second: 1441
+  Iterations per second: 14.41
+
+Convergence Analysis:
+  Initial fitness: 66492.250142
+  Final fitness: 57778.725806
+  Total improvement: 8713.524336
+
+Optimum Convergence Analysis:
+  Initial distance to optimum: 257.860912
+  Final distance to optimum: 240.372057
+  Distance improvement: 17.488855
+
+==================================================
+CEC2014 ROSENBROCK FUNCTION
+==================================================
+Initial best fitness: 14923043222.414392
+Population size: 100
+Initial distance to optimum: 222.926608
+[FDC CALC] fitness std: 1.60e+10, distances std: 56.22
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 0:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'levy', 'levy', 'uniform', 'DE_best_1', 'DE_rand_1', 'uniform', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'levy', 'levy', 'DE_rand_1', 'DE_cur_to_best_1', 'normal', 'uniform', 'DE_cur_to_best_1', 'uniform', 'DE_best_1', 'DE_cur_1', 'DE_cur_1', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'levy', 'uniform', 'DE_best_1', 'levy', 'DE_best_1', 'DE_best_1', 'normal', 'DE_best_1', 'normal', 'uniform', 'uniform', 'levy', 'levy', 'levy', 'DE_best_1']
+Статистика использования:
+  uniform: 26 раз (26.0%)
+  levy: 22 раз (22.0%)
+  normal: 18 раз (18.0%)
+  DE_best_1: 14 раз (14.0%)
+  DE_cur_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 5 раз (5.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+  DE_rand_1: 2 раз (2.0%)
+
+--- Iteration 0 ---
+Best fitness: 14923043222.414392
+Improvements: 21/100
+FDC: 0.605, PD: 0.242
+Distance to optimum: 222.926608
+Fitness difference from optimum: 14923042822.414392
+Operators used: {'levy': 22, 'uniform': 26, 'DE_best_1': 14, 'DE_rand_1': 2, 'DE_cur_to_pbest_1': 5, 'DE_cur_to_best_1': 5, 'normal': 18, 'DE_cur_1': 8}
+Pool distribution: {'balanced_exploitation': 80, 'balanced_exploration': 20}
+[FDC CALC] fitness std: 1.29e+10, distances std: 115.70
+[FDC CALC] fitness std: 1.10e+10, distances std: 121.23
+[FDC CALC] fitness std: 1.09e+10, distances std: 120.75
+[FDC CALC] fitness std: 1.10e+10, distances std: 120.39
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 10:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_pbest_1', 'uniform', 'normal', 'levy', 'normal', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_cur_1', 'normal', 'DE_rand_1', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'uniform', 'DE_best_1', 'DE_rand_1', 'DE_cur_to_best_1', 'uniform', 'levy', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_cur_1', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_rand_1', 'DE_cur_to_best_1', 'DE_best_1', 'DE_rand_1', 'levy', 'normal', 'DE_cur_to_pbest_1', 'DE_cur_1', 'levy', 'normal', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'uniform', 'levy']
+Статистика использования:
+  uniform: 19 раз (19.0%)
+  normal: 17 раз (17.0%)
+  levy: 14 раз (14.0%)
+  DE_cur_to_pbest_1: 13 раз (13.0%)
+  DE_rand_1: 12 раз (12.0%)
+  DE_cur_1: 10 раз (10.0%)
+  DE_cur_to_best_1: 10 раз (10.0%)
+  DE_best_1: 5 раз (5.0%)
+
+--- Iteration 10 ---
+Best fitness: 14923043222.414392
+Improvements: 9/100
+FDC: -0.189, PD: 0.220
+Distance to optimum: 222.926608
+Fitness difference from optimum: 14923042822.414392
+Operators used: {'DE_cur_to_pbest_1': 13, 'uniform': 19, 'normal': 17, 'levy': 14, 'DE_best_1': 5, 'DE_cur_1': 10, 'DE_rand_1': 12, 'DE_cur_to_best_1': 10}
+Pool distribution: {'balanced_exploration': 45, 'balanced_exploitation': 55}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 20:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_pbest_1', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'DE_rand_1', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_cur_1', 'DE_cur_1', 'DE_rand_1', 'DE_cur_1', 'DE_rand_1', 'DE_cur_to_best_1', 'DE_rand_1', 'DE_rand_1', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'DE_cur_1', 'DE_cur_to_best_1', 'DE_rand_1', 'DE_rand_1', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'DE_cur_1', 'DE_cur_to_best_1', 'DE_rand_1', 'DE_cur_1', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'DE_rand_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'DE_rand_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1']
+Статистика использования:
+  DE_cur_to_pbest_1: 27 раз (27.0%)
+  DE_rand_1: 25 раз (25.0%)
+  DE_cur_1: 24 раз (24.0%)
+  DE_cur_to_best_1: 24 раз (24.0%)
+
+--- Iteration 20 ---
+Best fitness: 12974771043.796896
+Improvements: 7/100
+FDC: -0.241, PD: 0.194
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_cur_to_pbest_1': 27, 'DE_cur_1': 24, 'DE_cur_to_best_1': 24, 'DE_rand_1': 25}
+Pool distribution: {'exploration': 100}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 30:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'normal', 'uniform', 'DE_cur_to_best_1', 'uniform', 'levy', 'DE_cur_to_best_1', 'uniform', 'DE_best_1', 'DE_cur_1', 'DE_rand_1', 'levy', 'levy', 'DE_rand_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_best_1', 'DE_cur_to_best_1', 'levy', 'uniform', 'normal', 'normal', 'DE_rand_1', 'normal', 'DE_rand_1', 'normal', 'DE_best_1', 'levy', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'DE_rand_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'uniform', 'normal', 'DE_best_1', 'levy', 'uniform']
+Статистика использования:
+  normal: 20 раз (20.0%)
+  DE_best_1: 16 раз (16.0%)
+  DE_rand_1: 15 раз (15.0%)
+  levy: 13 раз (13.0%)
+  uniform: 12 раз (12.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_cur_1: 8 раз (8.0%)
+  DE_cur_to_best_1: 7 раз (7.0%)
+
+--- Iteration 30 ---
+Best fitness: 12974771043.796896
+Improvements: 5/100
+FDC: -0.111, PD: 0.178
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'normal': 20, 'uniform': 12, 'DE_cur_to_best_1': 7, 'levy': 13, 'DE_best_1': 16, 'DE_cur_1': 8, 'DE_rand_1': 15, 'DE_cur_to_pbest_1': 9}
+Pool distribution: {'balanced_exploitation': 61, 'balanced_exploration': 39}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 40:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'normal', 'DE_best_1', 'DE_best_1', 'normal', 'DE_cur_1', 'uniform', 'DE_cur_1', 'normal', 'uniform', 'levy', 'DE_rand_1', 'levy', 'uniform', 'uniform', 'normal', 'DE_cur_to_best_1', 'DE_cur_1', 'DE_cur_to_best_1', 'uniform', 'uniform', 'DE_cur_to_best_1', 'DE_rand_1', 'DE_best_1', 'normal', 'DE_cur_to_best_1', 'uniform', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'normal', 'DE_best_1', 'levy', 'DE_best_1', 'levy', 'levy', 'uniform', 'DE_cur_to_best_1']
+Статистика использования:
+  uniform: 23 раз (23.0%)
+  normal: 18 раз (18.0%)
+  levy: 15 раз (15.0%)
+  DE_best_1: 11 раз (11.0%)
+  DE_cur_to_best_1: 11 раз (11.0%)
+  DE_cur_1: 10 раз (10.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_rand_1: 5 раз (5.0%)
+
+--- Iteration 40 ---
+Best fitness: 12974771043.796896
+Improvements: 2/100
+FDC: 0.008, PD: 0.178
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'uniform': 23, 'normal': 18, 'DE_best_1': 11, 'DE_cur_1': 10, 'levy': 15, 'DE_rand_1': 5, 'DE_cur_to_best_1': 11, 'DE_cur_to_pbest_1': 7}
+Pool distribution: {'balanced_exploitation': 67, 'balanced_exploration': 33}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 50:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_pbest_1', 'DE_best_1', 'levy', 'DE_rand_1', 'DE_cur_to_pbest_1', 'uniform', 'DE_cur_1', 'DE_cur_to_best_1', 'levy', 'DE_rand_1', 'normal', 'normal', 'DE_rand_1', 'DE_cur_1', 'DE_cur_to_pbest_1', 'levy', 'DE_best_1', 'DE_best_1', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'normal', 'uniform', 'DE_best_1', 'levy', 'DE_cur_1', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'uniform', 'uniform', 'DE_cur_to_best_1', 'normal', 'DE_best_1', 'DE_best_1', 'DE_rand_1']
+Статистика использования:
+  DE_best_1: 25 раз (25.0%)
+  uniform: 20 раз (20.0%)
+  levy: 12 раз (12.0%)
+  DE_cur_1: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 10 раз (10.0%)
+  DE_rand_1: 8 раз (8.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  normal: 6 раз (6.0%)
+
+--- Iteration 50 ---
+Best fitness: 12974771043.796896
+Improvements: 2/100
+FDC: 0.048, PD: 0.168
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_cur_to_pbest_1': 10, 'DE_best_1': 25, 'levy': 12, 'DE_rand_1': 8, 'uniform': 20, 'DE_cur_1': 11, 'DE_cur_to_best_1': 8, 'normal': 6}
+Pool distribution: {'balanced_exploration': 37, 'balanced_exploitation': 63}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 60:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'normal', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'levy', 'DE_best_1', 'levy', 'DE_best_1', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'levy', 'DE_best_1', 'DE_cur_to_best_1', 'DE_best_1', 'levy', 'uniform', 'normal', 'normal', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'normal', 'normal', 'DE_rand_1', 'DE_cur_to_pbest_1', 'uniform', 'DE_best_1', 'DE_rand_1', 'uniform', 'DE_best_1', 'DE_cur_1', 'uniform', 'normal', 'normal', 'uniform', 'normal']
+Статистика использования:
+  DE_best_1: 24 раз (24.0%)
+  normal: 20 раз (20.0%)
+  uniform: 16 раз (16.0%)
+  DE_cur_to_pbest_1: 10 раз (10.0%)
+  DE_cur_to_best_1: 9 раз (9.0%)
+  levy: 9 раз (9.0%)
+  DE_rand_1: 7 раз (7.0%)
+  DE_cur_1: 5 раз (5.0%)
+
+--- Iteration 60 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.130, PD: 0.169
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'uniform': 16, 'normal': 20, 'DE_cur_to_best_1': 9, 'DE_cur_to_pbest_1': 10, 'DE_best_1': 24, 'levy': 9, 'DE_rand_1': 7, 'DE_cur_1': 5}
+Pool distribution: {'balanced_exploitation': 69, 'balanced_exploration': 31}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 70:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'levy', 'normal', 'DE_best_1', 'levy', 'levy', 'levy', 'DE_cur_to_best_1', 'levy', 'DE_rand_1', 'DE_best_1', 'uniform', 'DE_rand_1', 'normal', 'DE_best_1', 'normal', 'normal', 'levy', 'DE_cur_to_best_1', 'uniform', 'uniform', 'normal', 'levy', 'uniform', 'uniform', 'DE_best_1', 'normal', 'levy', 'normal', 'uniform', 'DE_best_1', 'normal']
+Статистика использования:
+  uniform: 25 раз (25.0%)
+  normal: 24 раз (24.0%)
+  DE_best_1: 20 раз (20.0%)
+  levy: 16 раз (16.0%)
+  DE_cur_to_best_1: 6 раз (6.0%)
+  DE_rand_1: 4 раз (4.0%)
+  DE_cur_to_pbest_1: 3 раз (3.0%)
+  DE_cur_1: 2 раз (2.0%)
+
+--- Iteration 70 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.205, PD: 0.164
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'normal': 24, 'uniform': 25, 'DE_cur_to_pbest_1': 3, 'DE_best_1': 20, 'DE_cur_to_best_1': 6, 'levy': 16, 'DE_rand_1': 4, 'DE_cur_1': 2}
+Pool distribution: {'balanced_exploitation': 85, 'balanced_exploration': 15}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 80:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'levy', 'normal', 'uniform', 'normal', 'normal', 'normal', 'levy', 'levy', 'uniform', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'uniform', 'normal', 'DE_rand_1', 'DE_best_1', 'DE_best_1', 'DE_cur_1', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'uniform', 'DE_best_1', 'levy', 'DE_best_1', 'DE_rand_1', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'DE_best_1', 'uniform', 'normal', 'uniform', 'uniform', 'uniform', 'DE_best_1']
+Статистика использования:
+  DE_best_1: 26 раз (26.0%)
+  uniform: 18 раз (18.0%)
+  normal: 16 раз (16.0%)
+  levy: 14 раз (14.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_rand_1: 7 раз (7.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_cur_1: 4 раз (4.0%)
+
+--- Iteration 80 ---
+Best fitness: 12974771043.796896
+Improvements: 2/100
+FDC: 0.191, PD: 0.159
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_best_1': 26, 'levy': 14, 'normal': 16, 'uniform': 18, 'DE_rand_1': 7, 'DE_cur_1': 4, 'DE_cur_to_pbest_1': 7, 'DE_cur_to_best_1': 8}
+Pool distribution: {'balanced_exploitation': 74, 'balanced_exploration': 26}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 90:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'uniform', 'normal', 'normal', 'DE_cur_to_best_1', 'uniform', 'uniform', 'normal', 'uniform', 'normal', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'normal', 'levy', 'levy', 'uniform', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'levy', 'levy', 'DE_cur_1', 'DE_best_1', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'DE_rand_1', 'DE_cur_to_best_1', 'DE_best_1', 'uniform', 'levy', 'DE_best_1', 'levy', 'DE_rand_1', 'DE_cur_to_pbest_1']
+Статистика использования:
+  DE_best_1: 19 раз (19.0%)
+  levy: 19 раз (19.0%)
+  normal: 18 раз (18.0%)
+  uniform: 16 раз (16.0%)
+  DE_cur_to_best_1: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_rand_1: 5 раз (5.0%)
+  DE_cur_1: 4 раз (4.0%)
+
+--- Iteration 90 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.201, PD: 0.161
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_best_1': 19, 'DE_rand_1': 5, 'uniform': 16, 'normal': 18, 'DE_cur_to_best_1': 11, 'DE_cur_to_pbest_1': 8, 'levy': 19, 'DE_cur_1': 4}
+Pool distribution: {'balanced_exploitation': 72, 'balanced_exploration': 28}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 100:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_1', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'normal', 'DE_best_1', 'levy', 'uniform', 'levy', 'DE_rand_1', 'levy', 'levy', 'uniform', 'normal', 'levy', 'uniform', 'DE_cur_1', 'DE_cur_to_best_1', 'DE_rand_1', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'levy', 'uniform', 'levy', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'levy', 'DE_best_1', 'uniform', 'uniform', 'levy', 'levy', 'uniform', 'DE_cur_to_best_1', 'DE_cur_to_best_1']
+Статистика использования:
+  uniform: 24 раз (24.0%)
+  levy: 19 раз (19.0%)
+  DE_best_1: 18 раз (18.0%)
+  normal: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_1: 6 раз (6.0%)
+  DE_rand_1: 5 раз (5.0%)
+
+--- Iteration 100 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.187, PD: 0.159
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_cur_1': 6, 'DE_best_1': 18, 'levy': 19, 'DE_cur_to_best_1': 8, 'normal': 11, 'uniform': 24, 'DE_rand_1': 5, 'DE_cur_to_pbest_1': 9}
+Pool distribution: {'balanced_exploration': 28, 'balanced_exploitation': 72}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 110:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'DE_cur_to_best_1', 'levy', 'DE_best_1', 'uniform', 'DE_cur_to_pbest_1', 'levy', 'DE_rand_1', 'normal', 'normal', 'uniform', 'levy', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'DE_best_1', 'uniform', 'DE_best_1', 'normal', 'normal', 'DE_best_1', 'normal', 'normal', 'normal', 'levy', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'normal', 'levy', 'DE_cur_1', 'levy', 'levy', 'levy', 'normal', 'DE_cur_1', 'uniform', 'DE_best_1', 'DE_best_1', 'normal']
+Статистика использования:
+  normal: 24 раз (24.0%)
+  levy: 20 раз (20.0%)
+  uniform: 18 раз (18.0%)
+  DE_best_1: 16 раз (16.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_1: 3 раз (3.0%)
+  DE_rand_1: 2 раз (2.0%)
+
+--- Iteration 110 ---
+Best fitness: 12974771043.796896
+Improvements: 1/100
+FDC: 0.221, PD: 0.157
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'levy': 20, 'DE_cur_to_best_1': 8, 'DE_best_1': 16, 'uniform': 18, 'DE_cur_to_pbest_1': 9, 'DE_rand_1': 2, 'normal': 24, 'DE_cur_1': 3}
+Pool distribution: {'balanced_exploitation': 78, 'balanced_exploration': 22}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 120:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'uniform', 'uniform', 'DE_cur_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_rand_1', 'uniform', 'normal', 'levy', 'DE_best_1', 'normal', 'normal', 'levy', 'levy', 'DE_best_1', 'DE_best_1', 'normal', 'levy', 'levy', 'uniform', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'levy', 'normal', 'DE_cur_to_best_1', 'normal', 'uniform', 'uniform', 'DE_best_1', 'uniform', 'DE_rand_1', 'DE_best_1', 'normal', 'DE_best_1', 'levy']
+Статистика использования:
+  uniform: 24 раз (24.0%)
+  normal: 19 раз (19.0%)
+  DE_best_1: 17 раз (17.0%)
+  levy: 11 раз (11.0%)
+  DE_cur_to_best_1: 10 раз (10.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_rand_1: 6 раз (6.0%)
+  DE_cur_1: 4 раз (4.0%)
+
+--- Iteration 120 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.217, PD: 0.156
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_best_1': 17, 'uniform': 24, 'DE_cur_1': 4, 'DE_cur_to_pbest_1': 9, 'normal': 19, 'DE_rand_1': 6, 'levy': 11, 'DE_cur_to_best_1': 10}
+Pool distribution: {'balanced_exploitation': 71, 'balanced_exploration': 29}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 130:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'DE_cur_1', 'DE_cur_1', 'DE_best_1', 'levy', 'uniform', 'DE_cur_1', 'normal', 'DE_rand_1', 'normal', 'DE_cur_1', 'uniform', 'DE_cur_1', 'normal', 'DE_rand_1', 'DE_cur_1', 'DE_cur_to_best_1', 'normal', 'normal', 'uniform', 'uniform', 'uniform', 'DE_cur_to_pbest_1', 'levy', 'DE_cur_to_best_1', 'DE_rand_1', 'levy', 'DE_cur_to_pbest_1', 'DE_best_1', 'normal', 'DE_rand_1', 'levy', 'DE_cur_to_pbest_1', 'levy', 'normal', 'normal', 'levy', 'uniform', 'levy', 'levy']
+Статистика использования:
+  levy: 23 раз (23.0%)
+  uniform: 18 раз (18.0%)
+  DE_best_1: 17 раз (17.0%)
+  normal: 13 раз (13.0%)
+  DE_cur_1: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_rand_1: 5 раз (5.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+
+--- Iteration 130 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.216, PD: 0.152
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_best_1': 17, 'DE_cur_1': 11, 'levy': 23, 'uniform': 18, 'normal': 13, 'DE_rand_1': 5, 'DE_cur_to_best_1': 5, 'DE_cur_to_pbest_1': 8}
+Pool distribution: {'balanced_exploitation': 71, 'balanced_exploration': 29}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 140:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_1', 'uniform', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'normal', 'normal', 'levy', 'normal', 'levy', 'uniform', 'normal', 'uniform', 'uniform', 'levy', 'DE_rand_1', 'normal', 'levy', 'DE_best_1', 'uniform', 'normal', 'DE_best_1', 'DE_rand_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'normal', 'DE_best_1', 'DE_best_1', 'normal', 'uniform', 'DE_rand_1', 'DE_cur_1', 'levy', 'DE_cur_1', 'DE_cur_to_pbest_1', 'normal', 'normal', 'DE_best_1']
+Статистика использования:
+  normal: 25 раз (25.0%)
+  DE_best_1: 20 раз (20.0%)
+  uniform: 19 раз (19.0%)
+  levy: 16 раз (16.0%)
+  DE_cur_1: 7 раз (7.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+  DE_rand_1: 3 раз (3.0%)
+
+--- Iteration 140 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.246, PD: 0.150
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_cur_1': 7, 'uniform': 19, 'DE_cur_to_best_1': 4, 'DE_cur_to_pbest_1': 6, 'levy': 16, 'normal': 25, 'DE_rand_1': 3, 'DE_best_1': 20}
+Pool distribution: {'balanced_exploration': 20, 'balanced_exploitation': 80}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 150:
+Всего операторов: 100
+Первые 40 операторов: ['DE_cur_to_best_1', 'uniform', 'DE_best_1', 'levy', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_cur_to_best_1', 'DE_cur_1', 'DE_rand_1', 'normal', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'levy', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'levy', 'levy', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'uniform', 'levy', 'DE_cur_1', 'DE_best_1', 'uniform']
+Статистика использования:
+  uniform: 18 раз (18.0%)
+  DE_best_1: 18 раз (18.0%)
+  levy: 15 раз (15.0%)
+  normal: 15 раз (15.0%)
+  DE_cur_to_best_1: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 11 раз (11.0%)
+  DE_cur_1: 7 раз (7.0%)
+  DE_rand_1: 5 раз (5.0%)
+
+--- Iteration 150 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.267, PD: 0.149
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_cur_to_best_1': 11, 'uniform': 18, 'DE_best_1': 18, 'levy': 15, 'normal': 15, 'DE_cur_1': 7, 'DE_rand_1': 5, 'DE_cur_to_pbest_1': 11}
+Pool distribution: {'balanced_exploration': 34, 'balanced_exploitation': 66}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 160:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'normal', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'normal', 'normal', 'normal', 'levy', 'DE_cur_1', 'DE_best_1', 'levy', 'DE_cur_to_pbest_1', 'uniform', 'uniform', 'uniform', 'levy', 'uniform', 'normal', 'normal', 'normal', 'normal', 'DE_cur_1', 'levy', 'levy', 'normal', 'normal', 'normal', 'normal', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'DE_best_1', 'levy', 'DE_cur_to_pbest_1']
+Статистика использования:
+  normal: 21 раз (21.0%)
+  levy: 20 раз (20.0%)
+  DE_best_1: 17 раз (17.0%)
+  uniform: 16 раз (16.0%)
+  DE_cur_to_pbest_1: 13 раз (13.0%)
+  DE_cur_to_best_1: 7 раз (7.0%)
+  DE_cur_1: 5 раз (5.0%)
+  DE_rand_1: 1 раз (1.0%)
+
+--- Iteration 160 ---
+Best fitness: 12974771043.796896
+Improvements: 1/100
+FDC: 0.275, PD: 0.148
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_best_1': 17, 'normal': 21, 'DE_cur_to_pbest_1': 13, 'levy': 20, 'DE_cur_1': 5, 'uniform': 16, 'DE_cur_to_best_1': 7, 'DE_rand_1': 1}
+Pool distribution: {'balanced_exploitation': 74, 'balanced_exploration': 26}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 170:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'levy', 'DE_best_1', 'normal', 'uniform', 'uniform', 'uniform', 'levy', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_cur_1', 'normal', 'normal', 'DE_cur_to_pbest_1', 'DE_cur_to_pbest_1', 'normal', 'DE_best_1', 'uniform', 'DE_cur_1', 'levy', 'DE_best_1', 'DE_rand_1', 'DE_rand_1', 'DE_best_1', 'normal', 'uniform', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_best_1', 'DE_cur_1', 'DE_cur_to_best_1', 'normal', 'DE_rand_1', 'levy', 'DE_best_1', 'DE_best_1', 'uniform', 'levy', 'normal']
+Статистика использования:
+  normal: 24 раз (24.0%)
+  DE_best_1: 23 раз (23.0%)
+  levy: 18 раз (18.0%)
+  uniform: 12 раз (12.0%)
+  DE_rand_1: 7 раз (7.0%)
+  DE_cur_1: 6 раз (6.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+
+--- Iteration 170 ---
+Best fitness: 12974771043.796896
+Improvements: 1/100
+FDC: 0.337, PD: 0.147
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'uniform': 12, 'levy': 18, 'DE_best_1': 23, 'normal': 24, 'DE_cur_1': 6, 'DE_cur_to_pbest_1': 6, 'DE_rand_1': 7, 'DE_cur_to_best_1': 4}
+Pool distribution: {'balanced_exploitation': 77, 'balanced_exploration': 23}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 180:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'DE_best_1', 'levy', 'DE_best_1', 'uniform', 'DE_best_1', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1', 'uniform', 'normal', 'levy', 'levy', 'normal', 'normal', 'DE_cur_to_pbest_1', 'DE_cur_1', 'normal', 'DE_best_1', 'DE_cur_1', 'normal', 'normal', 'normal', 'DE_rand_1', 'uniform', 'levy', 'levy', 'DE_best_1', 'DE_rand_1', 'DE_best_1', 'DE_rand_1', 'levy', 'DE_cur_to_pbest_1', 'DE_rand_1', 'uniform', 'DE_cur_1', 'DE_best_1', 'DE_best_1']
+Статистика использования:
+  uniform: 22 раз (22.0%)
+  normal: 22 раз (22.0%)
+  DE_best_1: 20 раз (20.0%)
+  levy: 11 раз (11.0%)
+  DE_cur_to_pbest_1: 8 раз (8.0%)
+  DE_cur_1: 8 раз (8.0%)
+  DE_rand_1: 8 раз (8.0%)
+  DE_cur_to_best_1: 1 раз (1.0%)
+
+--- Iteration 180 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.352, PD: 0.146
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'levy': 11, 'DE_best_1': 20, 'uniform': 22, 'normal': 22, 'DE_cur_to_pbest_1': 8, 'DE_cur_1': 8, 'DE_rand_1': 8, 'DE_cur_to_best_1': 1}
+Pool distribution: {'balanced_exploitation': 75, 'balanced_exploration': 25}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 190:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'DE_best_1', 'DE_rand_1', 'uniform', 'uniform', 'normal', 'normal', 'normal', 'DE_best_1', 'levy', 'normal', 'DE_rand_1', 'normal', 'DE_best_1', 'normal', 'uniform', 'uniform', 'normal', 'normal', 'DE_best_1', 'levy', 'DE_best_1', 'uniform', 'DE_best_1', 'levy', 'uniform', 'DE_rand_1', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_cur_to_best_1', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'uniform', 'DE_rand_1', 'DE_best_1', 'normal', 'normal']
+Статистика использования:
+  normal: 23 раз (23.0%)
+  DE_best_1: 21 раз (21.0%)
+  uniform: 21 раз (21.0%)
+  levy: 18 раз (18.0%)
+  DE_rand_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 5 раз (5.0%)
+  DE_cur_to_pbest_1: 4 раз (4.0%)
+  DE_cur_1: 1 раз (1.0%)
+
+--- Iteration 190 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.341, PD: 0.141
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'normal': 23, 'DE_best_1': 21, 'DE_rand_1': 7, 'uniform': 21, 'levy': 18, 'DE_cur_to_pbest_1': 4, 'DE_cur_to_best_1': 5, 'DE_cur_1': 1}
+Pool distribution: {'balanced_exploitation': 83, 'balanced_exploration': 17}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 200:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'normal', 'uniform', 'levy', 'levy', 'levy', 'DE_rand_1', 'uniform', 'DE_cur_to_pbest_1', 'DE_rand_1', 'DE_best_1', 'normal', 'uniform', 'DE_cur_to_pbest_1', 'uniform', 'DE_cur_1', 'normal', 'levy', 'uniform', 'normal', 'uniform', 'normal', 'levy', 'uniform', 'levy', 'DE_rand_1', 'levy', 'levy', 'DE_cur_to_pbest_1', 'levy', 'normal', 'DE_cur_to_pbest_1', 'normal', 'levy', 'DE_best_1', 'DE_best_1', 'normal']
+Статистика использования:
+  uniform: 24 раз (24.0%)
+  levy: 20 раз (20.0%)
+  normal: 18 раз (18.0%)
+  DE_best_1: 15 раз (15.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_rand_1: 8 раз (8.0%)
+  DE_cur_1: 4 раз (4.0%)
+  DE_cur_to_best_1: 2 раз (2.0%)
+
+--- Iteration 200 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.328, PD: 0.142
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'normal': 18, 'DE_cur_to_pbest_1': 9, 'DE_best_1': 15, 'uniform': 24, 'levy': 20, 'DE_rand_1': 8, 'DE_cur_1': 4, 'DE_cur_to_best_1': 2}
+Pool distribution: {'balanced_exploitation': 77, 'balanced_exploration': 23}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 210:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'levy', 'levy', 'DE_best_1', 'uniform', 'DE_cur_1', 'uniform', 'uniform', 'levy', 'levy', 'DE_rand_1', 'DE_cur_1', 'uniform', 'normal', 'DE_best_1', 'DE_best_1', 'uniform', 'DE_cur_to_best_1', 'DE_best_1', 'normal', 'DE_cur_to_pbest_1', 'levy', 'uniform', 'levy', 'uniform', 'levy', 'levy', 'DE_best_1', 'levy', 'DE_best_1', 'normal', 'uniform', 'DE_best_1', 'uniform', 'normal', 'DE_rand_1', 'normal', 'uniform', 'DE_best_1', 'DE_cur_to_pbest_1']
+Статистика использования:
+  uniform: 26 раз (26.0%)
+  DE_best_1: 22 раз (22.0%)
+  levy: 17 раз (17.0%)
+  normal: 13 раз (13.0%)
+  DE_rand_1: 7 раз (7.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_cur_1: 6 раз (6.0%)
+  DE_cur_to_best_1: 2 раз (2.0%)
+
+--- Iteration 210 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.379, PD: 0.139
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'normal': 13, 'levy': 17, 'DE_best_1': 22, 'uniform': 26, 'DE_cur_1': 6, 'DE_rand_1': 7, 'DE_cur_to_best_1': 2, 'DE_cur_to_pbest_1': 7}
+Pool distribution: {'balanced_exploitation': 78, 'balanced_exploration': 22}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 220:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'DE_best_1', 'uniform', 'normal', 'DE_cur_to_best_1', 'DE_best_1', 'uniform', 'levy', 'uniform', 'DE_best_1', 'uniform', 'normal', 'uniform', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'uniform', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'uniform', 'levy', 'DE_cur_1', 'DE_best_1', 'normal', 'uniform', 'DE_best_1', 'levy', 'DE_best_1', 'uniform', 'normal', 'levy', 'normal', 'normal', 'DE_cur_to_pbest_1', 'DE_cur_to_best_1', 'DE_cur_to_best_1', 'normal', 'DE_rand_1', 'normal', 'DE_best_1']
+Статистика использования:
+  uniform: 21 раз (21.0%)
+  levy: 20 раз (20.0%)
+  DE_best_1: 19 раз (19.0%)
+  normal: 17 раз (17.0%)
+  DE_rand_1: 7 раз (7.0%)
+  DE_cur_to_best_1: 6 раз (6.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_cur_1: 4 раз (4.0%)
+
+--- Iteration 220 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.379, PD: 0.139
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'levy': 20, 'DE_best_1': 19, 'uniform': 21, 'normal': 17, 'DE_cur_to_best_1': 6, 'DE_cur_to_pbest_1': 6, 'DE_cur_1': 4, 'DE_rand_1': 7}
+Pool distribution: {'balanced_exploitation': 77, 'balanced_exploration': 23}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 230:
+Всего операторов: 100
+Первые 40 операторов: ['DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'levy', 'DE_best_1', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'uniform', 'DE_cur_1', 'normal', 'normal', 'DE_best_1', 'normal', 'DE_best_1', 'DE_best_1', 'levy', 'levy', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'DE_rand_1', 'DE_best_1', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_best_1', 'uniform', 'levy', 'normal', 'normal', 'DE_best_1', 'DE_rand_1', 'normal', 'uniform', 'uniform', 'levy', 'DE_best_1', 'normal']
+Статистика использования:
+  DE_best_1: 34 раз (34.0%)
+  uniform: 20 раз (20.0%)
+  levy: 15 раз (15.0%)
+  normal: 13 раз (13.0%)
+  DE_cur_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 4 раз (4.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+  DE_rand_1: 2 раз (2.0%)
+
+--- Iteration 230 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.418, PD: 0.139
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_best_1': 34, 'DE_cur_to_pbest_1': 4, 'normal': 13, 'levy': 15, 'uniform': 20, 'DE_cur_1': 8, 'DE_rand_1': 2, 'DE_cur_to_best_1': 4}
+Pool distribution: {'balanced_exploitation': 82, 'balanced_exploration': 18}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 240:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'normal', 'levy', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'DE_cur_to_pbest_1', 'DE_best_1', 'normal', 'normal', 'uniform', 'uniform', 'DE_rand_1', 'DE_best_1', 'levy', 'DE_cur_to_best_1', 'uniform', 'normal', 'DE_best_1', 'levy', 'DE_cur_1', 'levy', 'levy', 'normal', 'DE_rand_1', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'levy', 'normal', 'levy', 'DE_best_1', 'levy', 'levy', 'levy', 'DE_best_1', 'normal', 'DE_best_1', 'uniform', 'DE_best_1']
+Статистика использования:
+  levy: 23 раз (23.0%)
+  normal: 21 раз (21.0%)
+  DE_best_1: 21 раз (21.0%)
+  uniform: 15 раз (15.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_rand_1: 5 раз (5.0%)
+  DE_cur_1: 5 раз (5.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+
+--- Iteration 240 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.418, PD: 0.139
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'levy': 23, 'normal': 21, 'uniform': 15, 'DE_best_1': 21, 'DE_cur_to_best_1': 4, 'DE_cur_to_pbest_1': 6, 'DE_rand_1': 5, 'DE_cur_1': 5}
+Pool distribution: {'balanced_exploitation': 80, 'balanced_exploration': 20}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 250:
+Всего операторов: 100
+Первые 40 операторов: ['levy', 'DE_best_1', 'levy', 'levy', 'DE_best_1', 'levy', 'DE_rand_1', 'DE_cur_1', 'uniform', 'levy', 'DE_best_1', 'uniform', 'normal', 'DE_best_1', 'levy', 'DE_rand_1', 'normal', 'levy', 'normal', 'levy', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_best_1', 'levy', 'normal', 'normal', 'levy', 'DE_best_1', 'DE_cur_to_pbest_1', 'DE_cur_1', 'DE_best_1', 'DE_cur_to_best_1', 'uniform', 'uniform', 'DE_best_1', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'normal', 'levy']
+Статистика использования:
+  levy: 24 раз (24.0%)
+  DE_best_1: 22 раз (22.0%)
+  uniform: 15 раз (15.0%)
+  normal: 14 раз (14.0%)
+  DE_cur_to_best_1: 8 раз (8.0%)
+  DE_cur_to_pbest_1: 7 раз (7.0%)
+  DE_rand_1: 5 раз (5.0%)
+  DE_cur_1: 5 раз (5.0%)
+
+--- Iteration 250 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.415, PD: 0.139
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'levy': 24, 'DE_best_1': 22, 'DE_rand_1': 5, 'DE_cur_1': 5, 'uniform': 15, 'normal': 14, 'DE_cur_to_best_1': 8, 'DE_cur_to_pbest_1': 7}
+Pool distribution: {'balanced_exploitation': 75, 'balanced_exploration': 25}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 260:
+Всего операторов: 100
+Первые 40 операторов: ['uniform', 'DE_best_1', 'levy', 'levy', 'DE_best_1', 'DE_best_1', 'DE_best_1', 'uniform', 'uniform', 'levy', 'normal', 'normal', 'normal', 'uniform', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'uniform', 'uniform', 'levy', 'levy', 'normal', 'normal', 'DE_cur_to_pbest_1', 'normal', 'normal', 'normal', 'DE_cur_1', 'DE_best_1', 'uniform', 'levy', 'DE_best_1', 'DE_cur_to_pbest_1', 'levy', 'DE_best_1', 'normal', 'DE_rand_1', 'DE_rand_1', 'DE_best_1', 'DE_best_1']
+Статистика использования:
+  DE_best_1: 22 раз (22.0%)
+  levy: 21 раз (21.0%)
+  normal: 20 раз (20.0%)
+  uniform: 17 раз (17.0%)
+  DE_cur_to_pbest_1: 9 раз (9.0%)
+  DE_rand_1: 5 раз (5.0%)
+  DE_cur_1: 4 раз (4.0%)
+  DE_cur_to_best_1: 2 раз (2.0%)
+
+--- Iteration 260 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.458, PD: 0.141
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'uniform': 17, 'DE_best_1': 22, 'levy': 21, 'normal': 20, 'DE_cur_to_pbest_1': 9, 'DE_cur_1': 4, 'DE_rand_1': 5, 'DE_cur_to_best_1': 2}
+Pool distribution: {'balanced_exploitation': 80, 'balanced_exploration': 20}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 270:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'DE_rand_1', 'normal', 'DE_best_1', 'DE_cur_1', 'DE_best_1', 'uniform', 'levy', 'DE_cur_to_pbest_1', 'levy', 'DE_best_1', 'DE_best_1', 'uniform', 'DE_cur_to_best_1', 'levy', 'levy', 'levy', 'uniform', 'uniform', 'DE_best_1', 'levy', 'DE_best_1', 'DE_cur_1', 'uniform', 'normal', 'DE_best_1', 'normal', 'uniform', 'levy', 'DE_cur_1', 'uniform', 'uniform', 'DE_best_1', 'DE_best_1', 'normal', 'levy', 'levy', 'DE_rand_1', 'levy', 'DE_best_1']
+Статистика использования:
+  uniform: 21 раз (21.0%)
+  normal: 20 раз (20.0%)
+  DE_best_1: 19 раз (19.0%)
+  levy: 18 раз (18.0%)
+  DE_rand_1: 6 раз (6.0%)
+  DE_cur_1: 6 раз (6.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+
+--- Iteration 270 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.522, PD: 0.141
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'normal': 20, 'DE_rand_1': 6, 'DE_best_1': 19, 'DE_cur_1': 6, 'uniform': 21, 'levy': 18, 'DE_cur_to_pbest_1': 6, 'DE_cur_to_best_1': 4}
+Pool distribution: {'balanced_exploitation': 78, 'balanced_exploration': 22}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 280:
+Всего операторов: 100
+Первые 40 операторов: ['normal', 'DE_best_1', 'normal', 'DE_rand_1', 'DE_best_1', 'uniform', 'uniform', 'levy', 'DE_best_1', 'DE_rand_1', 'normal', 'levy', 'normal', 'DE_best_1', 'normal', 'DE_cur_to_pbest_1', 'DE_best_1', 'DE_best_1', 'uniform', 'uniform', 'uniform', 'DE_cur_to_best_1', 'normal', 'DE_rand_1', 'DE_cur_1', 'normal', 'levy', 'levy', 'uniform', 'uniform', 'levy', 'DE_best_1', 'normal', 'normal', 'DE_rand_1', 'DE_cur_to_best_1', 'normal', 'uniform', 'levy', 'DE_best_1']
+Статистика использования:
+  DE_best_1: 27 раз (27.0%)
+  normal: 25 раз (25.0%)
+  uniform: 23 раз (23.0%)
+  levy: 10 раз (10.0%)
+  DE_rand_1: 5 раз (5.0%)
+  DE_cur_to_best_1: 4 раз (4.0%)
+  DE_cur_to_pbest_1: 3 раз (3.0%)
+  DE_cur_1: 3 раз (3.0%)
+
+--- Iteration 280 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.543, PD: 0.140
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'normal': 25, 'DE_best_1': 27, 'DE_rand_1': 5, 'uniform': 23, 'levy': 10, 'DE_cur_to_pbest_1': 3, 'DE_cur_to_best_1': 4, 'DE_cur_1': 3}
+Pool distribution: {'balanced_exploitation': 85, 'balanced_exploration': 15}
+
+[ПОСЛЕДОВАТЕЛЬНОСТЬ] Итерация 290:
+Всего операторов: 100
+Первые 40 операторов: ['DE_rand_1', 'levy', 'DE_best_1', 'uniform', 'normal', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'DE_best_1', 'DE_cur_to_pbest_1', 'normal', 'normal', 'levy', 'levy', 'DE_cur_to_pbest_1', 'normal', 'DE_rand_1', 'DE_best_1', 'normal', 'uniform', 'DE_best_1', 'DE_cur_to_best_1', 'normal', 'DE_cur_to_best_1', 'levy', 'normal', 'DE_cur_to_pbest_1', 'uniform', 'levy', 'DE_best_1', 'uniform', 'DE_best_1', 'normal', 'levy', 'normal', 'normal', 'uniform', 'levy', 'levy', 'uniform']
+Статистика использования:
+  normal: 25 раз (25.0%)
+  levy: 21 раз (21.0%)
+  DE_best_1: 19 раз (19.0%)
+  uniform: 13 раз (13.0%)
+  DE_cur_to_best_1: 9 раз (9.0%)
+  DE_cur_to_pbest_1: 6 раз (6.0%)
+  DE_rand_1: 4 раз (4.0%)
+  DE_cur_1: 3 раз (3.0%)
+
+--- Iteration 290 ---
+Best fitness: 12974771043.796896
+Improvements: 0/100
+FDC: 0.546, PD: 0.139
+Distance to optimum: 207.627005
+Fitness difference from optimum: 12974770643.796896
+Operators used: {'DE_rand_1': 4, 'levy': 21, 'DE_best_1': 19, 'uniform': 13, 'normal': 25, 'DE_cur_to_best_1': 9, 'DE_cur_to_pbest_1': 6, 'DE_cur_1': 3}
+Pool distribution: {'balanced_exploration': 22, 'balanced_exploitation': 78}
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+Algorithm execution time: 12.52 seconds
+Total iterations: 299
+Final best fitness: 12974771043.796896
+Total FEs: 29900
+Population size: 100
+
+Optimum Comparison:
+  Global optimum fitness: 400.000000
+  Final fitness difference: 12974770643.796896
+  Final distance to optimum: 207.627005
+  Reached global optimum: False
+  Minimum distance to optimum: 207.627005
+
+LLH Usage Statistics:
+  DE_best_1: 5511 uses (18.4%)
+  levy: 5355 uses (17.9%)
+  normal: 5327 uses (17.8%)
+  uniform: 5320 uses (17.8%)
+  DE_cur_to_pbest_1: 2127 uses (7.1%)
+
+Pool Usage Statistics:
+  balanced_exploitation: 21513 uses (71.9%)
+  balanced_exploration: 7587 uses (25.4%)
+  exploration: 800 uses (2.7%)
+
+Performance Metrics:
+  FEs per second: 2388
+  Iterations per second: 23.88
+
+Convergence Analysis:
+  Initial fitness: 14923043222.414392
+  Final fitness: 12974771043.796896
+  Total improvement: 1948272178.617496
+
+Optimum Convergence Analysis:
+  Initial distance to optimum: 222.926608
+  Final distance to optimum: 207.627005
+  Distance improvement: 15.299603
