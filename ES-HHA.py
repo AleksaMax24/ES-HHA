@@ -5,6 +5,57 @@ from typing import List, Callable, Dict
 from collections import defaultdict
 import time
 
+#Абстрактный класс для операторов скрещивания
+class CrossoverOperator(ABC):
+
+    def __init__(self, name: str, Cr: float = 0.3):
+        self.name = name
+        self.Cr = Cr  # Вероятность скрещивания
+
+    @abstractmethod
+    def apply(self, target: np.ndarray, trial: np.ndarray) -> np.ndarray:
+        pass
+
+#Биномиальное скрещивание
+class BinomialCrossover(CrossoverOperator):
+
+    def __init__(self, Cr: float = 0.3):
+        super().__init__("binomial", Cr)
+
+    def apply(self, target: np.ndarray, trial: np.ndarray) -> np.ndarray:
+        D = len(target)
+        j_rand = np.random.randint(0, D)  # Гарантируем хотя бы один ген от trial
+        mask = np.random.rand(D) < self.Cr
+        mask[j_rand] = True  # Гарантируем изменение хотя бы одного гена
+
+        offspring = np.where(mask, trial, target)
+        return offspring
+
+#Экспоненциальное скрещивание
+class ExponentialCrossover(CrossoverOperator):
+
+    def __init__(self, Cr: float = 0.3):
+        super().__init__("exponential", Cr)
+
+    def apply(self, target: np.ndarray, trial: np.ndarray) -> np.ndarray:
+        D = len(target)
+        j_rand = np.random.randint(0, D)
+        j = j_rand
+        L = 0
+
+        # Определяем длину сегмента для копирования из trial
+        while np.random.rand() < self.Cr and L < D:
+            L += 1
+            j = (j + 1) % D
+
+        # Копируем сегмент из trial, остальное из target
+        offspring = target.copy()
+        for k in range(L):
+            idx = (j_rand + k) % D
+            offspring[idx] = trial[idx]
+
+        return offspring
+
 
 # Абстрактный базовый класс для всех LLH
 class LLHOperator(ABC):
@@ -26,8 +77,12 @@ class UniformLLH(LLHOperator):
     def apply(self, population: np.ndarray, best_solution: np.ndarray,
               current_index: int, **kwargs) -> np.ndarray:
         R = kwargs.get('R', 1.0)
-        dimensions = best_solution.shape[0]
-        return best_solution + R * np.random.uniform(-1, 1, dimensions)
+        # Адаптивный R: зависит от расстояния до оптимума
+        if 'distance_to_optimum' in kwargs and kwargs['distance_to_optimum'] > 100:
+            adaptive_R = kwargs['distance_to_optimum'] * 0.1  # 10% от расстояния
+        else:
+            adaptive_R = R
+        return best_solution + adaptive_R * np.random.uniform(-1, 1, dimensions)
 
 
 class NormalLLH(LLHOperator):
@@ -61,141 +116,191 @@ class LevyLLH(LLHOperator):
 
 
 class DEBest1LLH(LLHOperator):
-    def __init__(self, F: float = 0.8):
+    def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_best_1", F)
+        self.crossover = crossover if crossover else BinomialCrossover(Cr=0.3)
 
     def apply(self, population: np.ndarray, best_solution: np.ndarray,
               current_index: int, **kwargs) -> np.ndarray:
         n = len(population)
+        current_ind = population[current_index]
 
-        # Оптимизированный выбор индексов
+        # Выбор индексов
         indices = np.arange(n)
         mask = indices != current_index
         available_indices = indices[mask]
         r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
-        return best_solution + self.F * (population[r1] - population[r2])
+        # Мутация (best/1)
+        mutant = best_solution + self.F * (population[r1] - population[r2])
+
+        # Скрещивание с текущим индивидом
+        trial = self.crossover.apply(current_ind, mutant)
+
+        return trial
 
 
 # Конкретные классы операторов исследования
 class DERand1LLH(LLHOperator):
-    def __init__(self, F: float = 0.8):
+    def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_rand_1", F)
+        self.crossover = crossover if crossover else BinomialCrossover(Cr=0.3)
 
     def apply(self, population: np.ndarray, best_solution: np.ndarray,
               current_index: int, **kwargs) -> np.ndarray:
         n = len(population)
+        current_ind = population[current_index]
 
-        # Оптимизированный выбор индексов
+        # Выбор индексов для мутации
         indices = np.arange(n)
         mask = indices != current_index
         available_indices = indices[mask]
         r1, r2, r3 = np.random.choice(available_indices, 3, replace=False)
 
-        return population[r1] + self.F * (population[r2] - population[r3])
+        # Мутация
+        mutant = population[r1] + self.F * (population[r2] - population[r3])
+
+        # Скрещивание с целевым индивидом
+        trial = self.crossover.apply(current_ind, mutant)
+
+        return trial
 
 
 class DECurrent1LLH(LLHOperator):
-    def __init__(self, F: float = 0.8):
+    def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_cur_1", F)
+        self.crossover = crossover if crossover else BinomialCrossover(Cr=0.3)
 
     def apply(self, population: np.ndarray, best_solution: np.ndarray,
               current_index: int, **kwargs) -> np.ndarray:
         n = len(population)
         current_ind = population[current_index]
 
-        # Оптимизированный выбор индексов
+        # Выбор индексов
         indices = np.arange(n)
         mask = indices != current_index
         available_indices = indices[mask]
         r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
-        return current_ind + self.F * (population[r1] - population[r2])
+        # Мутация
+        mutant = current_ind + self.F * (population[r1] - population[r2])
+
+        # Скрещивание
+        trial = self.crossover.apply(current_ind, mutant)
+
+        return trial
 
 
 class DECurrentToBest1LLH(LLHOperator):
-    def __init__(self, F: float = 0.8):
+    def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_cur_to_best_1", F)
+        self.crossover = crossover if crossover else BinomialCrossover(Cr=0.3)
 
     def apply(self, population: np.ndarray, best_solution: np.ndarray,
               current_index: int, **kwargs) -> np.ndarray:
         n = len(population)
         current_ind = population[current_index]
 
-        # Оптимизированный выбор индексов
+        # Выбор индексов
         indices = np.arange(n)
         mask = indices != current_index
         available_indices = indices[mask]
         r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
-        return current_ind + self.F * (best_solution - current_ind) + self.F * (population[r1] - population[r2])
+        # Мутация (current-to-best)
+        mutant = current_ind + self.F * (best_solution - current_ind) + self.F * (population[r1] - population[r2])
+
+        # Скрещивание
+        trial = self.crossover.apply(current_ind, mutant)
+
+        return trial
 
 
 class DECurrentToPBest1LLH(LLHOperator):
-    def __init__(self, F: float = 0.8):
+    def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_cur_to_pbest_1", F)
+        self.crossover = crossover if crossover else BinomialCrossover(Cr=0.3)
 
     def apply(self, population: np.ndarray, best_solution: np.ndarray,
               current_index: int, **kwargs) -> np.ndarray:
         n = len(population)
         current_ind = population[current_index]
 
+        # Выбор pbest
         p = 0.2
         p_size = max(1, int(n * p))
         fitness = kwargs.get('fitness', None)
 
         if fitness is not None:
-            # Оптимизированный выбор pbest
             best_indices = np.argpartition(fitness, p_size)[:p_size]
             pbest = population[np.random.choice(best_indices)]
         else:
             pbest = best_solution
 
-        # Оптимизированный выбор индексов
+        # Выбор индексов для дифференциального вектора
         indices = np.arange(n)
         mask = indices != current_index
         available_indices = indices[mask]
         r1, r2 = np.random.choice(available_indices, 2, replace=False)
 
-        return current_ind + self.F * (pbest - current_ind) + self.F * (population[r1] - population[r2])
+        # Мутация (current-to-pbest)
+        mutant = current_ind + self.F * (pbest - current_ind) + self.F * (population[r1] - population[r2])
+
+        # Скрещивание
+        trial = self.crossover.apply(current_ind, mutant)
+
+        return trial
 
 
 # Класс для управления пулами эвристик
 class LLHPoolManager:
-    def __init__(self, exploitation_Fs: Dict[str, float] = None, exploration_Fs: Dict[str, float] = None):
+    def __init__(self, exploitation_Fs: Dict[str, float] = None,
+                 exploration_Fs: Dict[str, float] = None,
+                 crossover_config: Dict[str, Dict] = None):
+
+        self.crossover_config = crossover_config or {'binomial': {'Cr': 0.3}}
+
+        # Инициализируем пулы напрямую
         self.exploitation_pool = self.initialize_exploitation_pool(exploitation_Fs or {})
         self.exploration_pool = self.initialize_exploration_pool(exploration_Fs or {})
 
+    def _create_crossover(self, crossover_type: str) -> CrossoverOperator:
+        config = self.crossover_config.get(crossover_type, {'Cr': 0.3})
+
+        if crossover_type == 'exponential':
+            return ExponentialCrossover(**config)
+        else:  # binomial по умолчанию
+            return BinomialCrossover(**config)
+
     def initialize_exploitation_pool(self, Fs: Dict[str, float]) -> List[LLHOperator]:
+        crossover = self._create_crossover('binomial')
+
         pool = [
             UniformLLH(F=Fs.get('uniform', 0.8)),
             NormalLLH(F=Fs.get('normal', 0.8)),
             LevyLLH(F=Fs.get('levy', 0.8)),
-            DEBest1LLH(F=Fs.get('DE_best_1', 0.8))
+            DEBest1LLH(F=Fs.get('DE_best_1', 0.8), crossover=crossover)
         ]
         return pool
 
     def initialize_exploration_pool(self, Fs: Dict[str, float]) -> List[LLHOperator]:
+        crossover = self._create_crossover('binomial')
+
         pool = [
-            DERand1LLH(F=Fs.get('DE_rand_1', 0.8)),
-            DECurrent1LLH(F=Fs.get('DE_cur_1', 0.8)),
-            DECurrentToBest1LLH(F=Fs.get('DE_cur_to_best_1', 0.8)),
-            DECurrentToPBest1LLH(F=Fs.get('DE_cur_to_pbest_1', 0.8))
+            DERand1LLH(F=Fs.get('DE_rand_1', 0.8), crossover=crossover),
+            DECurrent1LLH(F=Fs.get('DE_cur_1', 0.8), crossover=crossover),
+            DECurrentToBest1LLH(F=Fs.get('DE_cur_to_best_1', 0.8), crossover=crossover),
+            DECurrentToPBest1LLH(F=Fs.get('DE_cur_to_pbest_1', 0.8), crossover=crossover)
         ]
         return pool
-
-    def get_exploitation_pool(self) -> List[LLHOperator]:
-        return self.exploitation_pool
-
-    def get_exploration_pool(self) -> List[LLHOperator]:
-        return self.exploration_pool
 
 
 # Основной класс ES-HHA
 class ES_HHA:
-    def __init__(self, objective_function: Callable, population_size=3000, dimensions=30,  # Увеличена популяция до 3000
+    def __init__(self, objective_function: Callable, population_size=3000, dimensions=30,
                  max_FEs=30000, w1=0.5, R=1.0,
                  exploitation_Fs: Dict[str, float] = None, exploration_Fs: Dict[str, float] = None,
+                 crossover_config: Dict[str, Dict] = None,  # ← НОВЫЙ ПАРАМЕТР
                  verbose=True, detailed_log=False, global_optimum=None,
                  batch_size=100):  # Добавлен batch_size для оптимизации вычислений
 
@@ -219,9 +324,13 @@ class ES_HHA:
         self.distance_to_optimum_history = []
         self.optimum_comparison_history = []
 
-        self.llh_manager = LLHPoolManager(exploitation_Fs, exploration_Fs)
-        self.exploitation_pool = self.llh_manager.get_exploitation_pool()
-        self.exploration_pool = self.llh_manager.get_exploration_pool()
+        self.llh_manager = LLHPoolManager(
+            exploitation_Fs=exploitation_Fs,
+            exploration_Fs=exploration_Fs,
+            crossover_config=crossover_config  # ← передаём настройки
+        )
+        self.exploitation_pool = self.llh_manager.exploitation_pool
+        self.exploration_pool = self.llh_manager.exploration_pool
 
     def initialize_population(self, lb, ub):
         population = np.random.uniform(lb, ub, (self.population_size, self.dimensions))
@@ -243,7 +352,13 @@ class ES_HHA:
         return np.array([self.objective_function(ind) for ind in population])
 
     def calculate_FDC(self, population, fitness, best_solution):
-        differences = population - best_solution
+
+        if self.global_optimum is not None:
+            optimum = self.global_optimum  # ← используем глобальный оптимум если известен
+        else:
+            optimum = best_solution  # ← иначе текущий лучший
+
+        differences = population - optimum  # ← ИСПРАВЛЕНО
         distances = np.sqrt(np.einsum('ij,ij->i', differences, differences))
 
         f_mean, d_mean = np.mean(fitness), np.mean(distances)
@@ -371,31 +486,31 @@ class ES_HHA:
             return self._adaptive_constraint(x, lb, ub)
         else:
             return np.clip(x, lb, ub)
-    
+
     def _sigmoid_constraint(self, x, lb, ub, steepness=8.0):
         center = (lb + ub) / 2
         scale = (ub - lb) / 2
         scale = np.maximum(scale, 1e-10)
-        
+
         normalized = (x - center) / scale * (steepness / 2)
         sigmoid = 1 / (1 + np.exp(-normalized))
         return lb + sigmoid * (ub - lb)
-    
+
     def _tanh_constraint(self, x, lb, ub, steepness=3.0):
         center = (lb + ub) / 2
         scale = (ub - lb) / 2
         scale = np.maximum(scale, 1e-10)
-        
+
         normalized = (x - center) / scale * steepness
         tanh_val = np.tanh(normalized)
         return center + tanh_val * scale
-    
+
     def _adaptive_constraint(self, x, lb, ub, threshold=0.2):
         relative_violation = np.maximum(
             np.abs(x - lb) / (ub - lb + 1e-10),
             np.abs(x - ub) / (ub - lb + 1e-10)
         )
-        
+
         if np.max(relative_violation) < threshold:
             return self._sigmoid_constraint(x, lb, ub, steepness=6.0)
         else:
@@ -518,7 +633,7 @@ class ES_HHA:
             print(f"  Minimum distance to optimum: {min_distance:.6f}")
 
         print(f"\nLLH Usage Statistics:")
-        for llh, count in sorted(self.llh_usage_count.items(), key=lambda x: x[1], reverse=True)[:5]: 
+        for llh, count in sorted(self.llh_usage_count.items(), key=lambda x: x[1], reverse=True)[:5]:
             percentage = (count / total_llh_uses) * 100
             print(f"  {llh}: {count} uses ({percentage:.1f}%)")
 
@@ -646,6 +761,51 @@ def cec2014_shifted_rastrigin(x):
 if __name__ == "__main__":
     dimensions = 30
 
+    # Настройки скрещивания
+    crossover_config = {
+        'binomial': {'Cr': 0.3},
+        'exponential': {'Cr': 0.2}
+    }
+
+    exploitation_Fs = {
+        'uniform': 0.5, 'normal': 0.6, 'levy': 0.7, 'DE_best_1': 0.8
+    }
+
+    exploration_Fs = {
+        'DE_rand_1': 0.9, 'DE_cur_1': 0.8, 'DE_cur_to_best_1': 0.7, 'DE_cur_to_pbest_1': 0.6
+    }
+
+    print("=== Testing ES-HHA with DE Crossover ===")
+
+    # Тест с биномиальным скрещиванием
+    print("\n" + "=" * 50)
+    print("Binomial Crossover (Cr=0.3)")
+    print("=" * 50)
+
+    es_hha_binomial = ES_HHA(
+        objective_function=sphere_function,
+        population_size=100,
+        dimensions=dimensions,
+        max_FEs=10000,
+        exploitation_Fs=exploitation_Fs,
+        exploration_Fs=exploration_Fs,
+        crossover_config=crossover_config,  # ← передаём конфиг
+        verbose=True,
+        detailed_log=False,
+        global_optimum=np.zeros(dimensions),
+        batch_size=100
+    )
+
+    lb = np.full(dimensions, -100)
+    ub = np.full(dimensions, 100)
+    results = es_hha_binomial.optimize(lb, ub)
+
+    # Проверяем, что скрещивание работает
+    print("\nИспользованные операторы со скрещиванием:")
+    for llh, count in sorted(results['llh_usage'].items(), key=lambda x: x[1], reverse=True):
+        print(f"  {llh}: {count}")
+    '''dimensions = 30
+
     exploitation_Fs = {
         'uniform': 0.5, 'normal': 0.6, 'levy': 0.7, 'DE_best_1': 0.8
     }
@@ -664,15 +824,15 @@ if __name__ == "__main__":
 
     es_hha_sphere = ES_HHA(
         objective_function=sphere_function,
-        population_size=3000, 
+        population_size=3000,
         dimensions=dimensions,
-        max_FEs=30000, 
+        max_FEs=30000,
         exploitation_Fs=exploitation_Fs,
         exploration_Fs=exploration_Fs,
         verbose=True,
         detailed_log=False,
         global_optimum=sphere_optimum,
-        batch_size=500  
+        batch_size=500
     )
     lb = np.full(dimensions, -100)
     ub = np.full(dimensions, 100)
@@ -686,7 +846,7 @@ if __name__ == "__main__":
 
     es_hha_cec = ES_HHA(
         objective_function=cec2014_shifted_rotated_rosenbrock,
-        population_size=3000, 
+        population_size=3000,
         dimensions=dimensions,
         max_FEs=30000,
         exploitation_Fs=exploitation_Fs,
@@ -698,5 +858,4 @@ if __name__ == "__main__":
     )
     lb = np.full(dimensions, -100)
     ub = np.full(dimensions, 100)
-    results_cec = es_hha_cec.optimize(lb, ub)
-
+    results_cec = es_hha_cec.optimize(lb, ub)'''
