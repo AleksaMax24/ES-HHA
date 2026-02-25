@@ -774,6 +774,7 @@ class ES_HHA:
         self.distance_to_optimum_history = []
         self.optimum_comparison_history = []
         self.improvements_history = []
+        self.operator_success_history = []
 
         self.llh_manager = LLHPoolManager(config)
         self.exploitation_pool = self.llh_manager.exploitation_pool
@@ -1018,6 +1019,17 @@ class ES_HHA:
         improvements_count = np.sum(improvement_mask)
         self.improvements_history.append(improvements_count)
 
+         # сохраняем информацию о том, какие операторы дали улучшения
+        operator_success = defaultdict(int)
+        for j, (op_info, improved) in enumerate(zip(iteration_llh_info, improvement_mask)):
+            if improved:
+                operator_success[op_info['operator']] += 1
+
+        # сохраняем в историю 
+        if not hasattr(self, 'operator_success_history'):
+            self.operator_success_history = []
+        self.operator_success_history.append(dict(operator_success))                         
+
         final_population = np.where(improvement_mask[:, None], new_population, population)
         final_fitness = np.where(improvement_mask, new_fitness, fitness)
 
@@ -1122,6 +1134,179 @@ class ES_HHA:
         print(f"  Final fitness: {final_fitness:.6e}")
         print(f"  Total improvement: {improvement:.6e}")
 
+
+        def calculate_improvement_rate(self): # скорость улучшения на разных этапах
+        if len(self.best_fitness_history) < 2:
+            return None
+
+        rates = []
+        # 5 этапов для анализа
+        n_stages = 5
+        stage_size = len(self.best_fitness_history) // n_stages
+
+        for stage in range(n_stages):
+            start_idx = stage * stage_size
+            end_idx = min((stage + 1) * stage_size, len(self.best_fitness_history) - 1)
+
+            if end_idx > start_idx:
+                start_fitness = self.best_fitness_history[start_idx]
+                end_fitness = self.best_fitness_history[end_idx]
+                stage_improvement = start_fitness - end_fitness
+                rate = stage_improvement / stage_size
+                rates.append({
+                    'stage': stage + 1,
+                    'iterations': f"{start_idx}-{end_idx}",
+                    'improvement': stage_improvement,
+                    'rate_per_iter': rate
+                })
+
+        return rates
+
+    def plot_ascii_convergence(self, width=50):
+        # график сходимости
+        if len(self.best_fitness_history) < 2:
+            return "Недостаточно данных для графика"
+
+        max_fitness = max(self.best_fitness_history)
+        min_fitness = min(self.best_fitness_history)
+        range_fitness = max_fitness - min_fitness
+
+        if range_fitness == 0:
+            return "Все значения одинаковы"
+
+        step = max(1, len(self.best_fitness_history) // 20)
+        indices = range(0, len(self.best_fitness_history), step)
+
+        graph = ["\n ASCII-график сходимости (fitness по итерациям):"]
+        graph.append("   Fitness")
+        graph.append("    ↑")
+
+        for i, idx in enumerate(indices):
+            fitness = self.best_fitness_history[idx]
+            norm_pos = 1 - (fitness - min_fitness) / range_fitness
+            bar_length = int(norm_pos * width)
+
+            if i % 4 == 0:
+                graph.append(f"{idx:4d} | {'█' * bar_length} {fitness:.2e}")
+            else:
+                graph.append(f"     | {'█' * bar_length}")
+
+        graph.append(f"     +{'─' * width}→ Итерации")
+        graph.append(f"     min:{min_fitness:.2e}  max:{max_fitness:.2e}")
+
+        return '\n'.join(graph)
+
+    def print_improvement_analysis(self):
+        # вывод анализв скорости улучшения
+        print("\n" + "=" * 60)
+        print(" АНАЛИЗ СКОРОСТИ УЛУЧШЕНИЯ")
+        print("=" * 60)
+
+        # общая статистика
+        initial = self.best_fitness_history[0]
+        final = self.best_fitness_history[-1]
+        total_improvement = initial - final
+        total_iterations = len(self.best_fitness_history)
+
+        print(f"\n Общая статистика:")
+        print(f"   Начальный fitness: {initial:.6e}")
+        print(f"   Конечный fitness:  {final:.6e}")
+        print(f"   Общее улучшение:   {total_improvement:.6e}")
+        print(f"   Всего итераций:    {total_iterations}")
+        print(f"   Средняя скорость:   {total_improvement / total_iterations:.6e} за итерацию")
+
+        # скорость по этапам
+        rates = self.calculate_improvement_rate()
+        if rates:
+            print(f"\n Скорость улучшения по этапам:")
+            print(f"   {'Этап':<6} {'Итерации':<12} {'Улучшение':<15} {'Скорость/итер':<15} {'Тренд':<10}")
+            print(f"   {'─' * 60}")
+
+            prev_rate = None
+            for r in rates:
+                if prev_rate is not None:
+                    if r['rate_per_iter'] > prev_rate * 1.2:
+                        trend = " ускоряется"
+                    elif r['rate_per_iter'] < prev_rate * 0.8:
+                        trend = " замедляется"
+                    else:
+                        trend = " стабильно"
+                else:
+                    trend = "начальный"
+
+                print(
+                    f"   {r['stage']:<6} {r['iterations']:<12} {r['improvement']:<15.2e} {r['rate_per_iter']:<15.2e} {trend}")
+                prev_rate = r['rate_per_iter']
+
+        # моменты наибольшего улучшения
+        improvements = []
+        for i in range(1, len(self.best_fitness_history)):
+            imp = self.best_fitness_history[i - 1] - self.best_fitness_history[i]
+            if imp > 0:
+                improvements.append((i, imp))
+
+        improvements.sort(key=lambda x: x[1], reverse=True)
+
+        print(f"\n⚡ Топ-5 самых эффективных итераций:")
+        for i, (iter_num, imp) in enumerate(improvements[:5]):
+            print(f"   {i + 1}. Итерация {iter_num}: улучшение {imp:.6e}")
+
+        # ASCII-график
+        print(self.plot_ascii_convergence())
+
+        # прогноз достижения оптимума
+        if final > 0:
+            recent_rate = rates[-1]['rate_per_iter'] if rates else total_improvement / total_iterations
+            if recent_rate > 0:
+                iterations_to_opt = final / recent_rate
+                print(f"\n Прогноз:")
+                print(f"   При текущей скорости ({recent_rate:.2e}/итер)")
+                print(f"   до оптимума (0) осталось ≈ {iterations_to_opt:.0f} итераций")
+                print(f"   или ≈ {iterations_to_opt * self.config.population_size:.0f} FEs")
+        else:
+            print(f"\n Оптимум достигнут!")
+
+        # эффективность операторов
+        print(f"\n Эффективность операторов на разных этапах:")
+        if len(self.improvements_history) >= total_iterations:
+            pass
+
+    def print_enhanced_statistics(self, start_time, end_time):
+        self.print_final_statistics(start_time, end_time)
+        self.print_improvement_analysis()
+
+    def export_convergence_data(self, filename: str = None):
+        data = {
+            'iterations': list(range(len(self.best_fitness_history))),
+            'fitness': [float(f) for f in self.best_fitness_history],
+            'fdc': [float(f) for f in self.fdc_history],
+            'pd': [float(p) for p in self.pd_history],
+            'improvements': [int(i) for i in self.improvements_history],
+            'operator_usage': dict(self.llh_usage_count),
+            'pool_usage': dict(self.pool_usage_count),
+            'config': asdict(self.config)
+        }
+
+        data['improvement_rates'] = []
+        for i in range(1, len(self.best_fitness_history)):
+            rate = self.best_fitness_history[i - 1] - self.best_fitness_history[i]
+            data['improvement_rates'].append(float(rate))
+
+        if hasattr(self, 'operator_success_history') and self.operator_success_history:
+            data['operator_success'] = self.operator_success_history
+
+        if filename is None:
+            filename = f"convergence_data_{self.config.test_function_name}_{time.strftime('%Y%m%d_%H%M%S')}.json"
+
+        os.makedirs("convergence_data", exist_ok=True)
+        filepath = os.path.join("convergence_data", filename)
+
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        print(f"\n сходимости сохранены в: {filepath}")
+        return data
+        
     def optimize(self):
         start_time = time.time()
 
@@ -1166,7 +1351,8 @@ class ES_HHA:
         end_time = time.time()
 
         if self.config.verbose:
-            self.print_final_statistics(start_time, end_time)
+            # self.print_final_statistics(start_time, end_time)
+            self.print_enhanced_statistics(start_time, end_time)
 
         results = {
             'best_solution': best_solution,
