@@ -139,6 +139,55 @@ class DEBest1LLH(LLHOperator):
 
 
 # Исследующие операторы
+class UniformCurrentLLH(LLHOperator):
+
+    def __init__(self, F: float = 0.8):
+        super().__init__("uniform_current", F)  # другое имя для отличия
+
+    def apply(self, population: np.ndarray, best_solution: np.ndarray,
+              current_index: int, **kwargs) -> np.ndarray:
+        R = kwargs.get('R', 1.0)
+        current_solution = population[current_index].copy()
+        dim = current_solution.shape[0]
+
+        return current_solution + R * np.random.uniform(-1, 1, dim)
+
+
+class NormalCurrentLLH(LLHOperator):
+
+    def __init__(self, F: float = 0.8):
+        super().__init__("normal_current", F)  # другое имя для отличия
+
+    def apply(self, population: np.ndarray, best_solution: np.ndarray,
+              current_index: int, **kwargs) -> np.ndarray:
+        R = kwargs.get('R', 1.0)
+        current_solution = population[current_index].copy()
+        dim = current_solution.shape[0]
+
+        return current_solution + R * np.random.normal(0, 1, dim)
+
+
+class LevyCurrentLLH(LLHOperator):
+
+    def __init__(self, F: float = 0.8):
+        super().__init__("levy_current", F)  # другое имя для отличия
+
+    def apply(self, population: np.ndarray, best_solution: np.ndarray,
+              current_index: int, **kwargs) -> np.ndarray:
+        R = kwargs.get('R', 1.0)
+        current_solution = population[current_index].copy()
+        dim = current_solution.shape[0]
+        beta = 1.5
+
+        sigma = (math.gamma(1 + beta) * math.sin(math.pi * beta / 2) /
+                 (beta * math.gamma((1 + beta) / 2) * 2 ** ((beta - 1) / 2))) ** (1 / beta)
+
+        u = np.random.normal(0, sigma, dim)
+        v = np.random.normal(0, 1, dim)
+        step = u / (np.abs(v) ** (1 / beta))
+
+        return current_solution + R * step
+
 class DERand1LLH(LLHOperator):
 
     def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
@@ -269,6 +318,9 @@ class LLHPoolManager:
         Fs = self.config.exploration_Fs
 
         return [
+            UniformCurrentLLH(F=Fs.get('uniform_current', self.config.F_exploration)),
+            NormalCurrentLLH(F=Fs.get('normal_current', self.config.F_exploration)),
+            LevyCurrentLLH(F=Fs.get('levy_current', self.config.F_exploration)),
             DERand1LLH(F=Fs.get('DE_rand_1', self.config.F_exploration), crossover=crossover),
             DECurrent1LLH(F=Fs.get('DE_cur_1', self.config.F_exploration), crossover=crossover),
             DECurrentToBest1LLH(F=Fs.get('DE_cur_to_best_1', self.config.F_exploration), crossover=crossover),
@@ -499,6 +551,7 @@ class ES_HHA_Config:
 
     global_optimum: Optional[np.ndarray] = None
     test_function_name: str = "unknown"
+    exploration_weights: Optional[Dict[str, float]] = None
 
     def __post_init__(self):
         if self.exploitation_Fs is None:
@@ -511,6 +564,9 @@ class ES_HHA_Config:
 
         if self.exploration_Fs is None:
             self.exploration_Fs = {
+                'uniform_current': self.F_exploration,
+                'normal_current': self.F_exploration,
+                'levy_current': self.F_exploration,
                 'DE_rand_1': self.F_exploration,
                 'DE_cur_1': self.F_exploration,
                 'DE_cur_to_best_1': self.F_exploration,
@@ -522,6 +578,19 @@ class ES_HHA_Config:
                 'binomial': {'Cr': self.Cr},
                 'exponential': {'Cr': self.Cr}
             }
+        if self.exploration_weights is None:
+            self.exploration_weights = {
+                'uniform_current': 0.25 / 3,  # ~8.33%
+                'normal_current': 0.25 / 3,  # ~8.33%
+                'levy_current': 0.25 / 3,  # ~8.33%
+
+                'DE_rand_1': 0.75 / 4,  # ~18.75%
+                'DE_cur_1': 0.75 / 4,  # ~18.75%
+                'DE_cur_to_best_1': 0.75 / 4,  # ~18.75%
+                'DE_cur_to_pbest_1': 0.75 / 4  # ~18.75%
+            }
+
+
 
     def update_from_chromosome(self, chromosome: ParameterChromosome):
         self.w1 = chromosome.w1
@@ -934,13 +1003,32 @@ class ES_HHA:
             selection_info['case'] = 'd'
             selection_info['pool_type'] = pool_type
 
-        selected_operator = np.random.choice(pool)
+        selected_operator = self._select_weighted_operator(pool)
 
         self.llh_usage_count[selected_operator.name] += 1
         self.pool_usage_count[pool_type] += 1
 
         return selected_operator, selection_info
 
+    def _select_weighted_operator(self, pool: List[LLHOperator]) -> LLHOperator:
+
+        if hasattr(self.config, 'exploration_weights') and self.config.exploration_weights is not None:
+            uses_exploration_weights = any(
+                op.name in self.config.exploration_weights for op in pool
+            )
+
+            if uses_exploration_weights:
+                weights = []
+                for op in pool:
+                    if op.name in self.config.exploration_weights:
+                        weights.append(self.config.exploration_weights[op.name])
+                    else:
+                        weights.append(1.0)
+
+                weights = np.array(weights) / np.sum(weights)
+                return np.random.choice(pool, p=weights)
+
+        return np.random.choice(pool)
     def apply_LLH(self, operator: LLHOperator, population: np.ndarray,
                   best_solution: np.ndarray, current_index: int,
                   fitness: np.ndarray = None) -> np.ndarray:
@@ -1019,16 +1107,16 @@ class ES_HHA:
         improvements_count = np.sum(improvement_mask)
         self.improvements_history.append(improvements_count)
 
-         # сохраняем информацию о том, какие операторы дали улучшения
+        # Сохраняем информацию о том, какие операторы дали улучшения
         operator_success = defaultdict(int)
         for j, (op_info, improved) in enumerate(zip(iteration_llh_info, improvement_mask)):
             if improved:
                 operator_success[op_info['operator']] += 1
 
-        # сохраняем в историю 
+        # Сохраняем в историю (создаем атрибут, если его нет)
         if not hasattr(self, 'operator_success_history'):
             self.operator_success_history = []
-        self.operator_success_history.append(dict(operator_success))                         
+        self.operator_success_history.append(dict(operator_success))
 
         final_population = np.where(improvement_mask[:, None], new_population, population)
         final_fitness = np.where(improvement_mask, new_fitness, fitness)
@@ -1135,7 +1223,7 @@ class ES_HHA:
         print(f"  Total improvement: {improvement:.6e}")
 
 
-        def calculate_improvement_rate(self): # скорость улучшения на разных этапах
+    def calculate_improvement_rate(self): # скорость улучшения на разных этапах
         if len(self.best_fitness_history) < 2:
             return None
 
@@ -1177,7 +1265,7 @@ class ES_HHA:
         step = max(1, len(self.best_fitness_history) // 20)
         indices = range(0, len(self.best_fitness_history), step)
 
-        graph = ["\n ASCII-график сходимости (fitness по итерациям):"]
+        graph = ["\n📊 ASCII-график сходимости (fitness по итерациям):"]
         graph.append("   Fitness")
         graph.append("    ↑")
 
@@ -1199,7 +1287,7 @@ class ES_HHA:
     def print_improvement_analysis(self):
         # вывод анализв скорости улучшения
         print("\n" + "=" * 60)
-        print(" АНАЛИЗ СКОРОСТИ УЛУЧШЕНИЯ")
+        print("📈 АНАЛИЗ СКОРОСТИ УЛУЧШЕНИЯ")
         print("=" * 60)
 
         # общая статистика
@@ -1208,7 +1296,7 @@ class ES_HHA:
         total_improvement = initial - final
         total_iterations = len(self.best_fitness_history)
 
-        print(f"\n Общая статистика:")
+        print(f"\n📊 Общая статистика:")
         print(f"   Начальный fitness: {initial:.6e}")
         print(f"   Конечный fitness:  {final:.6e}")
         print(f"   Общее улучшение:   {total_improvement:.6e}")
@@ -1218,7 +1306,7 @@ class ES_HHA:
         # скорость по этапам
         rates = self.calculate_improvement_rate()
         if rates:
-            print(f"\n Скорость улучшения по этапам:")
+            print(f"\n📈 Скорость улучшения по этапам:")
             print(f"   {'Этап':<6} {'Итерации':<12} {'Улучшение':<15} {'Скорость/итер':<15} {'Тренд':<10}")
             print(f"   {'─' * 60}")
 
@@ -1264,11 +1352,13 @@ class ES_HHA:
                 print(f"   до оптимума (0) осталось ≈ {iterations_to_opt:.0f} итераций")
                 print(f"   или ≈ {iterations_to_opt * self.config.population_size:.0f} FEs")
         else:
-            print(f"\n Оптимум достигнут!")
+            print(f"\n✨ Оптимум достигнут!")
 
         # эффективность операторов
-        print(f"\n Эффективность операторов на разных этапах:")
+        print(f"\n🎯 Эффективность операторов на разных этапах:")
         if len(self.improvements_history) >= total_iterations:
+            # Связываем операторов с улучшениями
+            # (это потребует дополнительного сбора данных в create_new_generation)
             pass
 
     def print_enhanced_statistics(self, start_time, end_time):
@@ -1306,7 +1396,6 @@ class ES_HHA:
 
         print(f"\n сходимости сохранены в: {filepath}")
         return data
-        
     def optimize(self):
         start_time = time.time()
 
@@ -1577,7 +1666,7 @@ if __name__ == "__main__":
     print("ES-HHA: Evolutionary Status Guided Hyper-Heuristic Algorithm")
     print("=" * 60)
 
-    mode = "normal"  
+    mode = "normal"
 
     if mode == "evolution":
         results, best_chromosome = run_with_parameter_evolution()
@@ -1653,6 +1742,7 @@ if __name__ == "__main__":
             test_function_name=TEST_FUNCTION
         )
 
+
         if MULTIPLE_RUNS:
             stats, all_results = run_multiple_experiments(config, n_runs=N_RUNS)
         else:
@@ -1676,4 +1766,3 @@ if __name__ == "__main__":
 
             if 'distance_to_optimum_history' in results and results['distance_to_optimum_history']:
                 print(f"Final distance to optimum: {results['distance_to_optimum_history'][-1]:.6f}")
-   
