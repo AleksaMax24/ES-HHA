@@ -289,18 +289,17 @@ class LLHPoolManager:
 
     def __init__(self, config):
         self.config = config
-        self.default_Cr = config.Cr
 
         self.exploitation_pool = self._create_exploitation_pool()
         self.exploration_pool = self._create_exploration_pool()
 
     def _create_crossover(self, crossover_type: str) -> CrossoverOperator:
-        config = self.config.crossover_config.get(crossover_type, {'Cr': self.default_Cr})
-
         if crossover_type == 'exponential':
-            return ExponentialCrossover(**config)
-        else:
-            return BinomialCrossover(**config)
+            cr_value = self.config.crossover_config['exponential']['Cr']
+            return ExponentialCrossover(Cr=cr_value)
+        else:  # binomial
+            cr_value = self.config.crossover_config['binomial']['Cr']
+            return BinomialCrossover(Cr=cr_value)
 
     def _create_exploitation_pool(self) -> List[LLHOperator]:
         crossover = self._create_crossover('binomial')
@@ -390,11 +389,13 @@ class ParameterChromosome:
     # Параметры операторов
     F_exploitation: float = 0.8
     F_exploration: float = 0.8
-    Cr: float = 0.1
+    Cr_binomial: float = 0.1
+    Cr_exponential: float = 0.1
 
     # Параметры поиска
-    R_base: float = 1.0
-    R_adaptation_rate: float = 0.5
+    R_exploitation: float = 1.0
+    R_exploration: float = 1.0
+    R_adaptation_rate: float = 0.5  #скорость адаптации
 
     # Параметры разнообразия
     p_best: float = 0.2
@@ -436,6 +437,8 @@ class ParameterChromosome:
                         new_value = np.clip(new_value, 0.1, 2.0)
                     elif 'R_' in field_name:
                         new_value = max(0.1, new_value)
+                    elif 'Cr_' in field_name:
+                        new_value = np.clip(new_value, 0.0, 1.0)
                     elif 'w' in field_name:
                         new_value = np.clip(new_value, 0.0, 1.0)
 
@@ -480,8 +483,10 @@ class ParameterChromosome:
                 'w2': (0.1, 0.7),
                 'F_exploitation': (0.3, 1.5),
                 'F_exploration': (0.3, 1.5),
-                'Cr': (0.05, 0.5),
-                'R_base': (0.3, 2.0),
+                'Cr_binomial': (0.05, 0.9),
+                'Cr_exponential': (0.05, 0.9),
+                'R_exploitation': (0.3, 2.0),
+                'R_exploration': (0.3, 2.0),
                 'R_adaptation_rate': (0.2, 0.8),
                 'p_best': (0.05, 0.4),
                 'diversity_threshold': (0.2, 0.6),
@@ -518,10 +523,13 @@ class ES_HHA_Config:
     fdc_threshold: float = 0.6
     pd_threshold: float = 0.4
 
-    R: float = 1.0
     F_exploitation: float = 0.8
     F_exploration: float = 0.8
-    Cr: float = 0.1
+    R_exploitation: float = 1.0
+    R_exploration: float = 1.0
+    Cr_binomial: float = 0.1
+    Cr_exponential: float = 0.1
+    R_adaptation_rate: float = 0.5
     p_best: float = 0.2
 
     shake_intensity: float = 0.1
@@ -530,7 +538,6 @@ class ES_HHA_Config:
     shake_threshold_pd: float = 0.01
     late_stage_threshold: float = 0.7
     late_stage_diversity: float = 0.1
-    R_adaptation_rate: float = 0.5
 
     lb_init: float = -100.0
     ub_init: float = 100.0
@@ -575,8 +582,8 @@ class ES_HHA_Config:
 
         if self.crossover_config is None:
             self.crossover_config = {
-                'binomial': {'Cr': self.Cr},
-                'exponential': {'Cr': self.Cr}
+                'binomial': {'Cr': self.Cr_binomial},
+                'exponential': {'Cr': self.Cr_exponential}
             }
         if self.exploration_weights is None:
             self.exploration_weights = {
@@ -596,11 +603,14 @@ class ES_HHA_Config:
         self.w1 = chromosome.w1
         self.fdc_threshold = chromosome.fdc_threshold
         self.pd_threshold = chromosome.diversity_threshold
-        self.R = chromosome.R_base
         self.F_exploitation = chromosome.F_exploitation
         self.F_exploration = chromosome.F_exploration
-        self.Cr = chromosome.Cr
         self.p_best = chromosome.p_best
+        self.R_exploitation = chromosome.R_exploitation
+        self.R_exploration = chromosome.R_exploration
+        self.Cr_binomial = chromosome.Cr_binomial
+        self.Cr_exponential = chromosome.Cr_exponential
+        self.R_adaptation_rate = chromosome.R_adaptation_rate
 
         self.shake_intensity = chromosome.shake_intensity
         self.shake_threshold_improvements = chromosome.shake_threshold_improvements
@@ -617,14 +627,17 @@ class ES_HHA_Config:
             'DE_best_1': self.F_exploitation
         }
         self.exploration_Fs = {
+            'uniform_current': self.F_exploration,
+            'normal_current': self.F_exploration,
+            'levy_current': self.F_exploration,
             'DE_rand_1': self.F_exploration,
             'DE_cur_1': self.F_exploration,
             'DE_cur_to_best_1': self.F_exploration,
             'DE_cur_to_pbest_1': self.F_exploration
         }
         self.crossover_config = {
-            'binomial': {'Cr': self.Cr},
-            'exponential': {'Cr': self.Cr}
+            'binomial': {'Cr': self.Cr_binomial},
+            'exponential': {'Cr': self.Cr_exponential}
         }
 
     def save_to_file(self, filename: str):
@@ -696,10 +709,13 @@ class ParameterOptimizer:
             w1=chromosome.w1,
             fdc_threshold=chromosome.fdc_threshold,
             pd_threshold=chromosome.diversity_threshold,
-            R=chromosome.R_base,
             F_exploitation=chromosome.F_exploitation,
             F_exploration=chromosome.F_exploration,
-            Cr=chromosome.Cr,
+            R_exploitation=chromosome.R_exploitation,
+            R_exploration=chromosome.R_exploration,
+            Cr_binomial=chromosome.Cr_binomial,
+            Cr_exponential=chromosome.Cr_exponential,
+            R_adaptation_rate=chromosome.R_adaptation_rate,
             p_best=chromosome.p_best,
 
             shake_intensity=chromosome.shake_intensity,
@@ -708,7 +724,6 @@ class ParameterOptimizer:
             shake_threshold_pd=chromosome.shake_threshold_pd,
             late_stage_threshold=chromosome.late_stage_threshold,
             late_stage_diversity=chromosome.late_stage_diversity,
-            R_adaptation_rate=chromosome.R_adaptation_rate,
 
             lb_init=self.base_config.lb_init,
             ub_init=self.base_config.ub_init,
@@ -849,7 +864,8 @@ class ES_HHA:
         self.exploitation_pool = self.llh_manager.exploitation_pool
         self.exploration_pool = self.llh_manager.exploration_pool
 
-        self.initial_R = config.R
+        self.initial_R_exploitation = config.R_exploitation
+        self.initial_R_exploration = config.R_exploration
         self.initial_best_fitness = None
 
     def initialize_population(self):
@@ -1031,11 +1047,15 @@ class ES_HHA:
         return np.random.choice(pool)
     def apply_LLH(self, operator: LLHOperator, population: np.ndarray,
                   best_solution: np.ndarray, current_index: int,
-                  fitness: np.ndarray = None) -> np.ndarray:
+                  fitness: np.ndarray = None, pool_type: str = None) -> np.ndarray:
         kwargs = {
-            'R': self.config.R,
             'p_best': self.config.p_best
         }
+
+        if pool_type and ('exploitation' in pool_type):
+            kwargs['R'] = self.config.R_exploitation
+        else:
+            kwargs['R'] = self.config.R_exploration
 
         if fitness is not None:
             kwargs['fitness'] = fitness
@@ -1048,13 +1068,15 @@ class ES_HHA:
         FDC = self.calculate_FDC(population, fitness, best_solution)
         PD = self.calculate_PD(population)
 
-        # Адаптивный R
         if self.initial_best_fitness is None:
             self.initial_best_fitness = best_fitness
 
         if self.initial_best_fitness > 0:
             progress = 1 - (best_fitness / self.initial_best_fitness)
-            self.config.R = max(0.1, self.initial_R * (1 - progress * self.config.R_adaptation_rate))
+            self.config.R_exploitation = max(0.1, self.initial_R_exploitation *
+                                             (1 - progress * self.config.R_adaptation_rate))
+            self.config.R_exploration = max(0.1, self.initial_R_exploration *
+                                            (1 - progress * self.config.R_adaptation_rate))
 
         # Механизм "встряски"
         if (abs(FDC) < self.config.shake_threshold_fdc and
@@ -1076,7 +1098,8 @@ class ES_HHA:
 
         for j in range(self.config.population_size):
             operator, selection_info = self.select_LLH(FDC, PD)
-            new_individual = self.apply_LLH(operator, population, best_solution, j, fitness)
+            new_individual = self.apply_LLH(operator, population, best_solution, j, fitness,
+                                           selection_info['pool_type'])
             new_population[j] = new_individual
             iteration_llh_info.append({
                 'operator': operator.name,
@@ -1686,10 +1709,13 @@ if __name__ == "__main__":
         PD_THRESHOLD = 0.4
 
         # Параметры низкоуровневых эвристик
-        R = 1.0
         F_EXPLOITATION = 0.8
         F_EXPLORATION = 0.8
-        CR = 0.1
+        R_EXPLOITATION = 1.0
+        R_EXPLORATION = 1.0
+        CR_BINOMIAL = 0.1
+        CR_EXPONENTIAL = 0.1
+        R_ADAPTATION_RATE = 0.5
         P_BEST = 0.2
 
         # Параметры улучшений
@@ -1699,7 +1725,6 @@ if __name__ == "__main__":
         SHAKE_THRESHOLD_PD = 0.01
         LATE_STAGE_THRESHOLD = 0.7
         LATE_STAGE_DIVERSITY = 0.1
-        R_ADAPTATION_RATE = 0.5
 
         # Метод обработки ограничений
         CONSTRAINT_METHOD = "tanh"
@@ -1722,10 +1747,13 @@ if __name__ == "__main__":
             w1=W1,
             fdc_threshold=FDC_THRESHOLD,
             pd_threshold=PD_THRESHOLD,
-            R=R,
             F_exploitation=F_EXPLOITATION,
             F_exploration=F_EXPLORATION,
-            Cr=CR,
+            R_exploitation=R_EXPLOITATION,
+            R_exploration=R_EXPLORATION,
+            Cr_binomial=CR_BINOMIAL,
+            Cr_exponential=CR_EXPONENTIAL,
+            R_adaptation_rate=R_ADAPTATION_RATE,
             p_best=P_BEST,
             shake_intensity=SHAKE_INTENSITY,
             shake_threshold_improvements=SHAKE_THRESHOLD_IMPROVEMENTS,
@@ -1733,7 +1761,6 @@ if __name__ == "__main__":
             shake_threshold_pd=SHAKE_THRESHOLD_PD,
             late_stage_threshold=LATE_STAGE_THRESHOLD,
             late_stage_diversity=LATE_STAGE_DIVERSITY,
-            R_adaptation_rate=R_ADAPTATION_RATE,
             constraint_method=CONSTRAINT_METHOD,
             constraint_steepness=CONSTRAINT_STEEPNESS,
             verbose=VERBOSE,
