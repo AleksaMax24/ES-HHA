@@ -1,12 +1,3 @@
-"""
-experiment.py
-Запуск экспериментов, тестирование и визуализация:
-- Тестовые функции (Sphere, Rastrigin, Rosenbrock, Ackley)
-- Запуск одиночных и множественных экспериментов
-- Оптимизатор параметров ParameterOptimizer
-- Анализ результатов
-"""
-
 import numpy as np
 import time
 import json
@@ -19,9 +10,7 @@ from config import ES_HHA_Config, ParameterChromosome
 from core import ES_HHA
 
 
-# ============================================================================
-# ТЕСТОВЫЕ ФУНКЦИИ
-# ============================================================================
+
 
 class TestFunction(Enum):
     SPHERE = "sphere"
@@ -31,15 +20,7 @@ class TestFunction(Enum):
 
 
 def get_test_function(func_name: str) -> Tuple[Callable, np.ndarray, float, Tuple[float, float]]:
-    """
-    Получение тестовой функции по имени
 
-    Возвращает:
-        - функция оптимизации
-        - глобальный оптимум (координаты)
-        - значение в оптимуме
-        - границы поиска
-    """
     test_functions = {
         "sphere": {
             "func": lambda x: np.sum(x ** 2),
@@ -83,7 +64,7 @@ def get_test_function(func_name: str) -> Tuple[Callable, np.ndarray, float, Tupl
 
 
 def run_experiment(config: ES_HHA_Config) -> dict:
-    """Запуск одного эксперимента"""
+
     test_func, optimum, opt_value, bounds = get_test_function(config.test_function_name)
 
     config.global_optimum = optimum
@@ -100,17 +81,7 @@ def run_experiment(config: ES_HHA_Config) -> dict:
 
 def run_multiple_experiments(config: ES_HHA_Config, n_runs: int = 30,
                              save_results: bool = True) -> Tuple[Dict, List[Dict]]:
-    """
-    Запуск множественных экспериментов для статистического анализа
 
-    Аргументы:
-        config: конфигурация алгоритма
-        n_runs: количество запусков
-        save_results: сохранять ли результаты в файл
-
-    Возвращает:
-        статистика и список всех результатов
-    """
     print(f"\n{'=' * 60}")
     print(f"RUNNING {n_runs} EXPERIMENTS FOR {config.test_function_name.upper()}")
     print(f"{'=' * 60}")
@@ -159,13 +130,13 @@ def run_multiple_experiments(config: ES_HHA_Config, n_runs: int = 30,
 
 def _save_experiment_results(config: ES_HHA_Config, all_results: List[Dict],
                              stats: Dict, n_runs: int):
-    """Сохранение результатов экспериментов"""
+
     results_dir = "experiment_results"
     os.makedirs(results_dir, exist_ok=True)
 
     timestamp = time.strftime('%Y%m%d_%H%M%S')
 
-    # Сохранение конфигурации
+    
     config_filename = f"{results_dir}/config_{config.test_function_name}_{timestamp}.json"
     config.save_to_file(config_filename)
 
@@ -233,16 +204,9 @@ def _save_experiment_results(config: ES_HHA_Config, all_results: List[Dict],
     print(f"✅ CSV results saved to: {csv_filename}")
 
 
-# ============================================================================
-# ОПТИМИЗАТОР ПАРАМЕТРОВ (ГЕНЕТИЧЕСКИЙ АЛГОРИТМ)
-# ============================================================================
 
 class ParameterOptimizer:
-    """
-    Оптимизатор параметров ES-HHA с использованием генетического алгоритма
-
-    Позволяет автоматически находить оптимальные параметры конфигурации
-    """
+    
 
     def __init__(self,
                  objective_function: Callable,
@@ -263,7 +227,7 @@ class ParameterOptimizer:
         self.best_fitness = float('inf')
 
     def evaluate_chromosome(self, chromosome: ParameterChromosome) -> float:
-        """Оценка качества хромосомы (параметров)"""
+
         config = ES_HHA_Config(
             population_size=self.base_config.population_size,
             dimensions=self.base_config.dimensions,
@@ -314,7 +278,7 @@ class ParameterOptimizer:
         return final_fitness
 
     def initialize_population(self):
-        """Инициализация популяции хромосом"""
+=
         self.population = []
         for i in range(self.population_size):
             if i == 0:
@@ -324,7 +288,7 @@ class ParameterOptimizer:
             self.population.append(chromosome)
 
     def tournament_selection(self, k: int = 3) -> ParameterChromosome:
-        """Турнирная селекция"""
+ 
         tournament = np.random.choice(len(self.population), k, replace=False)
         best_idx = tournament[0]
         best_fitness = self.fitnesses[best_idx]
@@ -337,7 +301,7 @@ class ParameterOptimizer:
         return self.population[best_idx]
 
     def run(self) -> Tuple[ParameterChromosome, List[Dict]]:
-        """Запуск эволюции параметров"""
+     
         print("\n" + "=" * 60)
         print("PARAMETER EVOLUTION STARTED")
         print("=" * 60)
@@ -412,7 +376,7 @@ class ParameterOptimizer:
 
 
 def run_with_parameter_evolution():
-    """Запуск ES-HHA с предварительной эволюцией параметров"""
+   
     print("\n" + "=" * 60)
     print("ES-HHA WITH PARAMETER EVOLUTION")
     print("=" * 60)
@@ -478,9 +442,6 @@ def run_with_parameter_evolution():
     return results, best_chromosome
 
 
-# ============================================================================
-# ТОЧКА ВХОДА
-# ============================================================================
 
 if __name__ == "__main__":
     print("=" * 60)
@@ -492,7 +453,7 @@ if __name__ == "__main__":
     if mode == "evolution":
         results, best_chromosome = run_with_parameter_evolution()
     else:
-        # ===== НАСТРОЙКА ЭКСПЕРИМЕНТА =====
+
 
         # Выбор тестовой функции
         TEST_FUNCTION = "rastrigin"  # sphere, rastrigin, rosenbrock, ackley
@@ -538,7 +499,7 @@ if __name__ == "__main__":
         MULTIPLE_RUNS = True
         N_RUNS = 5
 
-        # ===== СОЗДАНИЕ КОНФИГУРАЦИИ =====
+
 
         config = ES_HHA_Config(
             population_size=POPULATION_SIZE,
@@ -569,7 +530,7 @@ if __name__ == "__main__":
             test_function_name=TEST_FUNCTION
         )
 
-        # ===== ЗАПУСК ЭКСПЕРИМЕНТОВ =====
+
 
         if MULTIPLE_RUNS:
             stats, all_results = run_multiple_experiments(config, n_runs=N_RUNS)
