@@ -1,24 +1,11 @@
-"""
-config.py
-Конфигурация алгоритма ES-HHA:
-- Класс конфигурации ES_HHA_Config
-- Класс хромосомы параметров ParameterChromosome
-- Вспомогательные структуры данных
-"""
-
 import numpy as np
 import json
 from dataclasses import dataclass, asdict, field
 from typing import Dict, Any, Optional, Tuple, List
 
 
-# ============================================================================
-# ХРОМОСОМА ПАРАМЕТРОВ (ДЛЯ ЭВОЛЮЦИИ ПАРАМЕТРОВ)
-# ============================================================================
-
 @dataclass
 class ParameterChromosome:
-    """Хромосома для эволюции параметров алгоритма ES-HHA"""
 
     # Веса стратегий
     w1: float = 0.5
@@ -94,7 +81,6 @@ class ParameterChromosome:
         return ParameterChromosome(**new_params)
 
     def crossover(self, other: 'ParameterChromosome') -> 'ParameterChromosome':
-        """Кроссовер двух хромосом"""
         new_params = {}
 
         for field_name in self.__dataclass_fields__:
@@ -106,7 +92,6 @@ class ParameterChromosome:
         return ParameterChromosome(**new_params)
 
     def to_dict(self) -> Dict[str, Any]:
-        """Преобразование в словарь"""
         result = {}
         for field_name in self.__dataclass_fields__:
             value = getattr(self, field_name)
@@ -118,7 +103,6 @@ class ParameterChromosome:
 
     @classmethod
     def create_random(cls, bounds: Dict[str, Tuple[float, float]] = None) -> 'ParameterChromosome':
-        """Создание случайной хромосомы"""
         if bounds is None:
             bounds = {
                 'w1': (0.1, 0.9),
@@ -153,13 +137,8 @@ class ParameterChromosome:
         return cls(**params)
 
 
-# ============================================================================
-# КОНФИГУРАЦИЯ ES-HHA
-# ============================================================================
-
 @dataclass
 class ES_HHA_Config:
-    """Конфигурация алгоритма ES-HHA"""
 
     # Основные параметры
     population_size: int = 100
@@ -254,7 +233,6 @@ class ES_HHA_Config:
             }
 
     def update_from_chromosome(self, chromosome: ParameterChromosome):
-        """Обновление конфигурации из хромосомы"""
         self.w1 = chromosome.w1
         self.fdc_threshold = chromosome.fdc_threshold
         self.pd_threshold = chromosome.diversity_threshold
@@ -295,7 +273,6 @@ class ES_HHA_Config:
         }
 
     def save_to_file(self, filename: str):
-        """Сохранение конфигурации в JSON файл"""
         config_dict = asdict(self)
 
         def convert_numpy(obj):
