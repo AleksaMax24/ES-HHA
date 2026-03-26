@@ -1,11 +1,4 @@
-"""
-core.py
-Ядро алгоритма ES-HHA:
-- Класс ES_HHA - основная реализация алгоритма
-- Метрики FDC (Fitness Distance Correlation) и PD (Population Diversity)
-- Выбор операторов на основе эволюционного статуса
-- Механизмы адаптации и "встряски"
-"""
+
 
 import numpy as np
 import time
@@ -20,9 +13,7 @@ from config import ES_HHA_Config
 
 
 class ES_HHA:
-    """
-    ES-HHA: Evolutionary Status Guided Hyper-Heuristic Algorithm
-    """
+
 
     def __init__(self, objective_function: Callable, config: ES_HHA_Config):
         self.objective_function = objective_function
@@ -51,12 +42,9 @@ class ES_HHA:
         self.initial_R_exploration = config.R_exploration
         self.initial_best_fitness = None
 
-    # ========================================================================
-    # МЕТОДЫ ИНИЦИАЛИЗАЦИИ И ОГРАНИЧЕНИЙ
-    # ========================================================================
 
     def initialize_population(self) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float]:
-        """Инициализация начальной популяции"""
+
         population = np.random.uniform(
             self.config.lb_init,
             self.config.ub_init,
@@ -68,7 +56,7 @@ class ES_HHA:
         return population, fitness, population[best_idx], fitness[best_idx]
 
     def _evaluate_population(self, population: np.ndarray) -> np.ndarray:
-        """Оценка всей популяции"""
+
         fitness = np.zeros(self.config.population_size)
         for i in range(self.config.population_size):
             individual = population[i]
@@ -77,7 +65,7 @@ class ES_HHA:
         return fitness
 
     def _apply_constraints(self, x: np.ndarray) -> np.ndarray:
-        """Применение ограничений к решению"""
+
         lb, ub = self.config.lb_opt, self.config.ub_opt
         method = self.config.constraint_method
         steepness = self.config.constraint_steepness
@@ -99,18 +87,10 @@ class ES_HHA:
         else:
             return np.clip(x, lb, ub)
 
-    # ========================================================================
-    # МЕТРИКИ FDC И PD
-    # ========================================================================
 
     def calculate_FDC(self, population: np.ndarray, fitness: np.ndarray,
                       best_solution: np.ndarray) -> float:
-        """
-        Расчет Fitness Distance Correlation (FDC)
 
-        Формула из статьи (уравнение 2):
-        FDC = sum((f_i - f̄)(d_i - d̄)) / (sqrt(sum(f_i - f̄)²) * sqrt(sum(d_i - d̄)²))
-        """
         if self.config.global_optimum is not None:
             optimum = self.config.global_optimum
         else:
@@ -131,12 +111,7 @@ class ES_HHA:
         return fdc_value
 
     def calculate_PD(self, population: np.ndarray) -> float:
-        """
-        Расчет Population Diversity (PD)
 
-        Формула из статьи (уравнение 3):
-        PD = (1/(n×D)) * sum_i sum_j |X_ij - X̄_j| / (UB_j - LB_j)
-        """
         centroid = np.mean(population, axis=0)
         ranges = self.config.ub_opt - self.config.lb_opt
         normalized_diff = np.abs(population - centroid) / ranges
@@ -146,7 +121,7 @@ class ES_HHA:
         return pd_value
 
     def calculate_distance_to_optimum(self, solution: np.ndarray) -> Optional[float]:
-        """Расчет расстояния до глобального оптимума"""
+
         if self.config.global_optimum is not None:
             distance = np.linalg.norm(solution - self.config.global_optimum)
             self.distance_to_optimum_history.append(distance)
@@ -154,7 +129,7 @@ class ES_HHA:
         return None
 
     def compare_with_optimum(self, solution: np.ndarray, fitness: float) -> Optional[Dict]:
-        """Сравнение с глобальным оптимумом"""
+
         if self.config.global_optimum is not None:
             optimum_fitness = self.objective_function(self.config.global_optimum)
             comparison = {
@@ -168,17 +143,10 @@ class ES_HHA:
             return comparison
         return None
 
-    # ========================================================================
-    # ВЫСОКОУРОВНЕВЫЙ КОМПОНЕНТ: ВЫБОР ОПЕРАТОРА
-    # ========================================================================
+
 
     def select_LLH(self, FDC: float, PD: float) -> Tuple[LLHOperator, Dict]:
-        """
-        Выбор оператора на основе эволюционного статуса
 
-        Реализует логику из статьи (Рисунок 4 и уравнение 16):
-        P1 = w1·FDC + (1-w1)·PD
-        """
         FDC_norm = (FDC + 1) / 2
         PD_norm = PD
 
@@ -244,14 +212,12 @@ class ES_HHA:
 
         return selected_operator, selection_info
 
-    # ========================================================================
-    # ПРИМЕНЕНИЕ ОПЕРАТОРА
-    # ========================================================================
+
 
     def apply_LLH(self, operator: LLHOperator, population: np.ndarray,
                   best_solution: np.ndarray, current_index: int,
                   fitness: np.ndarray = None, pool_type: str = None) -> np.ndarray:
-        """Применение выбранного оператора"""
+
         kwargs = {'p_best': self.config.p_best}
 
         if pool_type and ('exploitation' in pool_type):
@@ -264,14 +230,12 @@ class ES_HHA:
 
         return operator.apply(population, best_solution, current_index, **kwargs)
 
-    # ========================================================================
-    # СОЗДАНИЕ НОВОГО ПОКОЛЕНИЯ
-    # ========================================================================
+
 
     def create_new_generation(self, population: np.ndarray, fitness: np.ndarray,
                               best_solution: np.ndarray, best_fitness: float,
                               improvements: int = 0, iteration: int = 0) -> Tuple:
-        """Создание нового поколения с адаптивным выбором операторов"""
+
 
         # Расчет метрик
         FDC = self.calculate_FDC(population, fitness, best_solution)
@@ -373,12 +337,10 @@ class ES_HHA:
                 new_best_solution, new_best_fitness, improvements_count,
                 iteration_llh_info, distance, comparison)
 
-    # ========================================================================
-    # ОСНОВНОЙ ЦИКЛ ОПТИМИЗАЦИИ
-    # ========================================================================
+
 
     def optimize(self) -> Dict:
-        """Основной цикл оптимизации"""
+
         start_time = time.time()
 
         # Инициализация
@@ -444,13 +406,11 @@ class ES_HHA:
             'config': asdict(self.config)
         }
 
-    # ========================================================================
-    # МЕТОДЫ ВЫВОДА
-    # ========================================================================
+
 
     def _print_iteration_info(self, iteration, best_fitness, improvements,
                               FDC, PD, llh_info, distance, comparison):
-        """Вывод информации об итерации"""
+
         if not self.config.verbose:
             return
 
@@ -484,7 +444,7 @@ class ES_HHA:
                 print(f"Pool distribution: {dict(pool_count)}")
 
     def _print_final_statistics(self, start_time, end_time):
-        """Вывод финальной статистики"""
+
         print("\n" + "=" * 60)
         print("FINAL STATISTICS")
         print("=" * 60)
