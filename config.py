@@ -1,10 +1,4 @@
-"""
-config.py
-Конфигурация алгоритма ES-HHA:
-- Класс конфигурации ES_HHA_Config
-- Класс хромосомы параметров ParameterChromosome
-- Вспомогательные структуры данных
-"""
+
 
 import numpy as np
 import json
@@ -12,13 +6,10 @@ from dataclasses import dataclass, asdict, field
 from typing import Dict, Any, Optional, Tuple, List
 
 
-# ============================================================================
-# ХРОМОСОМА ПАРАМЕТРОВ (ДЛЯ ЭВОЛЮЦИИ ПАРАМЕТРОВ)
-# ============================================================================
 
 @dataclass
 class ParameterChromosome:
-    """Хромосома для эволюции параметров алгоритма ES-HHA"""
+
 
     # Веса стратегий
     w1: float = 0.5
@@ -55,7 +46,7 @@ class ParameterChromosome:
     mutation_strength: float = 0.2
 
     def mutate(self, temperature: float = 1.0) -> 'ParameterChromosome':
-        """Мутация хромосомы с учетом температуры"""
+
         new_params = {}
 
         for field_name in self.__dataclass_fields__:
@@ -94,7 +85,7 @@ class ParameterChromosome:
         return ParameterChromosome(**new_params)
 
     def crossover(self, other: 'ParameterChromosome') -> 'ParameterChromosome':
-        """Кроссовер двух хромосом"""
+
         new_params = {}
 
         for field_name in self.__dataclass_fields__:
@@ -106,7 +97,7 @@ class ParameterChromosome:
         return ParameterChromosome(**new_params)
 
     def to_dict(self) -> Dict[str, Any]:
-        """Преобразование в словарь"""
+
         result = {}
         for field_name in self.__dataclass_fields__:
             value = getattr(self, field_name)
@@ -118,7 +109,7 @@ class ParameterChromosome:
 
     @classmethod
     def create_random(cls, bounds: Dict[str, Tuple[float, float]] = None) -> 'ParameterChromosome':
-        """Создание случайной хромосомы"""
+
         if bounds is None:
             bounds = {
                 'w1': (0.1, 0.9),
@@ -153,13 +144,11 @@ class ParameterChromosome:
         return cls(**params)
 
 
-# ============================================================================
-# КОНФИГУРАЦИЯ ES-HHA
-# ============================================================================
+
 
 @dataclass
 class ES_HHA_Config:
-    """Конфигурация алгоритма ES-HHA"""
+
 
     # Основные параметры
     population_size: int = 100
@@ -167,8 +156,8 @@ class ES_HHA_Config:
     max_FEs: int = 10000
 
     # Параметры параллельных вычислений
-    use_parallel: bool = True  # Использовать multiprocessing
-    n_workers: int = -1  # -1 = использовать все доступные ядра
+    use_parallel: bool = True 
+    n_workers: int = -1  
 
     # Параметры высокоуровневого компонента
     w1: float = 0.5
@@ -220,7 +209,7 @@ class ES_HHA_Config:
     test_function_name: str = "unknown"
 
     def __post_init__(self):
-        """Инициализация значений по умолчанию"""
+
 
         # Настройка количества воркеров
         if self.n_workers <= 0:
@@ -264,7 +253,7 @@ class ES_HHA_Config:
             }
 
     def update_from_chromosome(self, chromosome: ParameterChromosome):
-        """Обновление конфигурации из хромосомы"""
+
         self.w1 = chromosome.w1
         self.fdc_threshold = chromosome.fdc_threshold
         self.pd_threshold = chromosome.diversity_threshold
@@ -305,7 +294,7 @@ class ES_HHA_Config:
         }
 
     def save_to_file(self, filename: str):
-        """Сохранение конфигурации в JSON файл"""
+
         config_dict = asdict(self)
 
         def convert_numpy(obj):
@@ -335,7 +324,7 @@ class ES_HHA_Config:
 
     @classmethod
     def load_from_file(cls, filename: str) -> 'ES_HHA_Config':
-        """Загрузка конфигурации из JSON файла"""
+
         with open(filename, 'r', encoding='utf-8') as f:
             config_dict = json.load(f)
 
