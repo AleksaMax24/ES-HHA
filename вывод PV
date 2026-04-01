@@ -1,0 +1,79 @@
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: SingleDiodeModel_Decomposed
+Dimensions: 2
+Population size: 50
+Max FEs: 5000
+Initial best fitness: 2.513098e-03
+
+--- Iteration 0 ---
+Best fitness: 2.513098e-03
+Improvements: 36/50
+FDC: 0.861, PD: 0.251
+
+--- Iteration 10 ---
+Best fitness: 1.108984e-03
+Improvements: 9/50
+FDC: 0.489, PD: 0.054
+
+--- Iteration 20 ---
+Best fitness: 1.008400e-03
+Improvements: 7/50
+FDC: 0.744, PD: 0.025
+
+--- Iteration 30 ---
+Best fitness: 9.867929e-04
+Improvements: 9/50
+FDC: 0.677, PD: 0.009
+
+--- Iteration 40 ---
+Best fitness: 9.865959e-04
+Improvements: 3/50
+FDC: 0.700, PD: 0.004
+
+--- Iteration 50 ---
+Best fitness: 9.860510e-04
+Improvements: 9/50
+FDC: 0.929, PD: 0.003
+
+--- Iteration 60 ---
+Best fitness: 9.860363e-04
+Improvements: 5/50
+FDC: 0.961, PD: 0.001
+
+--- Iteration 70 ---
+Best fitness: 9.860271e-04
+Improvements: 11/50
+FDC: 0.559, PD: 0.000
+
+--- Iteration 80 ---
+Best fitness: 9.860222e-04
+Improvements: 6/50
+FDC: 0.840, PD: 0.000
+
+--- Iteration 90 ---
+Best fitness: 9.860221e-04
+Improvements: 9/50
+FDC: 0.897, PD: 0.000
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 1.95s
+🎯 Final fitness: 9.860220e-04
+📊 Total FEs: 5000
+
+============================================================
+EXTRACTION RESULTS (with decomposition)
+============================================================
+Extracted parameters:
+  Ipv = 0.76077566 A
+  Isd = 3.22970043e-07 A
+  Rs  = 0.03637755 Ohm
+  Rp  = 53.7120 Ohm
+  n   = 1.48116783
+  RMSE = 9.860220e-04
+
+✓ Result matches expected RMSE (9.86e-04)
