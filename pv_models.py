@@ -1,33 +1,13 @@
-"""
-pv_models.py
-Модели фотоэлектрических элементов (PV) для задачи извлечения параметров
-на основе статьи Yan et al. (2021): "An adaptive differential evolution with decomposition
-for photovoltaic parameter extraction"
-
-Поддерживаемые модели:
-- Single Diode Model (SDM) - 5 параметров
-- Double Diode Model (DDM) - 7 параметров
-- Single Diode PV Module (SDPM) - 5 параметров с Ns, Np
-"""
-
 import numpy as np
 from typing import Tuple, Optional, Callable
 from dataclasses import dataclass
 
 
-# ============================================================================
-# ФИЗИЧЕСКИЕ КОНСТАНТЫ
-# ============================================================================
 
 class PhysicalConstants:
-    """Физические константы для PV моделей"""
-    q = 1.60217646e-19  # Элементарный заряд (C)
-    k = 1.3806503e-23  # Постоянная Больцмана (J/K)
-
-
-# ============================================================================
-# ДАННЫЕ RTC FRANCE (57mm diameter commercial solar cell)
-# ============================================================================
+    # физические константы для PV моделей
+    q = 1.60217646e-19  # элементарный заряд (C)
+    k = 1.3806503e-23  # постоянная Больцмана (J/K)
 
 # Температура для RTC France: 33°C = 306.15 K
 RTC_TEMPERATURE_K = 306.15
@@ -45,7 +25,6 @@ RTC_CURRENT = np.array([
     0.3165, 0.2120, 0.1035, -0.0100, -0.1230, -0.2100
 ])
 
-# Дополнительные данные для PV модулей (из статьи)
 # STM6-40/36 (mono-crystalline)
 STM6_VOLTAGE = np.array([
     0, 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 11, 12.1, 13.2, 14.3, 15.4, 16.5, 17.6, 18.7, 19.8, 20.9
@@ -73,22 +52,18 @@ STP6_TEMPERATURE_K = 324.15  # 51°C
 
 @dataclass
 class PVData:
-    """Контейнер для данных PV модели"""
+    # контейнер для данных PV модели
     voltage: np.ndarray
     current: np.ndarray
     temperature_K: float
-    Ns: int = 1  # Количество последовательных ячеек
-    Np: int = 1  # Количество параллельных ячеек
+    Ns: int = 1  
+    Np: int = 1  
     name: str = "unknown"
 
     @property
     def n_points(self) -> int:
         return len(self.voltage)
 
-
-# ============================================================================
-# ОСНОВНЫЕ PV МОДЕЛИ
-# ============================================================================
 
 class SingleDiodeModel:
     """
@@ -112,11 +87,8 @@ class SingleDiodeModel:
         self.VT = self.k * self.T / self.q  # Тепловое напряжение
 
     def compute_current(self, params: np.ndarray, V: np.ndarray = None) -> np.ndarray:
-        """
-        Вычисление тока для заданных параметров с использованием итеративного метода
+        # вычисление тока для заданных параметров с использованием итеративного метода
 
-        params: [Ipv, Isd, Rs, Rp, n]
-        """
         Ipv, Isd, Rs, Rp, n = params
 
         if V is None:
@@ -139,9 +111,8 @@ class SingleDiodeModel:
         return I
 
     def compute_current_fast(self, params: np.ndarray, V: np.ndarray = None) -> np.ndarray:
-        """
-        Вычисление тока через Lambert W (более быстрый метод)
-        """
+        # вычисление тока через Lambert W (более быстрый метод)
+
         Ipv, Isd, Rs, Rp, n = params
 
         if V is None:
@@ -165,12 +136,12 @@ class SingleDiodeModel:
         return np.clip(I, -0.5, Ipv + 0.1)
 
     def _lambertw(self, z: np.ndarray) -> np.ndarray:
-        """Приближенное вычисление Lambert W (главной ветви)"""
+        # приближенное вычисление Lambert W (главной ветви)
         from scipy.special import lambertw as scipy_lambertw
         try:
             return scipy_lambertw(z, k=0)
         except ImportError:
-            # Приближение для случая без scipy
+            # приближение для случая без scipy
             result = np.zeros_like(z)
             for i, zi in enumerate(z):
                 if zi == 0:
@@ -184,12 +155,11 @@ class SingleDiodeModel:
             return result
 
     def objective(self, params: np.ndarray) -> float:
-        """
-        Целевая функция RMSE (Root Mean Square Error)
-        """
+        # целевая функция RMSE (Root Mean Square Error)
+
         I_calc = self.compute_current(params)
 
-        # Вычисляем RMSE
+        # вычисляем RMSE
         rmse = np.sqrt(np.mean((self.data.current - I_calc) ** 2))
         return rmse
 
@@ -215,16 +185,10 @@ class DoubleDiodeModel:
         self.VT = self.k * self.T / self.q
 
     def compute_current(self, params: np.ndarray) -> np.ndarray:
-        """
-        Вычисление тока для заданных параметров
-        params: [Ipv, Isd1, Isd2, Rs, Rp, n1, n2]
-        """
         Ipv, Isd1, Isd2, Rs, Rp, n1, n2 = params
 
-        # Начальное приближение
         I = np.maximum(Ipv - self.V / Rp, -0.1)
 
-        # Итерационное решение
         for _ in range(20):
             exp1 = np.exp((self.V + I * Rs) / (n1 * self.VT))
             exp2 = np.exp((self.V + I * Rs) / (n2 * self.VT))
@@ -258,7 +222,6 @@ class SingleDiodeModuleModel(SingleDiodeModel):
 
         V_T = self.VT
 
-        # Для модуля с Ns последовательных и Np параллельных ячеек
         I = np.maximum(Ipv * self.Np - V / (Rp * self.Ns / self.Np), -0.1)
 
         for _ in range(20):
@@ -275,19 +238,16 @@ class SingleDiodeModuleModel(SingleDiodeModel):
         return I
 
 
-# ============================================================================
-# ДЕКОМПОЗИЦИЯ ПОИСКОВОГО ПРОСТРАНСТВА (из статьи Yan et al. 2021)
-# ============================================================================
 
 class DecomposedSDM:
     """
     Single Diode Model с декомпозицией поискового пространства
 
-    В соответствии со статьей, параметры разделяются на:
+    параметры разделены на:
     - Нелинейные: [n, Rs]
     - Линейные: [Ipv, Isd, Rp]
 
-    Линейные параметры могут быть вычислены аналитически при заданных нелинейных
+    линейные параметры аналитически 
     """
 
     def __init__(self, data: PVData):
@@ -302,27 +262,23 @@ class DecomposedSDM:
         self.VT = self.k * self.T / self.q
 
     def compute_linear_params(self, n: float, Rs: float) -> Tuple[float, float, float]:
-        """Вычисление линейных параметров с улучшенной обработкой ошибок"""
 
-        # Жесткие границы для n и Rs
         n = np.clip(n, 1.0, 2.0)
         Rs = np.clip(Rs, 0.0, 0.5)
 
-        # Защита от слишком больших значений
         Rs = min(Rs, 0.5)
 
-        # Вычисляем матрицы M и Q
         M = np.zeros(self.n_points)
         Q = np.zeros(self.n_points)
 
         for i in range(self.n_points):
             exp_arg = (self.V[i] + self.I_meas[i] * Rs) / (n * self.VT)
-            # Ограничиваем аргумент экспоненты
+
             exp_arg = np.clip(exp_arg, -50, 50)
             M[i] = -(np.exp(exp_arg) - 1)
             Q[i] = -(self.V[i] + self.I_meas[i] * Rs)
 
-        # Формируем матрицу A и вектор B
+
         E = np.ones(self.n_points)
 
         A = np.array([
@@ -337,7 +293,7 @@ class DecomposedSDM:
             np.dot(Q, self.I_meas)
         ])
 
-        # Добавляем регуляризацию для устойчивости
+
         A = A + np.eye(3) * 1e-8
 
         try:
@@ -346,7 +302,7 @@ class DecomposedSDM:
             Isd = x[1]
             inv_Rp = x[2]
 
-            # Ограничиваем значения
+
             Ipv = np.clip(Ipv, 0.5, 0.9)
             Isd = np.clip(Isd, 1e-9, 2e-5)
             Rp = 1.0 / inv_Rp if inv_Rp > 1e-10 else 100.0
@@ -355,17 +311,16 @@ class DecomposedSDM:
             return Ipv, Isd, Rp
 
         except np.linalg.LinAlgError:
-            # Возвращаем разумные значения по умолчанию
+
             return 0.76, 3e-7, 53.0
 
     def objective_decomposed(self, params: np.ndarray) -> float:
-        """
-        Целевая функция с декомпозицией
-        params: [n, Rs] - только нелинейные параметры
-        """
+
+        # целевая функция с декомпозицией
+ 
         n, Rs = params
 
-        # Жесткие границы для нелинейных параметров
+
         if n < 1.0 or n > 2.0:
             return 1e6 + abs(n - 1.0) * 1e4
         if Rs < 0.0 or Rs > 0.5:
@@ -374,7 +329,7 @@ class DecomposedSDM:
         try:
             Ipv, Isd, Rp = self.compute_linear_params(n, Rs)
 
-            # Проверка физичности линейных параметров
+       
             if Ipv < 0.5 or Ipv > 0.9:
                 return 1e5 + abs(Ipv - 0.76) * 1e4
             if Isd < 1e-9 or Isd > 1e-5:
@@ -382,7 +337,7 @@ class DecomposedSDM:
             if Rp < 10 or Rp > 2000:
                 return 1e5 + abs(Rp - 53) * 1e2
 
-            # Вычисляем ток
+           
             I_calc = np.zeros(self.n_points)
             for i in range(self.n_points):
                 try:
@@ -392,13 +347,13 @@ class DecomposedSDM:
                 except:
                     return 1e6
 
-            # Ограничиваем вычисленный ток
+           
             I_calc = np.clip(I_calc, -0.5, 1.0)
 
-            # Вычисляем RMSE
+           
             rmse = np.sqrt(np.mean((self.I_meas - I_calc) ** 2))
 
-            # Штраф за слишком большие ошибки
+           
             if rmse > 0.1:
                 return rmse * 1e6
 
@@ -408,12 +363,10 @@ class DecomposedSDM:
             return 1e6
 
 
-# ============================================================================
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-# ============================================================================
+
 
 def create_rtc_single_diode_model() -> Tuple[SingleDiodeModel, PVData]:
-    """Создание Single Diode Model на данных RTC France"""
+
     data = PVData(
         voltage=RTC_VOLTAGE,
         current=RTC_CURRENT,
@@ -426,7 +379,7 @@ def create_rtc_single_diode_model() -> Tuple[SingleDiodeModel, PVData]:
 
 
 def create_rtc_double_diode_model() -> Tuple[DoubleDiodeModel, PVData]:
-    """Создание Double Diode Model на данных RTC France"""
+
     data = PVData(
         voltage=RTC_VOLTAGE,
         current=RTC_CURRENT,
@@ -439,7 +392,7 @@ def create_rtc_double_diode_model() -> Tuple[DoubleDiodeModel, PVData]:
 
 
 def create_stm6_module_model() -> Tuple[SingleDiodeModuleModel, PVData]:
-    """Создание модели STM6-40/36 модуля"""
+
     data = PVData(
         voltage=STM6_VOLTAGE,
         current=STM6_CURRENT,
@@ -452,7 +405,7 @@ def create_stm6_module_model() -> Tuple[SingleDiodeModuleModel, PVData]:
 
 
 def create_stp6_module_model() -> Tuple[SingleDiodeModuleModel, PVData]:
-    """Создание модели STP6-120/36 модуля"""
+
     data = PVData(
         voltage=STP6_VOLTAGE,
         current=STP6_CURRENT,
@@ -464,19 +417,17 @@ def create_stp6_module_model() -> Tuple[SingleDiodeModuleModel, PVData]:
     return SingleDiodeModuleModel(data), data
 
 
-# ============================================================================
-# ТЕСТИРОВАНИЕ
-# ============================================================================
+
 
 if __name__ == "__main__":
     print("=" * 60)
     print("PV MODELS TEST")
     print("=" * 60)
 
-    # Создаем модель SDM на данных RTC France
+
     model, data = create_rtc_single_diode_model()
 
-    # Известные параметры из статьи (Yan et al. 2021, Table 6)
+    #параметры (из статьи)
     # Ipv=0.76077553, Isd=0.32302079e-6, Rs=0.03637709, Rp=53.71852020, n=1.48118359
     params = np.array([0.76077553, 0.32302079e-6, 0.03637709, 53.71852020, 1.48118359])
 
@@ -488,23 +439,22 @@ if __name__ == "__main__":
     print(f"  RMSE: {rmse:.6e}")
     print(f"  Expected RMSE from paper: 9.8602e-04")
 
-    # Вычисляем ток
+
     I_calc = model.compute_current(params)
 
-    # Проверяем ошибку по точкам
     errors = data.current - I_calc
     print(f"  Max absolute error: {np.max(np.abs(errors)):.6e}")
     print(f"  Mean absolute error: {np.mean(np.abs(errors)):.6e}")
 
-    # Тестируем декомпозицию
+
     print("\n" + "=" * 60)
     print("DECOMPOSED MODEL TEST")
     print("=" * 60)
 
     decomp_model = DecomposedSDM(data)
-    nonlinear_params = np.array([params[4], params[2]])  # [n, Rs]
+    nonlinear_params = np.array([params[4], params[2]]) 
 
-    # Вычисляем линейные параметры через декомпозицию
+
     Ipv_dec, Isd_dec, Rp_dec = decomp_model.compute_linear_params(nonlinear_params[0], nonlinear_params[1])
 
     print(f"  Original Ipv: {params[0]:.6f} -> Decomposed: {Ipv_dec:.6f}")
