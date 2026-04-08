@@ -5,11 +5,8 @@ import json
 from dataclasses import dataclass, asdict, field
 from typing import Dict, Any, Optional, Tuple, List
 
-
-
 @dataclass
 class ParameterChromosome:
-
 
     # Веса стратегий
     w1: float = 0.5
@@ -46,7 +43,6 @@ class ParameterChromosome:
     mutation_strength: float = 0.2
 
     def mutate(self, temperature: float = 1.0) -> 'ParameterChromosome':
-
         new_params = {}
 
         for field_name in self.__dataclass_fields__:
@@ -85,7 +81,6 @@ class ParameterChromosome:
         return ParameterChromosome(**new_params)
 
     def crossover(self, other: 'ParameterChromosome') -> 'ParameterChromosome':
-
         new_params = {}
 
         for field_name in self.__dataclass_fields__:
@@ -97,7 +92,6 @@ class ParameterChromosome:
         return ParameterChromosome(**new_params)
 
     def to_dict(self) -> Dict[str, Any]:
-
         result = {}
         for field_name in self.__dataclass_fields__:
             value = getattr(self, field_name)
@@ -109,7 +103,6 @@ class ParameterChromosome:
 
     @classmethod
     def create_random(cls, bounds: Dict[str, Tuple[float, float]] = None) -> 'ParameterChromosome':
-
         if bounds is None:
             bounds = {
                 'w1': (0.1, 0.9),
@@ -144,11 +137,8 @@ class ParameterChromosome:
         return cls(**params)
 
 
-
-
 @dataclass
 class ES_HHA_Config:
-
 
     # Основные параметры
     population_size: int = 100
@@ -156,7 +146,7 @@ class ES_HHA_Config:
     max_FEs: int = 10000
 
     # Параметры параллельных вычислений
-    use_parallel: bool = True 
+    use_parallel: bool = False  
     n_workers: int = -1  
 
     # Параметры высокоуровневого компонента
@@ -192,7 +182,7 @@ class ES_HHA_Config:
     constraint_method: str = 'tanh'
     constraint_steepness: float = 1.0
 
-    # Веса для операторов (опционально)
+    # Веса для операторов 
     exploitation_Fs: Optional[Dict[str, float]] = None
     exploration_Fs: Optional[Dict[str, float]] = None
     crossover_config: Optional[Dict[str, Dict]] = None
@@ -210,8 +200,6 @@ class ES_HHA_Config:
 
     def __post_init__(self):
 
-
-        # Настройка количества воркеров
         if self.n_workers <= 0:
             import multiprocessing as mp
             self.n_workers = mp.cpu_count()
@@ -243,17 +231,16 @@ class ES_HHA_Config:
 
         if self.exploration_weights is None:
             self.exploration_weights = {
-                'uniform_current': 0.25 / 3,  # ~8.33%
+                'uniform_current': 0.25 / 3, 
                 'normal_current': 0.25 / 3,
                 'levy_current': 0.25 / 3,
-                'DE_rand_1': 0.75 / 4,  # ~18.75%
+                'DE_rand_1': 0.75 / 4, 
                 'DE_cur_1': 0.75 / 4,
                 'DE_cur_to_best_1': 0.75 / 4,
                 'DE_cur_to_pbest_1': 0.75 / 4
             }
 
     def update_from_chromosome(self, chromosome: ParameterChromosome):
-
         self.w1 = chromosome.w1
         self.fdc_threshold = chromosome.fdc_threshold
         self.pd_threshold = chromosome.diversity_threshold
@@ -294,7 +281,6 @@ class ES_HHA_Config:
         }
 
     def save_to_file(self, filename: str):
-
         config_dict = asdict(self)
 
         def convert_numpy(obj):
@@ -328,6 +314,10 @@ class ES_HHA_Config:
         with open(filename, 'r', encoding='utf-8') as f:
             config_dict = json.load(f)
 
+        if config_dict.get('global_optimum') is not None:
+            config_dict['global_optimum'] = np.array(config_dict['global_optimum'])
+
+        return cls(**config_dict)
         if config_dict.get('global_optimum') is not None:
             config_dict['global_optimum'] = np.array(config_dict['global_optimum'])
 
