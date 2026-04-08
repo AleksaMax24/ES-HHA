@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import math
 from abc import ABC, abstractmethod
@@ -7,10 +5,7 @@ from typing import List, Dict, Optional, Callable, Tuple
 from dataclasses import dataclass, field
 
 
-
-
 class CrossoverOperator(ABC):
-
 
     def __init__(self, name: str, Cr: float = 0.1):
         self.name = name
@@ -22,7 +17,6 @@ class CrossoverOperator(ABC):
 
 
 class BinomialCrossover(CrossoverOperator):
-
 
     def __init__(self, Cr: float = 0.1):
         super().__init__("binomial", Cr)
@@ -36,7 +30,6 @@ class BinomialCrossover(CrossoverOperator):
 
 
 class ExponentialCrossover(CrossoverOperator):
-
 
     def __init__(self, Cr: float = 0.1):
         super().__init__("exponential", Cr)
@@ -59,10 +52,7 @@ class ExponentialCrossover(CrossoverOperator):
         return offspring
 
 
-
-
 class LLHOperator(ABC):
-    
 
     def __init__(self, name: str, F: float = 0.8):
         self.name = name
@@ -75,8 +65,8 @@ class LLHOperator(ABC):
 
 
 
-class UniformLLH(LLHOperator):
 
+class UniformLLH(LLHOperator):
 
     def __init__(self, F: float = 0.8):
         super().__init__("uniform", F)
@@ -89,7 +79,6 @@ class UniformLLH(LLHOperator):
 
 
 class NormalLLH(LLHOperator):
-  
 
     def __init__(self, F: float = 0.8):
         super().__init__("normal", F)
@@ -102,7 +91,6 @@ class NormalLLH(LLHOperator):
 
 
 class LevyLLH(LLHOperator):
-
 
     def __init__(self, F: float = 0.8):
         super().__init__("levy", F)
@@ -124,7 +112,6 @@ class LevyLLH(LLHOperator):
 
 
 class DEBest1LLH(LLHOperator):
-    
 
     def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_best_1", F)
@@ -145,10 +132,7 @@ class DEBest1LLH(LLHOperator):
         return trial
 
 
-
-
 class UniformCurrentLLH(LLHOperator):
-    
 
     def __init__(self, F: float = 0.8):
         super().__init__("uniform_current", F)
@@ -163,7 +147,6 @@ class UniformCurrentLLH(LLHOperator):
 
 
 class NormalCurrentLLH(LLHOperator):
-  
 
     def __init__(self, F: float = 0.8):
         super().__init__("normal_current", F)
@@ -178,7 +161,6 @@ class NormalCurrentLLH(LLHOperator):
 
 
 class LevyCurrentLLH(LLHOperator):
- 
 
     def __init__(self, F: float = 0.8):
         super().__init__("levy_current", F)
@@ -201,7 +183,6 @@ class LevyCurrentLLH(LLHOperator):
 
 
 class DERand1LLH(LLHOperator):
-   
 
     def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_rand_1", F)
@@ -223,7 +204,6 @@ class DERand1LLH(LLHOperator):
 
 
 class DECurrent1LLH(LLHOperator):
-    
 
     def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_cur_1", F)
@@ -247,7 +227,6 @@ class DECurrent1LLH(LLHOperator):
 
 class DECurrentToBest1LLH(LLHOperator):
 
-
     def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_cur_to_best_1", F)
         self.crossover = crossover if crossover else BinomialCrossover(Cr=0.1)
@@ -269,7 +248,6 @@ class DECurrentToBest1LLH(LLHOperator):
 
 
 class DECurrentToPBest1LLH(LLHOperator):
- 
 
     def __init__(self, F: float = 0.8, crossover: CrossoverOperator = None):
         super().__init__("DE_cur_to_pbest_1", F)
@@ -303,7 +281,6 @@ class DECurrentToPBest1LLH(LLHOperator):
 
 
 class LLHPoolManager:
-    
 
     def __init__(self, config):
         self.config = config
@@ -312,16 +289,14 @@ class LLHPoolManager:
         self.exploration_pool = self._create_exploration_pool()
 
     def _create_crossover(self, crossover_type: str) -> CrossoverOperator:
-     
         if crossover_type == 'exponential':
             cr_value = self.config.crossover_config['exponential']['Cr']
             return ExponentialCrossover(Cr=cr_value)
-        else:  # binomial
+        else:  
             cr_value = self.config.crossover_config['binomial']['Cr']
             return BinomialCrossover(Cr=cr_value)
 
     def _create_exploitation_pool(self) -> List[LLHOperator]:
-        
         crossover = self._create_crossover('binomial')
         Fs = self.config.exploitation_Fs
 
@@ -333,7 +308,6 @@ class LLHPoolManager:
         ]
 
     def _create_exploration_pool(self) -> List[LLHOperator]:
-       
         crossover = self._create_crossover('binomial')
         Fs = self.config.exploration_Fs
 
@@ -348,7 +322,6 @@ class LLHPoolManager:
         ]
 
     def select_weighted_operator(self, pool: List[LLHOperator]) -> LLHOperator:
-       
         if hasattr(self.config, 'exploration_weights') and self.config.exploration_weights is not None:
             uses_exploration_weights = any(
                 op.name in self.config.exploration_weights for op in pool
