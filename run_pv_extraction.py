@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 import os
+from pv_models import DecomposedDDM
 
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -150,6 +151,349 @@ def run_single_diode_extraction(use_decomposition: bool = False, verbose: bool =
             'history': history
         }
 
+def run_triple_diode_decomposed(verbose: bool = True):
+
+    print("\n" + "=" * 60)
+    print("TRIPLE DIODE MODEL (decomposed) – 9 параметров")
+    print("=" * 60)
+
+    from pv_models import DecomposedTDM, create_rtc_triple_diode_model
+    _, data = create_rtc_triple_diode_model()
+    decomp = DecomposedTDM(data)
+
+    lb = np.array([1.0, 1.0, 1.0, 0.0])
+    ub = np.array([2.0, 2.0, 2.0, 0.5])
+
+    config = ES_HHA_Config(
+        population_size=100,
+        dimensions=4,
+        max_FEs=10000,   
+        w1=0.5,
+        fdc_threshold=0.5,
+        pd_threshold=0.3,
+        F_exploitation=0.8,
+        F_exploration=0.8,
+        R_exploitation=0.1,
+        R_exploration=0.3,
+        Cr_binomial=0.5,
+        Cr_exponential=0.5,
+        p_best=0.2,
+        R_adaptation_rate=0.5,
+        verbose=verbose,
+        test_function_name="TripleDiodeModel_Decomposed",
+        lb_init=lb,
+        ub_init=ub,
+        lb_opt=lb,
+        ub_opt=ub
+    )
+
+    optimizer = ES_HHA(decomp.objective_decomposed, config)
+    results = optimizer.optimize()
+
+    best = results['best_solution']
+    best_fitness = results['best_fitness']
+    n1, n2, n3, Rs = best
+    Ipv, Isd1, Isd2, Isd3, Rp = decomp.compute_linear_params(n1, n2, n3, Rs)
+
+    print("\n" + "=" * 60)
+    print("EXTRACTION RESULTS (TDM with decomposition)")
+    print("=" * 60)
+    print(f"  Ipv  = {Ipv:.8f} A")
+    print(f"  Isd1 = {Isd1:.8e} A")
+    print(f"  Isd2 = {Isd2:.8e} A")
+    print(f"  Isd3 = {Isd3:.8e} A")
+    print(f"  Rs   = {Rs:.8f} Ohm")
+    print(f"  Rp   = {Rp:.4f} Ohm")
+    print(f"  n1   = {n1:.8f}")
+    print(f"  n2   = {n2:.8f}")
+    print(f"  n3   = {n3:.8f}")
+    print(f"  RMSE = {best_fitness:.6e}")
+
+    expected = 9.83e-04  # ожидаемое значение 
+    if best_fitness <= expected * 1.01:
+        print(f"\n✓ Result matches expected RMSE ({expected:.2e})")
+    else:
+        print(f"\n⚠ Result differs from expected ({expected:.2e})")
+
+    return {
+        'Ipv': Ipv, 'Isd1': Isd1, 'Isd2': Isd2, 'Isd3': Isd3,
+        'Rs': Rs, 'Rp': Rp, 'n1': n1, 'n2': n2, 'n3': n3,
+        'best_fitness': best_fitness,
+        'RMSE': best_fitness,
+        'history': results
+    }
+
+def run_single_diode_decomposed(verbose: bool = True):
+    
+    print("\n" + "=" * 60)
+    print("SINGLE DIODE MODEL (decomposed) – Yan et al. 2021")
+    print("=" * 60)
+
+    model, data = create_rtc_single_diode_model()
+    decomp_model = DecomposedSDM(data)
+
+   
+    lb_nonlinear = np.array([1.0, 0.0])     
+    ub_nonlinear = np.array([2.0, 0.5])
+
+    config = ES_HHA_Config(
+        population_size=50,           
+        dimensions=2,                
+        max_FEs=2000,              
+        w1=0.5,
+        fdc_threshold=0.5,
+        pd_threshold=0.3,
+        F_exploitation=0.8,
+        F_exploration=0.8,
+        R_exploitation=0.1,
+        R_exploration=0.3,
+        Cr_binomial=0.5,
+        Cr_exponential=0.5,
+        p_best=0.2,
+        R_adaptation_rate=0.5,
+        verbose=verbose,
+        test_function_name="SingleDiodeModel_Decomposed",
+        lb_init=lb_nonlinear,
+        ub_init=ub_nonlinear,
+        lb_opt=lb_nonlinear,
+        ub_opt=ub_nonlinear
+    )
+
+    optimizer = ES_HHA(decomp_model.objective_decomposed, config)
+    results = optimizer.optimize()
+
+    best_solution = results['best_solution']
+    best_fitness = results['best_fitness']
+    n, Rs = best_solution
+    Ipv, Isd, Rp = decomp_model.compute_linear_params(n, Rs)
+
+    print("\n" + "=" * 60)
+    print("EXTRACTION RESULTS (SDM with decomposition)")
+    print("=" * 60)
+    print(f"  Ipv = {Ipv:.8f} A")
+    print(f"  Isd = {Isd:.8e} A")
+    print(f"  Rs  = {Rs:.8f} Ohm")
+    print(f"  Rp  = {Rp:.4f} Ohm")
+    print(f"  n   = {n:.8f}")
+    print(f"  RMSE = {best_fitness:.6e}")
+
+    expected = 9.8602e-04
+    if best_fitness <= expected * 1.01:
+        print(f"\n✓ Result matches expected RMSE ({expected:.2e})")
+    else:
+        print(f"\n⚠ Result differs from expected ({expected:.2e})")
+
+    return {
+        'Ipv': Ipv, 'Isd': Isd, 'Rs': Rs, 'Rp': Rp, 'n': n,
+        'RMSE': best_fitness,
+        'history': results
+    }
+
+def run_stm6_module_decomposed(verbose: bool = True):
+    print("\n" + "=" * 60)
+    print("PV MODULE STM6-40/36 (decomposed) – Yan et al. 2021")
+    print("=" * 60)
+
+    from pv_models import DecomposedModule, create_stm6_module_model
+    _, data = create_stm6_module_model()
+    decomp = DecomposedModule(data)
+
+    lb = np.array([1.0, 0.0])
+    ub = np.array([2.0, 0.36])
+
+    config = ES_HHA_Config(
+        population_size=200,
+        dimensions=2,
+        max_FEs=50000,
+        w1=0.5,
+        fdc_threshold=0.5,
+        pd_threshold=0.3,
+        F_exploitation=0.8,
+        F_exploration=0.8,
+        R_exploitation=0.1,
+        R_exploration=0.3,
+        Cr_binomial=0.5,
+        Cr_exponential=0.5,
+        p_best=0.2,
+        R_adaptation_rate=0.5,
+        verbose=verbose,
+        test_function_name="STM6_Decomposed",
+        lb_init=lb,
+        ub_init=ub,
+        lb_opt=lb,
+        ub_opt=ub
+    )
+    optimizer = ES_HHA(decomp.objective_decomposed, config)
+
+    results = optimizer.optimize()
+    best_solution = results['best_solution']
+    best_fitness = results['best_fitness']
+    n, Rs = best_solution
+
+    Ipv, Isd, Rp, I_calc = decomp.get_parameters(n, Rs)
+
+    print("\n" + "=" * 60)
+    print("EXTRACTION RESULTS (STM6 with decomposition)")
+    print("=" * 60)
+    print(f"  Ipv = {Ipv:.8f} A")
+    print(f"  Isd = {Isd:.8e} A")
+    print(f"  Rs  = {Rs:.8f} Ohm")
+    print(f"  Rp  = {Rp:.4f} Ohm")
+    print(f"  n   = {n:.8f}")
+    print(f"  RMSE = {best_fitness:.6e}")
+
+    expected = 1.7298e-03
+    if best_fitness <= expected * 1.01:
+        print(f"\n✓ Result matches expected RMSE ({expected:.2e})")
+    else:
+        print(f"\n⚠ Result differs from expected ({expected:.2e})")
+
+    return {
+        'Ipv': Ipv,
+        'Isd': Isd,
+        'Rs': Rs,
+        'Rp': Rp,
+        'n': n,
+        'best_fitness': best_fitness,  
+        'RMSE': best_fitness, 
+        'history': results
+    }
+
+def run_stp6_module_decomposed(verbose: bool = True):
+    print("\n" + "=" * 60)
+    print("PV MODULE STP6-120/36 (decomposed) – Yan et al. 2021")
+    print("=" * 60)
+
+    from pv_models import DecomposedModule, create_stp6_module_model
+    _, data = create_stp6_module_model()
+    decomp = DecomposedModule(data)
+
+    lb = np.array([1.0, 0.0])
+    ub = np.array([2.0, 0.36])
+
+    config = ES_HHA_Config(
+        population_size=200,
+        dimensions=2,
+        max_FEs=50000,
+        w1=0.5,
+        fdc_threshold=0.5,
+        pd_threshold=0.3,
+        F_exploitation=0.8,
+        F_exploration=0.8,
+        R_exploitation=0.1,
+        R_exploration=0.3,
+        Cr_binomial=0.5,
+        Cr_exponential=0.5,
+        p_best=0.2,
+        R_adaptation_rate=0.5,
+        verbose=verbose,
+        test_function_name="STP6_Decomposed",
+        lb_init=lb,
+        ub_init=ub,
+        lb_opt=lb,
+        ub_opt=ub
+    )
+    optimizer = ES_HHA(decomp.objective_decomposed, config)
+
+    results = optimizer.optimize()
+    best_solution = results['best_solution']
+    best_fitness = results['best_fitness']
+    n, Rs = best_solution
+
+    Ipv, Isd, Rp, I_calc = decomp.get_parameters(n, Rs)
+
+    print("\n" + "=" * 60)
+    print("EXTRACTION RESULTS (STP6 with decomposition)")
+    print("=" * 60)
+    print(f"  Ipv = {Ipv:.8f} A")
+    print(f"  Isd = {Isd:.8e} A")
+    print(f"  Rs  = {Rs:.8f} Ohm")
+    print(f"  Rp  = {Rp:.4f} Ohm")
+    print(f"  n   = {n:.8f}")
+    print(f"  RMSE = {best_fitness:.6e}")
+
+    expected = 1.6601e-02
+    if best_fitness <= expected * 1.01:
+        print(f"\n✓ Result matches expected RMSE ({expected:.2e})")
+    else:
+        print(f"\n⚠ Result differs from expected ({expected:.2e})")
+
+    return {
+        'Ipv': Ipv,
+        'Isd': Isd,
+        'Rs': Rs,
+        'Rp': Rp,
+        'n': n,
+        'best_fitness': best_fitness,  
+        'RMSE': best_fitness,  
+        'history': results
+    }
+    
+def run_double_diode_full(verbose: bool = True):
+
+    print("\n" + "=" * 60)
+    print("DOUBLE DIODE MODEL (full search) – Yan et al. 2021")
+    print("=" * 60)
+
+    model, data = create_rtc_double_diode_model()
+
+    lb = np.array([0.5, 0.0, 0.0, 0.0, 10.0, 1.0, 1.0])
+    ub = np.array([0.9, 5e-5, 5e-5, 0.5, 100.0, 2.0, 2.0])
+
+    config = ES_HHA_Config(
+        population_size=50,        
+        dimensions=7,               
+        max_FEs=4000,               
+        w1=0.5,
+        fdc_threshold=0.5,
+        pd_threshold=0.3,
+        F_exploitation=0.8,
+        F_exploration=0.8,
+        R_exploitation=0.1,
+        R_exploration=0.3,
+        Cr_binomial=0.5,
+        Cr_exponential=0.5,
+        p_best=0.2,
+        R_adaptation_rate=0.5,
+        verbose=verbose,
+        test_function_name="DoubleDiodeModel",
+        lb_init=lb,
+        ub_init=ub,
+        lb_opt=lb,
+        ub_opt=ub
+    )
+
+    optimizer = ES_HHA(model.objective, config)
+    results = optimizer.optimize()
+
+    best_solution = results['best_solution']
+    best_fitness = results['best_fitness']
+    Ipv, Isd1, Isd2, Rs, Rp, n1, n2 = best_solution
+
+    print("\n" + "=" * 60)
+    print("EXTRACTION RESULTS (DDM)")
+    print("=" * 60)
+    print(f"  Ipv  = {Ipv:.8f} A")
+    print(f"  Isd1 = {Isd1:.8e} A")
+    print(f"  Isd2 = {Isd2:.8e} A")
+    print(f"  Rs   = {Rs:.8f} Ohm")
+    print(f"  Rp   = {Rp:.4f} Ohm")
+    print(f"  n1   = {n1:.8f}")
+    print(f"  n2   = {n2:.8f}")
+    print(f"  RMSE = {best_fitness:.6e}")
+
+    expected = 9.8248e-04
+    if best_fitness <= expected * 1.01:
+        print(f"\n✓ Result matches expected RMSE ({expected:.2e})")
+    else:
+        print(f"\n⚠ Result differs from expected ({expected:.2e})")
+
+    return {
+        'Ipv': Ipv, 'Isd1': Isd1, 'Isd2': Isd2,
+        'Rs': Rs, 'Rp': Rp, 'n1': n1, 'n2': n2,
+        'RMSE': best_fitness,
+        'history': results
+    }
 
 def run_double_diode_extraction(verbose: bool = True):
 
@@ -218,58 +562,50 @@ def run_double_diode_extraction(verbose: bool = True):
         'history': history
     }
 
-
-def run_module_extraction(module_type: str = "STM6", verbose: bool = True):
-
+def run_stm6_module(verbose: bool = True):
     print("\n" + "=" * 60)
-    print(f"{module_type} PV MODULE PARAMETER EXTRACTION")
+    print("PV MODULE STM6-40/36 – Yan et al. 2021")
     print("=" * 60)
 
-    if module_type == "STM6":
-        model, data = create_stm6_module_model()
-        max_fes = 3000
-        expected_rmse = 1.7298e-03
-    else:
-        model, data = create_stp6_module_model()
-        max_fes = 7000
-        expected_rmse = 1.6601e-02
+    model, data = create_stm6_module_model()
 
 
-    lb = np.array([0, 0, 0, 0, 1.0])
-    ub = np.array([8, 5e-5, 0.36, 1500, 2.0])
+    lb = np.array([0.0, 0.0, 0.0, 0.0, 1.0])
+    ub = np.array([2.0, 5e-5, 0.36, 10000.0, 2.0])
 
     config = ES_HHA_Config(
-        population_size=100,
+        population_size=100, 
         dimensions=5,
-        max_FEs=max_fes,
+        max_FEs=3000,  
         w1=0.5,
         fdc_threshold=0.5,
         pd_threshold=0.3,
         F_exploitation=0.8,
         F_exploration=0.8,
-        R_exploitation=0.1,
-        R_exploration=0.5,
+        R_exploitation=0.5,  
+        R_exploration=1.0,  
         Cr_binomial=0.5,
         Cr_exponential=0.5,
         p_best=0.2,
         R_adaptation_rate=0.5,
         verbose=verbose,
-        test_function_name=f"{module_type}_Module",
-        lb_init=lb[0],
-        ub_init=ub[4],
+        test_function_name="STM6_Module",
+        lb_init=lb, 
+        ub_init=ub,
         lb_opt=lb,
         ub_opt=ub
     )
 
     optimizer = ES_HHA(model.objective, config)
-    best_solution, best_fitness, history = optimizer.optimize()
+    results = optimizer.optimize()
 
+    best_solution = results['best_solution']
+    best_fitness = results['best_fitness']
     Ipv, Isd, Rs, Rp, n = best_solution
 
     print("\n" + "=" * 60)
-    print("EXTRACTION RESULTS")
+    print("EXTRACTION RESULTS (STM6-40/36)")
     print("=" * 60)
-    print(f"Extracted parameters:")
     print(f"  Ipv = {Ipv:.8f} A")
     print(f"  Isd = {Isd:.8e} A")
     print(f"  Rs  = {Rs:.8f} Ohm")
@@ -277,73 +613,120 @@ def run_module_extraction(module_type: str = "STM6", verbose: bool = True):
     print(f"  n   = {n:.8f}")
     print(f"  RMSE = {best_fitness:.6e}")
 
-    if best_fitness <= expected_rmse * 1.01:
-        print(f"\n✓ Result matches expected RMSE ({expected_rmse:.2e})")
+    expected = 1.7298e-03
+    if best_fitness <= expected * 1.01:
+        print(f"\n✓ Result matches expected RMSE ({expected:.2e})")
     else:
-        print(f"\n⚠ Result differs from expected ({expected_rmse:.2e})")
+        print(f"\n⚠ Result differs from expected ({expected:.2e})")
 
     return {
         'Ipv': Ipv, 'Isd': Isd, 'Rs': Rs, 'Rp': Rp, 'n': n,
         'RMSE': best_fitness,
-        'history': history
+        'history': results
     }
 
-
-def run_comparison_with_decomposition(verbose: bool = True):
-
-    print("\n" + "=" * 60)
-    print("COMPARISON: FULL SEARCH vs DECOMPOSITION")
-    print("=" * 60)
-
-
-    print("\n--- Full Search (5 parameters) ---")
-    result_full = run_single_diode_extraction(use_decomposition=False, verbose=False)
-
-
-    print("\n--- Decomposed Search (2 nonlinear parameters) ---")
-    result_decomp = run_single_diode_extraction(use_decomposition=True, verbose=False)
+def run_stp6_module(verbose: bool = True):
 
     print("\n" + "=" * 60)
-    print("COMPARISON RESULTS")
+    print("PV MODULE STP6-120/36 – Yan et al. 2021")
     print("=" * 60)
-    print(f"Full Search RMSE:     {result_full['RMSE']:.6e} (FEs=5000)")
-    print(f"Decomposed RMSE:      {result_decomp['RMSE']:.6e} (FEs=2000)")
-    print(f"Expected RMSE (paper): 9.8602e-04")
 
-    improvement = (result_full['RMSE'] - result_decomp['RMSE']) / result_full['RMSE'] * 100
-    print(f"\nImprovement: {improvement:.2f}%")
+    model, data = create_stp6_module_model()
 
-    return result_full, result_decomp
+    lb = np.array([0.0, 0.0, 0.0, 0.0, 1.0])
+    ub = np.array([8.0, 5e-5, 0.36, 1500.0, 2.0])
 
+    config = ES_HHA_Config(
+        population_size=100,  
+        dimensions=5,
+        max_FEs=7000,  
+        w1=0.5,
+        fdc_threshold=0.5,
+        pd_threshold=0.3,
+        F_exploitation=0.8,
+        F_exploration=0.8,
+        R_exploitation=0.5, 
+        R_exploration=1.0,  
+        Cr_binomial=0.5,
+        Cr_exponential=0.5,
+        p_best=0.2,
+        R_adaptation_rate=0.5,
+        verbose=verbose,
+        test_function_name="STP6_Module",
+        lb_init=lb,  
+        ub_init=ub,
+        lb_opt=lb,
+        ub_opt=ub
+    )
 
+    optimizer = ES_HHA(model.objective, config)
+    results = optimizer.optimize()
+
+    best_solution = results['best_solution']
+    best_fitness = results['best_fitness']
+    Ipv, Isd, Rs, Rp, n = best_solution
+
+    print("\n" + "=" * 60)
+    print("EXTRACTION RESULTS (STP6-120/36)")
+    print("=" * 60)
+    print(f"  Ipv = {Ipv:.8f} A")
+    print(f"  Isd = {Isd:.8e} A")
+    print(f"  Rs  = {Rs:.8f} Ohm")
+    print(f"  Rp  = {Rp:.4f} Ohm")
+    print(f"  n   = {n:.8f}")
+    print(f"  RMSE = {best_fitness:.6e}")
+
+    expected = 1.6601e-02
+    if best_fitness <= expected * 1.01:
+        print(f"\n✓ Result matches expected RMSE ({expected:.2e})")
+    else:
+        print(f"\n⚠ Result differs from expected ({expected:.2e})")
+
+    return {
+        'Ipv': Ipv, 'Isd': Isd, 'Rs': Rs, 'Rp': Rp, 'n': n,
+        'RMSE': best_fitness,
+        'history': results
+    }
+
+def run_all_yan_experiments():
+    print("\n" + "=" * 70)
+    print("RUNNING ALL EXPERIMENTS FROM YAN et al. 2021 (EJADE-D)")
+    print("Using ES-HHA with decomposition for ALL models")
+    print("=" * 70)
+
+    results = {}
+    results['SDM'] = run_single_diode_decomposed(verbose=True)
+    results['DDM'] = run_double_diode_decomposed(verbose=True)
+    results['STM6'] = run_stm6_module_decomposed(verbose=True)
+    results['STP6'] = run_stp6_module_decomposed(verbose=True)
+
+    print("\n" + "=" * 70)
+    print("SUMMARY")
+    print("=" * 70)
+    for name, res in results.items():
+        fitness = res.get('best_fitness', res.get('RMSE'))
+        print(f"{name:6} RMSE = {fitness:.6e}")
+
+    return results
 
 if __name__ == "__main__":
-    print("=" * 60)
-    print("ES-HHA FOR PHOTOVOLTAIC PARAMETER EXTRACTION")
-    print("Based on: Yan et al. (2021) - Adaptive differential evolution with decomposition")
-    print("=" * 60)
+    mode = "all"  
 
-
-    mode = "sdm_decomposed"  # sdm_full, sdm_decomposed, ddm, stm6, stp6, comparison
-
-    if mode == "sdm_full":
-        run_single_diode_extraction(use_decomposition=False, verbose=True)
-
-    elif mode == "sdm_decomposed":
-        run_single_diode_extraction(use_decomposition=True, verbose=True)
-
-    elif mode == "ddm":
-        run_double_diode_extraction(verbose=True)
-
-    elif mode == "stm6":
-        run_module_extraction("STM6", verbose=True)
-
-    elif mode == "stp6":
-        run_module_extraction("STP6", verbose=True)
-
-    elif mode == "comparison":
-        run_comparison_with_decomposition(verbose=True)
-
+    if mode == "sdm_decomposed":
+        run_single_diode_decomposed()
+    elif mode == "ddm_decomposed":
+        run_double_diode_decomposed()
+    elif mode == "tdm_decomposed":
+        run_triple_diode_decomposed()
+    elif mode == "stm6_decomposed":
+        run_stm6_module_decomposed()
+    elif mode == "stp6_decomposed":
+        run_stp6_module_decomposed()
+    elif mode == "all":
+        run_single_diode_decomposed()
+        run_double_diode_decomposed()
+        run_triple_diode_decomposed()
+        run_stm6_module_decomposed()
+        run_stp6_module_decomposed()
     else:
         print(f"Unknown mode: {mode}")
-        print("Available modes: sdm_full, sdm_decomposed, ddm, stm6, stp6, comparison")
