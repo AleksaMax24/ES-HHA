@@ -207,6 +207,44 @@ class DoubleDiodeModel:
         rmse = np.sqrt(np.mean((self.data.current - I_calc) ** 2))
         return rmse
 
+class TripleDiodeModel:
+    """
+    Triple Diode Model (TDM) - 9 параметров
+    Параметры: Ipv, Isd1, Isd2, Isd3, Rs, Rp, n1, n2, n3
+
+    Уравнение: I = Ipv - Isd1*(exp(q*(V+I*Rs)/(n1*k*T))-1)
+                    - Isd2*(exp(q*(V+I*Rs)/(n2*k*T))-1)
+                    - Isd3*(exp(q*(V+I*Rs)/(n3*k*T))-1)
+                    - (V+I*Rs)/Rp
+    """
+    def __init__(self, data: PVData):
+        self.data = data
+        self.V = data.voltage
+        self.T = data.temperature_K
+        self.n_points = data.n_points
+        self.q = PhysicalConstants.q
+        self.k = PhysicalConstants.k
+        self.VT = self.k * self.T / self.q
+
+    def compute_current(self, params: np.ndarray) -> np.ndarray:
+        Ipv, Isd1, Isd2, Isd3, Rs, Rp, n1, n2, n3 = params
+        I = np.maximum(Ipv - self.V / Rp, -0.1)
+        for _ in range(30):
+            exp1 = np.exp((self.V + I * Rs) / (n1 * self.VT))
+            exp2 = np.exp((self.V + I * Rs) / (n2 * self.VT))
+            exp3 = np.exp((self.V + I * Rs) / (n3 * self.VT))
+            I_new = Ipv - Isd1*(exp1-1) - Isd2*(exp2-1) - Isd3*(exp3-1) - (self.V + I*Rs)/Rp
+            I_new = np.clip(I_new, -0.5, Ipv+0.1)
+            if np.max(np.abs(I_new - I)) < 1e-10:
+                break
+            I = I_new
+        return I
+
+    def objective(self, params: np.ndarray) -> float:
+        I_calc = self.compute_current(params)
+        rmse = np.sqrt(np.mean((self.data.current - I_calc) ** 2))
+        return rmse
+
 
 class SingleDiodeModuleModel(SingleDiodeModel):
     """
@@ -362,7 +400,311 @@ class DecomposedSDM:
         except (np.linalg.LinAlgError, OverflowError, ValueError) as e:
             return 1e6
 
+class DecomposedDDM:
+    """
+    Double Diode Model с декомпозицией поискового пространства.
+    Нелинейные параметры: [n1, n2, Rs]
+    Линейные параметры: [Ipv, Isd1, Isd2, Rp]
+    """
 
+    def __init__(self, data: PVData):
+        self.data = data
+        self.V = data.voltage
+        self.I_meas = data.current
+        self.T = data.temperature_K
+        self.n_points = data.n_points
+
+        self.q = PhysicalConstants.q
+        self.k = PhysicalConstants.k
+        self.VT = self.k * self.T / self.q
+
+    def compute_linear_params(self, n1: float, n2: float, Rs: float) -> Tuple[float, float, float, float]:
+        """
+        Вычисление линейных параметров по нелинейным.
+        Возвращает: Ipv, Isd1, Isd2, Rp
+        """
+        # Ограничиваем нелинейные параметры
+        n1 = np.clip(n1, 1.0, 2.0)
+        n2 = np.clip(n2, 1.0, 2.0)
+        Rs = np.clip(Rs, 0.0, 0.5)
+
+        # Формируем векторы M, Q, O
+        M = np.zeros(self.n_points)
+        Q = np.zeros(self.n_points)
+        O = np.zeros(self.n_points)
+
+        for i in range(self.n_points):
+            V_i = self.V[i]
+            I_i = self.I_meas[i]
+            exp_arg1 = (V_i + I_i * Rs) / (n1 * self.VT)
+            exp_arg2 = (V_i + I_i * Rs) / (n2 * self.VT)
+            exp_arg1 = np.clip(exp_arg1, -100, 100)
+            exp_arg2 = np.clip(exp_arg2, -100, 100)
+            M[i] = -(np.exp(exp_arg1) - 1)
+            Q[i] = -(np.exp(exp_arg2) - 1)
+            O[i] = -(V_i + I_i * Rs)
+
+        E = np.ones(self.n_points)
+
+        # Матрица A (4x4) и вектор B
+        A = np.array([
+            [np.dot(E, E), np.dot(E, M), np.dot(E, Q), np.dot(E, O)],
+            [np.dot(M, E), np.dot(M, M), np.dot(M, Q), np.dot(M, O)],
+            [np.dot(Q, E), np.dot(Q, M), np.dot(Q, Q), np.dot(Q, O)],
+            [np.dot(O, E), np.dot(O, M), np.dot(O, Q), np.dot(O, O)]
+        ])
+        B = np.array([
+            np.dot(E, self.I_meas),
+            np.dot(M, self.I_meas),
+            np.dot(Q, self.I_meas),
+            np.dot(O, self.I_meas)
+        ])
+
+        # Регуляризация
+        A = A + np.eye(4) * 1e-8
+
+        try:
+            x = np.linalg.solve(A, B)
+            Ipv = x[0]
+            Isd1 = x[1]
+            Isd2 = x[2]
+            inv_Rp = x[3]
+
+            # Ограничения физичности
+            Ipv = np.clip(Ipv, 0.5, 0.9)
+            Isd1 = np.clip(Isd1, 1e-9, 5e-5)
+            Isd2 = np.clip(Isd2, 1e-9, 5e-5)
+            Rp = 1.0 / inv_Rp if inv_Rp > 1e-10 else 100.0
+            Rp = np.clip(Rp, 10.0, 2000.0)
+
+            return Ipv, Isd1, Isd2, Rp
+        except np.linalg.LinAlgError:
+            return 0.76, 2.5e-7, 2.5e-7, 55.0
+
+    def objective_decomposed(self, params: np.ndarray) -> float:
+        """
+        Целевая функция с декомпозицией.
+        params: [n1, n2, Rs]
+        """
+        n1, n2, Rs = params
+
+        # Границы
+        if n1 < 1.0 or n1 > 2.0:
+            return 1e6
+        if n2 < 1.0 or n2 > 2.0:
+            return 1e6
+        if Rs < 0.0 or Rs > 0.5:
+            return 1e6
+
+        try:
+            Ipv, Isd1, Isd2, Rp = self.compute_linear_params(n1, n2, Rs)
+
+            # Проверка физичности линейных параметров
+            if Ipv < 0.5 or Ipv > 0.9:
+                return 1e5
+            if Isd1 < 1e-9 or Isd1 > 5e-5:
+                return 1e5
+            if Isd2 < 1e-9 or Isd2 > 5e-5:
+                return 1e5
+            if Rp < 10 or Rp > 2000:
+                return 1e5
+
+            # Вычисляем ток
+            I_calc = np.zeros(self.n_points)
+            for i in range(self.n_points):
+                V_i = self.V[i]
+                I_i = self.I_meas[i]
+                exp_arg1 = (V_i + I_i * Rs) / (n1 * self.VT)
+                exp_arg2 = (V_i + I_i * Rs) / (n2 * self.VT)
+                exp_arg1 = np.clip(exp_arg1, -100, 100)
+                exp_arg2 = np.clip(exp_arg2, -100, 100)
+                I_calc[i] = Ipv - Isd1 * (np.exp(exp_arg1) - 1) - Isd2 * (np.exp(exp_arg2) - 1) - (V_i + I_i * Rs) / Rp
+
+            I_calc = np.clip(I_calc, -0.5, 1.0)
+            rmse = np.sqrt(np.mean((self.I_meas - I_calc) ** 2))
+
+            if rmse > 0.1:
+                return rmse * 1e6
+            return rmse
+        except:
+            return 1e6
+
+class DecomposedTDM:
+    """
+    Triple Diode Model с декомпозицией.
+    Нелинейные параметры: [n1, n2, n3, Rs]
+    Линейные параметры: [Ipv, Isd1, Isd2, Isd3, Rp]
+    """
+    def __init__(self, data: PVData):
+        self.data = data
+        self.V = data.voltage
+        self.I_meas = data.current
+        self.T = data.temperature_K
+        self.n_points = data.n_points
+        self.q = PhysicalConstants.q
+        self.k = PhysicalConstants.k
+        self.VT = self.k * self.T / self.q
+
+    def compute_linear_params(self, n1: float, n2: float, n3: float, Rs: float) -> Tuple[float, float, float, float, float]:
+        n1 = np.clip(n1, 1.0, 2.0)
+        n2 = np.clip(n2, 1.0, 2.0)
+        n3 = np.clip(n3, 1.0, 2.0)
+        Rs = np.clip(Rs, 0.0, 0.5)
+
+        M1 = np.zeros(self.n_points)
+        M2 = np.zeros(self.n_points)
+        M3 = np.zeros(self.n_points)
+        O = np.zeros(self.n_points)
+
+        for i in range(self.n_points):
+            V_i = self.V[i]
+            I_i = self.I_meas[i]
+            exp1 = np.exp((V_i + I_i * Rs) / (n1 * self.VT))
+            exp2 = np.exp((V_i + I_i * Rs) / (n2 * self.VT))
+            exp3 = np.exp((V_i + I_i * Rs) / (n3 * self.VT))
+            M1[i] = -(exp1 - 1)
+            M2[i] = -(exp2 - 1)
+            M3[i] = -(exp3 - 1)
+            O[i] = -(V_i + I_i * Rs)
+
+        E = np.ones(self.n_points)
+        A = np.array([
+            [np.dot(E,E), np.dot(E,M1), np.dot(E,M2), np.dot(E,M3), np.dot(E,O)],
+            [np.dot(M1,E), np.dot(M1,M1), np.dot(M1,M2), np.dot(M1,M3), np.dot(M1,O)],
+            [np.dot(M2,E), np.dot(M2,M1), np.dot(M2,M2), np.dot(M2,M3), np.dot(M2,O)],
+            [np.dot(M3,E), np.dot(M3,M1), np.dot(M3,M2), np.dot(M3,M3), np.dot(M3,O)],
+            [np.dot(O,E), np.dot(O,M1), np.dot(O,M2), np.dot(O,M3), np.dot(O,O)]
+        ])
+        B = np.array([
+            np.dot(E, self.I_meas),
+            np.dot(M1, self.I_meas),
+            np.dot(M2, self.I_meas),
+            np.dot(M3, self.I_meas),
+            np.dot(O, self.I_meas)
+        ])
+        A += np.eye(5) * 1e-8
+
+        try:
+            x = np.linalg.solve(A, B)
+            Ipv = x[0]
+            Isd1 = x[1]
+            Isd2 = x[2]
+            Isd3 = x[3]
+            inv_Rp = x[4]
+            Ipv = np.clip(Ipv, 0.5, 0.9)
+            Isd1 = np.clip(Isd1, 1e-12, 5e-5)
+            Isd2 = np.clip(Isd2, 1e-12, 5e-5)
+            Isd3 = np.clip(Isd3, 1e-12, 5e-5)
+            Rp = 1.0 / inv_Rp if inv_Rp > 1e-10 else 100.0
+            Rp = np.clip(Rp, 10.0, 2000.0)
+            return Ipv, Isd1, Isd2, Isd3, Rp
+        except np.linalg.LinAlgError:
+            return 0.76, 2e-7, 2e-7, 2e-7, 55.0
+
+    def objective_decomposed(self, params: np.ndarray) -> float:
+        n1, n2, n3, Rs = params
+        if not (1.0 <= n1 <= 2.0 and 1.0 <= n2 <= 2.0 and 1.0 <= n3 <= 2.0 and 0.0 <= Rs <= 0.5):
+            return 1e6
+        try:
+            Ipv, Isd1, Isd2, Isd3, Rp = self.compute_linear_params(n1, n2, n3, Rs)
+            I_calc = np.zeros(self.n_points)
+            for i in range(self.n_points):
+                V_i = self.V[i]
+                I_i = self.I_meas[i]
+                exp1 = np.exp((V_i + I_i * Rs) / (n1 * self.VT))
+                exp2 = np.exp((V_i + I_i * Rs) / (n2 * self.VT))
+                exp3 = np.exp((V_i + I_i * Rs) / (n3 * self.VT))
+                I_calc[i] = Ipv - Isd1*(exp1-1) - Isd2*(exp2-1) - Isd3*(exp3-1) - (V_i + I_i*Rs)/Rp
+            I_calc = np.clip(I_calc, -0.5, 1.0)
+            rmse = np.sqrt(np.mean((self.I_meas - I_calc)**2))
+            return rmse
+        except Exception:
+            return 1e6
+class DecomposedModule:
+
+    def __init__(self, data: PVData, max_iter: int = 5):
+        self.data = data
+        self.V = data.voltage
+        self.I_meas = data.current
+        self.T = data.temperature_K
+        self.Ns = data.Ns
+        self.Np = data.Np
+        self.n_points = data.n_points
+        self.max_iter = max_iter
+
+        self.q = PhysicalConstants.q
+        self.k = PhysicalConstants.k
+        self.VT = self.k * self.T / self.q
+
+    def compute_linear_params(self, n: float, Rs: float, I_guess: np.ndarray) -> Tuple[float, float, float]:
+        n = np.clip(n, 1.0, 2.0)
+        Rs = np.clip(Rs, 0.0, 0.5)
+
+        M = np.zeros(self.n_points)
+        Q = np.zeros(self.n_points)
+
+        for i in range(self.n_points):
+            V_i = self.V[i]
+            I_i = I_guess[i]
+            exp_arg = (V_i * self.Np + I_i * Rs * self.Ns) / (n * self.Ns * self.Np * self.VT)
+            exp_arg = np.clip(exp_arg, -100, 100)
+            M[i] = -(np.exp(exp_arg) - 1)
+            Q[i] = -(V_i * self.Np + I_i * Rs * self.Ns) / self.Ns
+
+        E = np.ones(self.n_points)
+        A = np.array([
+            [np.dot(E, E), np.dot(E, M), np.dot(E, Q)],
+            [np.dot(M, E), np.dot(M, M), np.dot(M, Q)],
+            [np.dot(Q, E), np.dot(Q, M), np.dot(Q, Q)]
+        ])
+        B = np.array([
+            np.dot(E, self.I_meas),
+            np.dot(M, self.I_meas),
+            np.dot(Q, self.I_meas)
+        ])
+        A += np.eye(3) * 1e-8
+
+        try:
+            x = np.linalg.solve(A, B)
+            Ipv = x[0]
+            Isd = x[1]
+            inv_Rp = x[2]
+            Ipv = np.clip(Ipv, 0.0, 2.0 * self.Np)
+            Isd = np.clip(Isd, 1e-12, 1e-4)
+            Rp = 1.0 / inv_Rp if inv_Rp > 1e-10 else 1000.0
+            Rp = np.clip(Rp, 1.0, 1e5)
+            return Ipv, Isd, Rp
+        except np.linalg.LinAlgError:
+            return 1.6, 1e-6, 100.0
+
+    def get_parameters(self, n: float, Rs: float) -> Tuple[float, float, float, np.ndarray]:
+    
+        I_guess = self.I_meas.copy()
+        Ipv, Isd, Rp = self.compute_linear_params(n, Rs, I_guess)
+        for _ in range(self.max_iter):
+            I_new = np.zeros(self.n_points)
+            for i in range(self.n_points):
+                V_i = self.V[i]
+                exp_arg = (V_i * self.Np + I_guess[i] * Rs * self.Ns) / (n * self.Ns * self.Np * self.VT)
+                exp_arg = np.clip(exp_arg, -100, 100)
+                I_new[i] = Ipv * self.Np - Isd * self.Np * (np.exp(exp_arg) - 1) - (V_i * self.Np + I_guess[i] * Rs * self.Ns) / (Rp * self.Ns)
+            I_new = np.clip(I_new, -0.5, Ipv * self.Np + 0.1)
+            if np.max(np.abs(I_new - I_guess)) < 1e-8:
+                break
+            I_guess = I_new
+            Ipv, Isd, Rp = self.compute_linear_params(n, Rs, I_guess)
+        return Ipv, Isd, Rp, I_guess
+
+    def objective_decomposed(self, params: np.ndarray) -> float:
+        n, Rs = params
+        if n < 1.0 or n > 2.0 or Rs < 0.0 or Rs > 0.5:
+            return 1e6
+        try:
+            Ipv, Isd, Rp, I_calc = self.get_parameters(n, Rs)
+            rmse = np.sqrt(np.mean((self.I_meas - I_calc) ** 2))
+            return rmse
+        except Exception:
+            return 1e6
 
 
 def create_rtc_single_diode_model() -> Tuple[SingleDiodeModel, PVData]:
@@ -416,7 +758,16 @@ def create_stp6_module_model() -> Tuple[SingleDiodeModuleModel, PVData]:
     )
     return SingleDiodeModuleModel(data), data
 
-
+def create_rtc_triple_diode_model() -> Tuple[TripleDiodeModel, PVData]:
+    data = PVData(
+        voltage=RTC_VOLTAGE,
+        current=RTC_CURRENT,
+        temperature_K=RTC_TEMPERATURE_K,
+        Ns=1,
+        Np=1,
+        name="RTC_France_TDM"
+    )
+    return TripleDiodeModel(data), data
 
 
 if __name__ == "__main__":
@@ -424,10 +775,8 @@ if __name__ == "__main__":
     print("PV MODELS TEST")
     print("=" * 60)
 
-
     model, data = create_rtc_single_diode_model()
 
-    #параметры (из статьи)
     # Ipv=0.76077553, Isd=0.32302079e-6, Rs=0.03637709, Rp=53.71852020, n=1.48118359
     params = np.array([0.76077553, 0.32302079e-6, 0.03637709, 53.71852020, 1.48118359])
 
@@ -439,14 +788,15 @@ if __name__ == "__main__":
     print(f"  RMSE: {rmse:.6e}")
     print(f"  Expected RMSE from paper: 9.8602e-04")
 
-
+    # Вычисляем ток
     I_calc = model.compute_current(params)
 
+    # Проверяем ошибку по точкам
     errors = data.current - I_calc
     print(f"  Max absolute error: {np.max(np.abs(errors)):.6e}")
     print(f"  Mean absolute error: {np.mean(np.abs(errors)):.6e}")
 
-
+    # Тестируем декомпозицию
     print("\n" + "=" * 60)
     print("DECOMPOSED MODEL TEST")
     print("=" * 60)
@@ -454,7 +804,7 @@ if __name__ == "__main__":
     decomp_model = DecomposedSDM(data)
     nonlinear_params = np.array([params[4], params[2]]) 
 
-
+    # Вычисляем линейные параметры через декомпозицию
     Ipv_dec, Isd_dec, Rp_dec = decomp_model.compute_linear_params(nonlinear_params[0], nonlinear_params[1])
 
     print(f"  Original Ipv: {params[0]:.6f} -> Decomposed: {Ipv_dec:.6f}")
