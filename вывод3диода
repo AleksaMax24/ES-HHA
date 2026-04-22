@@ -1,0 +1,87 @@
+============================================================
+TRIPLE DIODE MODEL (decomposed) – 9 параметров
+============================================================
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: TripleDiodeModel_Decomposed
+Dimensions: 4
+Population size: 100
+Max FEs: 10000
+Parallel mode: False
+Initial best fitness: 1.165600e-03
+
+--- Iteration 0 ---
+Best fitness: 1.165600e-03
+Improvements: 72/100
+FDC: 0.048, PD: 0.242
+
+--- Iteration 10 ---
+Best fitness: 9.826944e-04
+Improvements: 20/100
+FDC: 0.231, PD: 0.166
+
+--- Iteration 20 ---
+Best fitness: 9.825445e-04
+Improvements: 10/100
+FDC: 0.312, PD: 0.126
+
+--- Iteration 30 ---
+Best fitness: 9.824994e-04
+Improvements: 10/100
+FDC: 0.172, PD: 0.093
+
+--- Iteration 40 ---
+Best fitness: 9.824952e-04
+Improvements: 10/100
+FDC: 0.591, PD: 0.060
+
+--- Iteration 50 ---
+Best fitness: 9.824893e-04
+Improvements: 14/100
+FDC: 0.414, PD: 0.034
+
+--- Iteration 60 ---
+Best fitness: 9.824859e-04
+Improvements: 14/100
+FDC: 0.667, PD: 0.012
+
+--- Iteration 70 ---
+Best fitness: 9.824849e-04
+Improvements: 8/100
+FDC: 0.897, PD: 0.005
+
+--- Iteration 80 ---
+Best fitness: 9.824849e-04
+Improvements: 14/100
+FDC: 0.596, PD: 0.001
+
+--- Iteration 90 ---
+Best fitness: 9.824849e-04
+Improvements: 16/100
+FDC: 0.221, PD: 0.000
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 2.79s
+🎯 Final fitness: 9.824849e-04
+📊 Total FEs: 10000
+
+============================================================
+EXTRACTION RESULTS (TDM with decomposition)
+============================================================
+  Ipv  = 0.76078108 A
+  Isd1 = 1.31789664e-07 A
+  Isd2 = 7.49217470e-07 A
+  Isd3 = 9.42005583e-08 A
+  Rs   = 0.03674035 Ohm
+  Rp   = 55.4852 Ohm
+  n1   = 1.45105573
+  n2   = 2.00000000
+  n3   = 1.45097653
+  RMSE = 9.824849e-04
+
+✓ Result matches expected RMSE (9.83e-04)
