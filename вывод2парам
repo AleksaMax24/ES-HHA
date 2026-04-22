@@ -1,0 +1,782 @@
+======================================================================
+RUNNING ALL EXPERIMENTS FROM YAN et al. 2021 (EJADE-D)
+Using ES-HHA with decomposition for ALL models
+======================================================================
+
+============================================================
+SINGLE DIODE MODEL (decomposed) – Yan et al. 2021
+============================================================
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: SingleDiodeModel_Decomposed
+Dimensions: 2
+Population size: 50
+Max FEs: 2000
+Parallel mode: False
+Initial best fitness: 2.209053e-03
+
+--- Iteration 0 ---
+Best fitness: 2.207050e-03
+Improvements: 36/50
+FDC: 0.650, PD: 0.244
+
+--- Iteration 10 ---
+Best fitness: 1.132264e-03
+Improvements: 13/50
+FDC: 0.369, PD: 0.067
+
+--- Iteration 20 ---
+Best fitness: 9.997951e-04
+Improvements: 7/50
+FDC: 0.455, PD: 0.025
+
+--- Iteration 30 ---
+Best fitness: 9.882070e-04
+Improvements: 9/50
+FDC: 0.645, PD: 0.011
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 0.79s
+🎯 Final fitness: 9.860890e-04
+📊 Total FEs: 2000
+
+============================================================
+EXTRACTION RESULTS (SDM with decomposition)
+============================================================
+  Ipv = 0.76077855 A
+  Isd = 3.22620181e-07 A
+  Rs  = 0.03637468 Ohm
+  Rp  = 53.5853 Ohm
+  n   = 1.48106142
+  RMSE = 9.860890e-04
+
+✓ Result matches expected RMSE (9.86e-04)
+
+============================================================
+DOUBLE DIODE MODEL (decomposed) – Yan et al. 2021
+============================================================
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: DoubleDiodeModel_Decomposed
+Dimensions: 3
+Population size: 50
+Max FEs: 4000
+Parallel mode: False
+Initial best fitness: 7.716318e-02
+
+--- Iteration 0 ---
+Best fitness: 1.086888e-02
+Improvements: 32/50
+FDC: 0.263, PD: 0.234
+
+--- Iteration 10 ---
+Best fitness: 9.859973e-04
+Improvements: 4/50
+FDC: 0.297, PD: 0.088
+
+--- Iteration 20 ---
+Best fitness: 9.856895e-04
+Improvements: 10/50
+FDC: 0.298, PD: 0.084
+
+--- Iteration 30 ---
+Best fitness: 9.839229e-04
+Improvements: 4/50
+FDC: 0.571, PD: 0.096
+
+--- Iteration 40 ---
+Best fitness: 9.827633e-04
+Improvements: 4/50
+FDC: 0.141, PD: 0.076
+
+--- Iteration 50 ---
+Best fitness: 9.826126e-04
+Improvements: 3/50
+FDC: 0.645, PD: 0.040
+
+--- Iteration 60 ---
+Best fitness: 9.824883e-04
+Improvements: 3/50
+FDC: 0.562, PD: 0.006
+
+--- Iteration 70 ---
+Best fitness: 9.824883e-04
+Improvements: 7/50
+FDC: 0.623, PD: 0.003
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 2.34s
+🎯 Final fitness: 9.824871e-04
+📊 Total FEs: 4000
+
+============================================================
+EXTRACTION RESULTS (DDM with decomposition)
+============================================================
+  Ipv  = 0.76078134 A
+  Isd1 = 2.24075006e-07 A
+  Isd2 = 7.64782049e-07 A
+  Rs   = 0.03675064 Ohm
+  Rp   = 55.5151 Ohm
+  n1   = 1.45030646
+  n2   = 2.00000000
+  RMSE = 9.824871e-04
+
+✓ Result matches expected RMSE (9.82e-04)
+
+============================================================
+PV MODULE STM6-40/36 (decomposed) – Yan et al. 2021
+============================================================
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: STM6_Decomposed
+Dimensions: 2
+Population size: 200
+Max FEs: 50000
+Parallel mode: False
+Initial best fitness: 1.300496e-02
+
+--- Iteration 0 ---
+Best fitness: 1.146675e-02
+Improvements: 116/200
+FDC: 0.408, PD: 0.254
+
+--- Iteration 10 ---
+Best fitness: 1.140758e-02
+Improvements: 52/200
+FDC: 0.711, PD: 0.023
+
+--- Iteration 20 ---
+Best fitness: 1.140758e-02
+Improvements: 24/200
+FDC: 0.845, PD: 0.001
+
+--- Iteration 30 ---
+Best fitness: 1.140758e-02
+Improvements: 28/200
+FDC: 0.924, PD: 0.000
+
+--- Iteration 40 ---
+Best fitness: 1.140758e-02
+Improvements: 35/200
+FDC: 0.916, PD: 0.000
+
+--- Iteration 50 ---
+Best fitness: 1.140758e-02
+Improvements: 34/200
+FDC: 0.936, PD: 0.000
+
+--- Iteration 60 ---
+Best fitness: 1.140758e-02
+Improvements: 18/200
+FDC: 0.943, PD: 0.000
+
+--- Iteration 70 ---
+Best fitness: 1.140758e-02
+Improvements: 9/200
+FDC: 0.992, PD: 0.000
+
+--- Iteration 80 ---
+Best fitness: 1.140758e-02
+Improvements: 20/200
+FDC: 0.714, PD: 0.000
+🚀 RESTARTING POPULATION at iteration 88
+
+--- Iteration 90 ---
+Best fitness: 1.140758e-02
+Improvements: 87/200
+FDC: 0.302, PD: 0.216
+
+--- Iteration 100 ---
+Best fitness: 1.140758e-02
+Improvements: 27/200
+FDC: 0.552, PD: 0.016
+🚀 RESTARTING POPULATION at iteration 108
+
+--- Iteration 110 ---
+Best fitness: 1.140758e-02
+Improvements: 87/200
+FDC: 0.382, PD: 0.230
+
+--- Iteration 120 ---
+Best fitness: 1.140758e-02
+Improvements: 33/200
+FDC: 0.524, PD: 0.015
+🚀 RESTARTING POPULATION at iteration 128
+
+--- Iteration 130 ---
+Best fitness: 1.140758e-02
+Improvements: 95/200
+FDC: 0.374, PD: 0.225
+
+--- Iteration 140 ---
+Best fitness: 1.140758e-02
+Improvements: 38/200
+FDC: 0.601, PD: 0.017
+🚀 RESTARTING POPULATION at iteration 148
+
+--- Iteration 150 ---
+Best fitness: 1.140758e-02
+Improvements: 87/200
+FDC: 0.307, PD: 0.220
+
+--- Iteration 160 ---
+Best fitness: 1.140758e-02
+Improvements: 30/200
+FDC: 0.571, PD: 0.010
+🚀 RESTARTING POPULATION at iteration 168
+
+--- Iteration 170 ---
+Best fitness: 1.140758e-02
+Improvements: 96/200
+FDC: 0.285, PD: 0.237
+
+--- Iteration 180 ---
+Best fitness: 1.140758e-02
+Improvements: 38/200
+FDC: 0.493, PD: 0.014
+🚀 RESTARTING POPULATION at iteration 188
+
+--- Iteration 190 ---
+Best fitness: 1.140758e-02
+Improvements: 92/200
+FDC: 0.345, PD: 0.235
+
+--- Iteration 200 ---
+Best fitness: 1.140758e-02
+Improvements: 32/200
+FDC: 0.731, PD: 0.016
+🚀 RESTARTING POPULATION at iteration 208
+
+--- Iteration 210 ---
+Best fitness: 1.140758e-02
+Improvements: 86/200
+FDC: 0.347, PD: 0.222
+
+--- Iteration 220 ---
+Best fitness: 1.140758e-02
+Improvements: 21/200
+FDC: 0.562, PD: 0.008
+🚀 RESTARTING POPULATION at iteration 228
+
+--- Iteration 230 ---
+Best fitness: 1.140758e-02
+Improvements: 87/200
+FDC: 0.417, PD: 0.221
+
+--- Iteration 240 ---
+Best fitness: 1.140758e-02
+Improvements: 20/200
+FDC: 0.571, PD: 0.015
+🚀 RESTARTING POPULATION at iteration 248
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 70.00s
+🎯 Final fitness: 1.140758e-02
+📊 Total FEs: 50000
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: STM6_Decomposed
+Dimensions: 2
+Population size: 200
+Max FEs: 50000
+Parallel mode: False
+Initial best fitness: 1.154376e-02
+
+--- Iteration 0 ---
+Best fitness: 1.143415e-02
+Improvements: 120/200
+FDC: 0.348, PD: 0.259
+
+--- Iteration 10 ---
+Best fitness: 1.140758e-02
+Improvements: 40/200
+FDC: 0.452, PD: 0.018
+
+--- Iteration 20 ---
+Best fitness: 1.140758e-02
+Improvements: 25/200
+FDC: 0.862, PD: 0.001
+
+--- Iteration 30 ---
+Best fitness: 1.140758e-02
+Improvements: 24/200
+FDC: 0.966, PD: 0.000
+
+--- Iteration 40 ---
+Best fitness: 1.140758e-02
+Improvements: 30/200
+FDC: 0.937, PD: 0.000
+
+--- Iteration 50 ---
+Best fitness: 1.140758e-02
+Improvements: 28/200
+FDC: 0.946, PD: 0.000
+
+--- Iteration 60 ---
+Best fitness: 1.140758e-02
+Improvements: 11/200
+FDC: 0.788, PD: 0.000
+
+--- Iteration 70 ---
+Best fitness: 1.140758e-02
+Improvements: 12/200
+FDC: 0.551, PD: 0.000
+🚀 RESTARTING POPULATION at iteration 72
+
+--- Iteration 80 ---
+Best fitness: 1.140758e-02
+Improvements: 49/200
+FDC: 0.643, PD: 0.054
+
+--- Iteration 90 ---
+Best fitness: 1.140758e-02
+Improvements: 22/200
+FDC: 0.517, PD: 0.003
+🚀 RESTARTING POPULATION at iteration 92
+
+--- Iteration 100 ---
+Best fitness: 1.140758e-02
+Improvements: 41/200
+FDC: 0.705, PD: 0.038
+
+--- Iteration 110 ---
+Best fitness: 1.140758e-02
+Improvements: 22/200
+FDC: 0.981, PD: 0.008
+🚀 RESTARTING POPULATION at iteration 112
+
+--- Iteration 120 ---
+Best fitness: 1.140758e-02
+Improvements: 45/200
+FDC: 0.330, PD: 0.035
+
+--- Iteration 130 ---
+Best fitness: 1.140758e-02
+Improvements: 10/200
+FDC: 0.600, PD: 0.002
+🚀 RESTARTING POPULATION at iteration 132
+
+--- Iteration 140 ---
+Best fitness: 1.140758e-02
+Improvements: 32/200
+FDC: 0.452, PD: 0.038
+
+--- Iteration 150 ---
+Best fitness: 1.140758e-02
+Improvements: 25/200
+FDC: 0.636, PD: 0.003
+🚀 RESTARTING POPULATION at iteration 152
+
+--- Iteration 160 ---
+Best fitness: 1.140758e-02
+Improvements: 47/200
+FDC: 0.563, PD: 0.028
+
+--- Iteration 170 ---
+Best fitness: 1.140758e-02
+Improvements: 16/200
+FDC: 0.455, PD: 0.002
+🚀 RESTARTING POPULATION at iteration 172
+
+--- Iteration 180 ---
+Best fitness: 1.140758e-02
+Improvements: 46/200
+FDC: 0.507, PD: 0.046
+
+--- Iteration 190 ---
+Best fitness: 1.140758e-02
+Improvements: 23/200
+FDC: 0.442, PD: 0.005
+🚀 RESTARTING POPULATION at iteration 192
+
+--- Iteration 200 ---
+Best fitness: 1.140758e-02
+Improvements: 49/200
+FDC: 0.400, PD: 0.033
+
+--- Iteration 210 ---
+Best fitness: 1.140758e-02
+Improvements: 18/200
+FDC: 0.855, PD: 0.003
+🚀 RESTARTING POPULATION at iteration 212
+
+--- Iteration 220 ---
+Best fitness: 1.140758e-02
+Improvements: 47/200
+FDC: 0.676, PD: 0.037
+
+--- Iteration 230 ---
+Best fitness: 1.140758e-02
+Improvements: 17/200
+FDC: 0.838, PD: 0.003
+🚀 RESTARTING POPULATION at iteration 232
+
+--- Iteration 240 ---
+Best fitness: 1.140758e-02
+Improvements: 46/200
+FDC: 0.737, PD: 0.050
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 69.18s
+🎯 Final fitness: 1.140758e-02
+📊 Total FEs: 50000
+
+============================================================
+EXTRACTION RESULTS (STM6 with decomposition)
+============================================================
+  Ipv = 1.74082015 A
+  Isd = 3.50728676e-06 A
+  Rs  = 0.10500004 Ohm
+  Rp  = 3.1526 Ohm
+  n   = 2.00000000
+  RMSE = 1.140758e-02
+
+⚠ Result differs from expected (1.73e-03)
+
+============================================================
+PV MODULE STP6-120/36 (decomposed) – Yan et al. 2021
+============================================================
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: STP6_Decomposed
+Dimensions: 2
+Population size: 200
+Max FEs: 50000
+Parallel mode: False
+Initial best fitness: 6.614780e+00
+
+--- Iteration 0 ---
+Best fitness: 6.612883e+00
+Improvements: 100/200
+FDC: 0.146, PD: 0.234
+
+--- Iteration 10 ---
+Best fitness: 6.465817e+00
+Improvements: 29/200
+FDC: 0.756, PD: 0.142
+
+--- Iteration 20 ---
+Best fitness: 6.191660e+00
+Improvements: 17/200
+FDC: 0.700, PD: 0.051
+
+--- Iteration 30 ---
+Best fitness: 6.191660e+00
+Improvements: 15/200
+FDC: 0.082, PD: 0.030
+🚀 RESTARTING POPULATION at iteration 39
+
+--- Iteration 40 ---
+Best fitness: 6.191660e+00
+Improvements: 100/200
+FDC: 0.366, PD: 0.257
+
+--- Iteration 50 ---
+Best fitness: 6.191660e+00
+Improvements: 21/200
+FDC: 0.402, PD: 0.078
+
+--- Iteration 60 ---
+Best fitness: 6.102786e+00
+Improvements: 29/200
+FDC: 0.262, PD: 0.030
+
+--- Iteration 70 ---
+Best fitness: 6.100591e+00
+Improvements: 15/200
+FDC: 0.264, PD: 0.026
+
+--- Iteration 80 ---
+Best fitness: 6.100591e+00
+Improvements: 13/200
+FDC: 0.300, PD: 0.023
+
+--- Iteration 90 ---
+Best fitness: 6.100486e+00
+Improvements: 23/200
+FDC: 0.347, PD: 0.019
+
+--- Iteration 100 ---
+Best fitness: 6.100486e+00
+Improvements: 31/200
+FDC: 0.969, PD: 0.003
+
+--- Iteration 110 ---
+Best fitness: 6.100486e+00
+Improvements: 29/200
+FDC: 0.997, PD: 0.001
+
+--- Iteration 120 ---
+Best fitness: 6.100486e+00
+Improvements: 26/200
+FDC: 0.965, PD: 0.000
+
+--- Iteration 130 ---
+Best fitness: 6.100486e+00
+Improvements: 23/200
+FDC: 0.924, PD: 0.000
+
+--- Iteration 140 ---
+Best fitness: 6.100486e+00
+Improvements: 16/200
+FDC: 0.959, PD: 0.000
+🚀 RESTARTING POPULATION at iteration 146
+
+--- Iteration 150 ---
+Best fitness: 6.100486e+00
+Improvements: 48/200
+FDC: 0.454, PD: 0.216
+
+--- Iteration 160 ---
+Best fitness: 6.100486e+00
+Improvements: 26/200
+FDC: 0.334, PD: 0.039
+🚀 RESTARTING POPULATION at iteration 166
+
+--- Iteration 170 ---
+Best fitness: 6.100486e+00
+Improvements: 53/200
+FDC: 0.465, PD: 0.230
+
+--- Iteration 180 ---
+Best fitness: 6.100486e+00
+Improvements: 20/200
+FDC: 0.522, PD: 0.068
+🚀 RESTARTING POPULATION at iteration 186
+
+--- Iteration 190 ---
+Best fitness: 6.100486e+00
+Improvements: 52/200
+FDC: 0.502, PD: 0.224
+
+--- Iteration 200 ---
+Best fitness: 6.100486e+00
+Improvements: 23/200
+FDC: 0.452, PD: 0.061
+🚀 RESTARTING POPULATION at iteration 206
+
+--- Iteration 210 ---
+Best fitness: 6.100486e+00
+Improvements: 41/200
+FDC: 0.480, PD: 0.242
+
+--- Iteration 220 ---
+Best fitness: 6.100486e+00
+Improvements: 23/200
+FDC: 0.542, PD: 0.057
+🚀 RESTARTING POPULATION at iteration 226
+
+--- Iteration 230 ---
+Best fitness: 6.100486e+00
+Improvements: 56/200
+FDC: 0.393, PD: 0.220
+
+--- Iteration 240 ---
+Best fitness: 6.100486e+00
+Improvements: 17/200
+FDC: 0.349, PD: 0.075
+🚀 RESTARTING POPULATION at iteration 246
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 71.71s
+🎯 Final fitness: 6.100486e+00
+📊 Total FEs: 50000
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: STP6_Decomposed
+Dimensions: 2
+Population size: 200
+Max FEs: 50000
+Parallel mode: False
+Initial best fitness: 6.611129e+00
+
+--- Iteration 0 ---
+Best fitness: 6.611129e+00
+Improvements: 106/200
+FDC: 0.146, PD: 0.251
+
+--- Iteration 10 ---
+Best fitness: 2.152637e+00
+Improvements: 25/200
+FDC: -0.110, PD: 0.216
+
+--- Iteration 20 ---
+Best fitness: 2.152637e+00
+Improvements: 22/200
+FDC: -0.382, PD: 0.195
+🚀 RESTARTING POPULATION at iteration 22
+
+--- Iteration 30 ---
+Best fitness: 2.152637e+00
+Improvements: 27/200
+FDC: -0.286, PD: 0.271
+
+--- Iteration 40 ---
+Best fitness: 2.152637e+00
+Improvements: 15/200
+FDC: -0.391, PD: 0.236
+🚀 RESTARTING POPULATION at iteration 42
+
+--- Iteration 50 ---
+Best fitness: 2.152637e+00
+Improvements: 32/200
+FDC: -0.148, PD: 0.286
+
+--- Iteration 60 ---
+Best fitness: 2.152637e+00
+Improvements: 20/200
+FDC: -0.208, PD: 0.259
+🚀 RESTARTING POPULATION at iteration 62
+
+--- Iteration 70 ---
+Best fitness: 2.152637e+00
+Improvements: 36/200
+FDC: 0.054, PD: 0.181
+
+--- Iteration 80 ---
+Best fitness: 2.152637e+00
+Improvements: 14/200
+FDC: 0.015, PD: 0.133
+🚀 RESTARTING POPULATION at iteration 82
+
+--- Iteration 90 ---
+Best fitness: 2.152637e+00
+Improvements: 32/200
+FDC: -0.193, PD: 0.251
+
+--- Iteration 100 ---
+Best fitness: 2.152637e+00
+Improvements: 17/200
+FDC: -0.247, PD: 0.253
+🚀 RESTARTING POPULATION at iteration 102
+
+--- Iteration 110 ---
+Best fitness: 2.152637e+00
+Improvements: 37/200
+FDC: -0.177, PD: 0.265
+
+--- Iteration 120 ---
+Best fitness: 2.152637e+00
+Improvements: 20/200
+FDC: -0.312, PD: 0.262
+🚀 RESTARTING POPULATION at iteration 122
+
+--- Iteration 130 ---
+Best fitness: 2.152637e+00
+Improvements: 28/200
+FDC: -0.086, PD: 0.238
+
+--- Iteration 140 ---
+Best fitness: 2.152637e+00
+Improvements: 15/200
+FDC: -0.295, PD: 0.245
+🚀 RESTARTING POPULATION at iteration 142
+
+--- Iteration 150 ---
+Best fitness: 2.152637e+00
+Improvements: 35/200
+FDC: 0.006, PD: 0.204
+
+--- Iteration 160 ---
+Best fitness: 2.152637e+00
+Improvements: 20/200
+FDC: -0.164, PD: 0.201
+🚀 RESTARTING POPULATION at iteration 162
+
+--- Iteration 170 ---
+Best fitness: 2.152637e+00
+Improvements: 24/200
+FDC: -0.078, PD: 0.247
+
+--- Iteration 180 ---
+Best fitness: 2.152637e+00
+Improvements: 15/200
+FDC: -0.255, PD: 0.264
+🚀 RESTARTING POPULATION at iteration 182
+
+--- Iteration 190 ---
+Best fitness: 2.132077e+00
+Improvements: 27/200
+FDC: 0.178, PD: 0.209
+
+--- Iteration 200 ---
+Best fitness: 2.125467e+00
+Improvements: 17/200
+FDC: 0.017, PD: 0.175
+
+--- Iteration 210 ---
+Best fitness: 2.125467e+00
+Improvements: 13/200
+FDC: -0.034, PD: 0.183
+🚀 RESTARTING POPULATION at iteration 215
+
+--- Iteration 220 ---
+Best fitness: 2.125467e+00
+Improvements: 40/200
+FDC: 0.053, PD: 0.273
+
+--- Iteration 230 ---
+Best fitness: 2.125467e+00
+Improvements: 17/200
+FDC: -0.184, PD: 0.229
+🚀 RESTARTING POPULATION at iteration 235
+
+--- Iteration 240 ---
+Best fitness: 2.125467e+00
+Improvements: 45/200
+FDC: 0.043, PD: 0.229
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 68.54s
+🎯 Final fitness: 2.125467e+00
+📊 Total FEs: 50000
+
+============================================================
+EXTRACTION RESULTS (STP6 with decomposition)
+============================================================
+  Ipv = 8.01085530 A
+  Isd = 1.00000000e-04 A
+  Rs  = 0.04939198 Ohm
+  Rp  = 4.6421 Ohm
+  n   = 1.22939125
+  RMSE = 2.125467e+00
+
+⚠ Result differs from expected (1.66e-02)
+
+======================================================================
+SUMMARY
+======================================================================
+SDM    RMSE = 9.860890e-04
+DDM    RMSE = 9.824871e-04
+STM6   RMSE = 1.140758e-02
+STP6   RMSE = 2.125467e+00
