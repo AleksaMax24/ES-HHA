@@ -4,76 +4,361 @@ ES-HHA OPTIMIZATION STARTED
 Test function: SingleDiodeModel_Decomposed
 Dimensions: 2
 Population size: 50
-Max FEs: 5000
-Initial best fitness: 2.513098e-03
+Max FEs: 2000
+Parallel mode: False
+Initial best fitness: 2.398370e+05
 
 --- Iteration 0 ---
-Best fitness: 2.513098e-03
-Improvements: 36/50
-FDC: 0.861, PD: 0.251
+Best fitness: 2.398370e+05
+Improvements: 0/50
+FDC: -0.000, PD: 1781766353.227
+
+--- Iteration 10 (best fitness 2.398370e+05) ---
+  n     = 1.67876822
+  Rs    = 0.46731476 Ohm
+  Ipv   = 0.86485394 A
+  Isd   = 1.00000000e-09 A
+  Rp    = 10.0000 Ohm
 
 --- Iteration 10 ---
-Best fitness: 1.108984e-03
-Improvements: 9/50
-FDC: 0.489, PD: 0.054
+Best fitness: 2.398370e+05
+Improvements: 0/50
+FDC: -0.000, PD: 1781766353.227
+🚀 RESTARTING POPULATION at iteration 19
+
+--- Iteration 20 (best fitness 2.398370e+05) ---
+  n     = 1.67876822
+  Rs    = 0.46731476 Ohm
+  Ipv   = 0.86485394 A
+  Isd   = 1.00000000e-09 A
+  Rp    = 10.0000 Ohm
 
 --- Iteration 20 ---
-Best fitness: 1.008400e-03
-Improvements: 7/50
-FDC: 0.744, PD: 0.025
+Best fitness: 2.398370e+05
+Improvements: 0/50
+FDC: 0.000, PD: 887135422.710
+
+--- Iteration 30 (best fitness 2.398370e+05) ---
+  n     = 1.67876822
+  Rs    = 0.46731476 Ohm
+  Ipv   = 0.86485394 A
+  Isd   = 1.00000000e-09 A
+  Rp    = 10.0000 Ohm
 
 --- Iteration 30 ---
-Best fitness: 9.867929e-04
-Improvements: 9/50
-FDC: 0.677, PD: 0.009
-
---- Iteration 40 ---
-Best fitness: 9.865959e-04
-Improvements: 3/50
-FDC: 0.700, PD: 0.004
-
---- Iteration 50 ---
-Best fitness: 9.860510e-04
-Improvements: 9/50
-FDC: 0.929, PD: 0.003
-
---- Iteration 60 ---
-Best fitness: 9.860363e-04
-Improvements: 5/50
-FDC: 0.961, PD: 0.001
-
---- Iteration 70 ---
-Best fitness: 9.860271e-04
-Improvements: 11/50
-FDC: 0.559, PD: 0.000
-
---- Iteration 80 ---
-Best fitness: 9.860222e-04
-Improvements: 6/50
-FDC: 0.840, PD: 0.000
-
---- Iteration 90 ---
-Best fitness: 9.860221e-04
-Improvements: 9/50
-FDC: 0.897, PD: 0.000
+Best fitness: 2.398370e+05
+Improvements: 0/50
+FDC: 0.000, PD: 887135422.710
 
 ============================================================
 FINAL STATISTICS
 ============================================================
 
-⏱️ Execution: 1.95s
-🎯 Final fitness: 9.860220e-04
-📊 Total FEs: 5000
+⏱️ Execution: 0.77s
+🎯 Final fitness: 2.398370e+05
+📊 Total FEs: 2000
 
 ============================================================
-EXTRACTION RESULTS (with decomposition)
+Extracted Parameters (SDM)
 ============================================================
-Extracted parameters:
-  Ipv = 0.76077566 A
-  Isd = 3.22970043e-07 A
-  Rs  = 0.03637755 Ohm
-  Rp  = 53.7120 Ohm
-  n   = 1.48116783
-  RMSE = 9.860220e-04
+Ipv      = 0.86485394 A
+Isd      = 1.00000000e-09 A
+Rs       = 0.46731476 Ohm
+Rp       = 10.0000 Ohm
+n        = 1.67876822
+============================================================
+Best fitness achieved at iteration: 0 (value: 2.398370e+05)
+Total iterations: 38
 
-✓ Result matches expected RMSE (9.86e-04)
+============================================================
+DOUBLE DIODE MODEL (full search) – Yan et al. 2021
+============================================================
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: DoubleDiodeModel_Full
+Dimensions: 7
+Population size: 50
+Max FEs: 4000
+Parallel mode: False
+Initial best fitness: 9.424751e-02
+
+--- Iteration 0 ---
+Best fitness: 8.574907e-02
+Improvements: 25/50
+FDC: 0.262, PD: 0.254
+
+--- Iteration 10 (best fitness 5.845097e-02) ---
+  Ipv  = 0.80804915 A
+  Isd1 = 3.48741582e-05 A
+  Isd2 = 5.00000000e-05 A
+  Rs   = 0.32958632 Ohm
+  Rp   = 10.2970 Ohm
+  n1   = 1.66664979
+  n2   = 1.74513559
+
+--- Iteration 10 ---
+Best fitness: 5.210536e-02
+Improvements: 10/50
+FDC: 0.085, PD: 0.194
+
+--- Iteration 20 (best fitness 4.720853e-02) ---
+  Ipv  = 0.74098347 A
+  Isd1 = 4.97113975e-05 A
+  Isd2 = 4.09202355e-05 A
+  Rs   = 0.30727775 Ohm
+  Rp   = 47.0527 Ohm
+  n1   = 1.75644085
+  n2   = 1.78141718
+
+--- Iteration 20 ---
+Best fitness: 4.720853e-02
+Improvements: 6/50
+FDC: -0.026, PD: 0.197
+
+--- Iteration 30 (best fitness 4.312292e-02) ---
+  Ipv  = 0.76721270 A
+  Isd1 = 4.97113975e-05 A
+  Isd2 = 4.09202355e-05 A
+  Rs   = 0.30727775 Ohm
+  Rp   = 10.0000 Ohm
+  n1   = 1.76739099
+  n2   = 1.78141718
+
+--- Iteration 30 ---
+Best fitness: 4.312292e-02
+Improvements: 4/50
+FDC: 0.147, PD: 0.173
+
+--- Iteration 40 (best fitness 4.219916e-02) ---
+  Ipv  = 0.77288307 A
+  Isd1 = 4.97662320e-05 A
+  Isd2 = 4.09202355e-05 A
+  Rs   = 0.30727775 Ohm
+  Rp   = 10.0000 Ohm
+  n1   = 1.76531046
+  n2   = 1.78141718
+
+--- Iteration 40 ---
+Best fitness: 4.219916e-02
+Improvements: 2/50
+FDC: 0.069, PD: 0.119
+
+--- Iteration 50 (best fitness 4.202460e-02) ---
+  Ipv  = 0.77690903 A
+  Isd1 = 5.00000000e-05 A
+  Isd2 = 4.09202355e-05 A
+  Rs   = 0.30727775 Ohm
+  Rp   = 10.0000 Ohm
+  n1   = 1.76295106
+  n2   = 1.78141718
+
+--- Iteration 50 ---
+Best fitness: 4.202460e-02
+Improvements: 7/50
+FDC: 0.352, PD: 0.043
+
+--- Iteration 60 (best fitness 4.177705e-02) ---
+  Ipv  = 0.77365926 A
+  Isd1 = 5.00000000e-05 A
+  Isd2 = 4.20377439e-05 A
+  Rs   = 0.30863729 Ohm
+  Rp   = 10.0000 Ohm
+  n1   = 1.76531046
+  n2   = 1.78141718
+
+--- Iteration 60 ---
+Best fitness: 4.176771e-02
+Improvements: 13/50
+FDC: 0.236, PD: 0.004
+
+--- Iteration 70 (best fitness 4.154600e-02) ---
+  Ipv  = 0.77317491 A
+  Isd1 = 4.99973120e-05 A
+  Isd2 = 4.39660172e-05 A
+  Rs   = 0.31090608 Ohm
+  Rp   = 10.0000 Ohm
+  n1   = 1.76298908
+  n2   = 1.78141718
+
+--- Iteration 70 ---
+Best fitness: 4.154281e-02
+Improvements: 10/50
+FDC: 0.277, PD: 0.003
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 1.96s
+🎯 Final fitness: 4.122939e-02
+📊 Total FEs: 4000
+
+============================================================
+Extracted Parameters (DDM)
+============================================================
+Ipv      = 0.77267194 A
+Isd1     = 4.99973120e-05 A
+Isd2     = 4.71894850e-05 A
+Rs       = 0.31090608 Ohm
+Rp       = 10.0000 Ohm
+n1       = 1.77550239
+n2       = 1.78141718
+============================================================
+Best fitness achieved at iteration: 78 (value: 4.122939e-02)
+Total iterations: 78
+
+============================================================
+TRIPLE DIODE MODEL (decomposed) – 9 параметров
+============================================================
+
+============================================================
+ES-HHA OPTIMIZATION STARTED
+============================================================
+Test function: TripleDiodeModel_Decomposed
+Dimensions: 4
+Population size: 100
+Max FEs: 10000
+Parallel mode: False
+Initial best fitness: 1.157404e-03
+
+--- Iteration 0 ---
+Best fitness: 1.157404e-03
+Improvements: 73/100
+FDC: 0.118, PD: 0.241
+
+--- Iteration 10 (best fitness 9.836228e-04) ---
+  n1   = 1.45812197, n2 = 2.00000000, n3 = 1.52784936
+  Rs   = 0.03654078 Ohm
+  Ipv  = 0.76077530 A
+  Isd1 = 2.21616842e-07 A, Isd2 = 4.19494001e-07 A, Isd3 = 5.37243408e-08 A
+  Rp   = 54.9644 Ohm
+
+--- Iteration 10 ---
+Best fitness: 9.836228e-04
+Improvements: 13/100
+FDC: 0.027, PD: 0.223
+
+--- Iteration 20 (best fitness 9.833518e-04) ---
+  n1   = 1.45812197, n2 = 2.00000000, n3 = 1.46808426
+  Rs   = 0.03654078 Ohm
+  Ipv  = 0.76077584 A
+  Isd1 = 7.36043598e-08 A, Isd2 = 4.32757006e-07 A, Isd3 = 1.93612328e-07 A
+  Rp   = 54.9011 Ohm
+
+--- Iteration 20 ---
+Best fitness: 9.833518e-04
+Improvements: 9/100
+FDC: 0.188, PD: 0.218
+
+--- Iteration 30 (best fitness 9.825083e-04) ---
+  n1   = 1.45812197, n2 = 2.00000000, n3 = 1.44551697
+  Rs   = 0.03674732 Ohm
+  Ipv  = 0.76078123 A
+  Isd1 = 9.83362191e-08 A, Isd2 = 7.57736156e-07 A, Isd3 = 1.26978064e-07 A
+  Rp   = 55.5064 Ohm
+
+--- Iteration 30 ---
+Best fitness: 9.825083e-04
+Improvements: 8/100
+FDC: 0.134, PD: 0.173
+
+--- Iteration 40 (best fitness 9.825083e-04) ---
+  n1   = 1.45812197, n2 = 2.00000000, n3 = 1.44551697
+  Rs   = 0.03674732 Ohm
+  Ipv  = 0.76078123 A
+  Isd1 = 9.83362191e-08 A, Isd2 = 7.57736156e-07 A, Isd3 = 1.26978064e-07 A
+  Rp   = 55.5064 Ohm
+
+--- Iteration 40 ---
+Best fitness: 9.825083e-04
+Improvements: 11/100
+FDC: 0.113, PD: 0.138
+🚀 RESTARTING POPULATION at iteration 41
+
+--- Iteration 50 (best fitness 9.825083e-04) ---
+  n1   = 1.45812197, n2 = 2.00000000, n3 = 1.44551697
+  Rs   = 0.03674732 Ohm
+  Ipv  = 0.76078123 A
+  Isd1 = 9.83362191e-08 A, Isd2 = 7.57736156e-07 A, Isd3 = 1.26978064e-07 A
+  Rp   = 55.5064 Ohm
+
+--- Iteration 50 ---
+Best fitness: 9.825083e-04
+Improvements: 10/100
+FDC: 0.165, PD: 0.175
+
+--- Iteration 60 (best fitness 9.825083e-04) ---
+  n1   = 1.45812197, n2 = 2.00000000, n3 = 1.44551697
+  Rs   = 0.03674732 Ohm
+  Ipv  = 0.76078123 A
+  Isd1 = 9.83362191e-08 A, Isd2 = 7.57736156e-07 A, Isd3 = 1.26978064e-07 A
+  Rp   = 55.5064 Ohm
+
+--- Iteration 60 ---
+Best fitness: 9.825083e-04
+Improvements: 18/100
+FDC: 0.534, PD: 0.127
+🚀 RESTARTING POPULATION at iteration 61
+
+--- Iteration 70 (best fitness 9.825020e-04) ---
+  n1   = 1.47123951, n2 = 2.00000000, n3 = 1.44914334
+  Rs   = 0.03674732 Ohm
+  Ipv  = 0.76078114 A
+  Isd1 = 1.64637691e-08 A, Isd2 = 7.62888771e-07 A, Isd3 = 2.08283005e-07 A
+  Rp   = 55.5281 Ohm
+
+--- Iteration 70 ---
+Best fitness: 9.825020e-04
+Improvements: 15/100
+FDC: 0.438, PD: 0.103
+
+--- Iteration 80 (best fitness 9.824937e-04) ---
+  n1   = 1.46022077, n2 = 2.00000000, n3 = 1.44914334
+  Rs   = 0.03674732 Ohm
+  Ipv  = 0.76078120 A
+  Isd1 = 3.05287359e-08 A, Isd2 = 7.60997462e-07 A, Isd3 = 1.94210499e-07 A
+  Rp   = 55.5151 Ohm
+
+--- Iteration 80 ---
+Best fitness: 9.824937e-04
+Improvements: 15/100
+FDC: 0.697, PD: 0.048
+
+--- Iteration 90 (best fitness 9.824867e-04) ---
+  n1   = 1.45151598, n2 = 2.00000000, n3 = 1.44914334
+  Rs   = 0.03674732 Ohm
+  Ipv  = 0.76078126 A
+  Isd1 = 1.33974642e-07 A, Isd2 = 7.59582180e-07 A, Isd3 = 9.07482613e-08 A
+  Rp   = 55.5050 Ohm
+
+--- Iteration 90 ---
+Best fitness: 9.824867e-04
+Improvements: 13/100
+FDC: 0.733, PD: 0.019
+
+============================================================
+FINAL STATISTICS
+============================================================
+
+⏱️ Execution: 2.83s
+🎯 Final fitness: 9.824859e-04
+📊 Total FEs: 10000
+
+============================================================
+Extracted Parameters (TDM with decomposition)
+============================================================
+Ipv      = 0.76078125 A
+Isd1     = 1.46559722e-08 A
+Isd2     = 7.60014675e-07 A
+Isd3     = 2.10014121e-07 A
+Rs       = 0.03674732 Ohm
+Rp       = 55.5067 Ohm
+n1       = 1.45151598
+n2       = 2.00000000
+n3       = 1.45046178
+============================================================
+Best fitness achieved at iteration: 98 (value: 9.824859e-04)
+Total iterations: 98
+
