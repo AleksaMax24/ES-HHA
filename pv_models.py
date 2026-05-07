@@ -162,7 +162,16 @@ class SingleDiodeModel:
         # вычисляем RMSE
         rmse = np.sqrt(np.mean((self.data.current - I_calc) ** 2))
         return rmse
-
+        
+    def objective_mape(self, params: np.ndarray) -> float:
+    # целевая функция MAPE (в процентах)
+    I_calc = self.compute_current(params)
+    I_meas = self.data.current
+    # защита от деления на ноль
+    with np.errstate(divide='ignore', invalid='ignore'):
+        rel_error = np.abs((I_meas - I_calc) / np.where(I_meas == 0, 1e-12, I_meas))
+        mape = np.mean(rel_error) * 100
+    return mape    
 
 class DoubleDiodeModel:
     """
@@ -206,6 +215,16 @@ class DoubleDiodeModel:
         I_calc = self.compute_current(params)
         rmse = np.sqrt(np.mean((self.data.current - I_calc) ** 2))
         return rmse
+        
+    def objective_mape(self, params: np.ndarray) -> float:
+    # целевая функция MAPE (в процентах)
+    I_calc = self.compute_current(params)
+    I_meas = self.data.current
+    # защита от деления на ноль
+    with np.errstate(divide='ignore', invalid='ignore'):
+        rel_error = np.abs((I_meas - I_calc) / np.where(I_meas == 0, 1e-12, I_meas))
+        mape = np.mean(rel_error) * 100
+    return mape    
 
 class TripleDiodeModel:
     """
@@ -244,6 +263,16 @@ class TripleDiodeModel:
         I_calc = self.compute_current(params)
         rmse = np.sqrt(np.mean((self.data.current - I_calc) ** 2))
         return rmse
+        
+    def objective_mape(self, params: np.ndarray) -> float:
+    # целевая функция MAPE (в процентах)
+    I_calc = self.compute_current(params)
+    I_meas = self.data.current
+    # защита от деления на ноль
+    with np.errstate(divide='ignore', invalid='ignore'):
+        rel_error = np.abs((I_meas - I_calc) / np.where(I_meas == 0, 1e-12, I_meas))
+        mape = np.mean(rel_error) * 100
+    return mape    
 
 
 class SingleDiodeModuleModel(SingleDiodeModel):
@@ -255,25 +284,85 @@ class SingleDiodeModuleModel(SingleDiodeModel):
     def compute_current(self, params: np.ndarray, V: np.ndarray = None) -> np.ndarray:
         Ipv, Isd, Rs, Rp, n = params
 
+        Rp = max(Rp, 1e-6)
+        Rs = max(Rs, 0.0)
+        Ipv = max(Ipv, 0.0)
+        Isd = max(Isd, 0.0)
+        n = max(n, 1.0)
+
         if V is None:
             V = self.V
 
         V_T = self.VT
+        Ns = self.Ns
+        Np = self.Np
 
-        I = np.maximum(Ipv * self.Np - V / (Rp * self.Ns / self.Np), -0.1)
+        I = np.full_like(V, Ipv * Np * 0.9)
+        I = np.clip(I, -0.5, Ipv * Np + 0.1)
 
-        for _ in range(20):
-            exp_arg = (V * self.Np + I * Rs * self.Ns) / (n * self.Ns * self.Np * V_T)
-            exp_arg = np.clip(exp_arg, -100, 100)
-            I_new = (Ipv * self.Np - Isd * self.Np * (np.exp(exp_arg) - 1) -
-                     (V * self.Np + I * Rs * self.Ns) / (Rp * self.Ns))
-            I_new = np.clip(I_new, -0.5, Ipv * self.Np + 0.1)
+        for _ in range(30):
+            try:
+                exp_arg = (V * Np + I * Rs * Ns) / (n * Ns * Np * V_T)
+                exp_arg = np.clip(exp_arg, -100, 100)
 
-            if np.max(np.abs(I_new - I)) < 1e-10:
+                I_new = (Ipv * Np
+                         - Isd * Np * (np.exp(exp_arg) - 1)
+                         - (V * Np + I * Rs * Ns) / (Rp * Ns))
+                I_new = np.clip(I_new, -0.5, Ipv * Np + 0.1)
+
+                if np.any(np.isnan(I_new)):
+                    break
+                if np.max(np.abs(I_new - I)) < 1e-10:
+                    break
+                I = I_new
+            except Exception:
                 break
-            I = I_new
 
-        return I
+        return I    
+ 
+
+    def objective(self, params: np.ndarray) -> float:
+        try:
+            Ipv, Isd, Rs, Rp, n = params
+
+            penalty = 0.0
+            if Ipv < 0.0 or Ipv > 2.0 * self.Np:
+                penalty += 1e6
+            if Isd < 0.0 or Isd > 1e-4:
+                penalty += 1e6
+            if Rs < 0.0 or Rs > 1.0:
+                penalty += 1e6
+            if Rp < 1e-6 or Rp > 1e5:
+                penalty += 1e6
+            if n < 1.0 or n > 2.0:
+                penalty += 1e6
+
+            if penalty > 0:
+                return penalty
+
+            I_calc = self.compute_current(params)
+
+            if np.any(np.isnan(I_calc)):
+                return 1e6
+
+            rmse = np.sqrt(np.mean((self.data.current - I_calc) ** 2))
+
+            if Rp < 1.0:
+                rmse += 100.0 * (1.0 - Rp)
+
+            return rmse
+
+        except Exception:
+            return 1e6
+
+    def objective_mape(self, params: np.ndarray) -> float:
+        I_calc = self.compute_current(params)
+        I_meas = self.data.current
+        with np.errstate(divide='ignore', invalid='ignore'):
+            rel_error = np.abs((I_meas - I_calc) / np.where(I_meas == 0, 1e-12, I_meas))
+            mape = np.mean(rel_error) * 100
+        return mape
+
 
 
 
@@ -399,6 +488,27 @@ class DecomposedSDM:
 
         except (np.linalg.LinAlgError, OverflowError, ValueError) as e:
             return 1e6
+            
+    def objective_decomposed_mape(self, params: np.ndarray) -> float:
+    n, Rs = params
+    if n < 1.0 or n > 2.0 or Rs < 0.0 or Rs > 0.5:
+        return 1e6
+    try:
+        Ipv, Isd, Rp = self.compute_linear_params(n, Rs)
+        I_calc = np.zeros(self.n_points)
+        for i in range(self.n_points):
+            exp_arg = (self.V[i] + self.I_meas[i] * Rs) / (n * self.VT)
+            exp_arg = np.clip(exp_arg, -50, 50)
+            I_calc[i] = Ipv - Isd * (np.exp(exp_arg) - 1) - (self.V[i] + self.I_meas[i] * Rs) / Rp
+        I_calc = np.clip(I_calc, -0.5, 1.0)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            rel_error = np.abs((self.I_meas - I_calc) / np.where(self.I_meas == 0, 1e-12, self.I_meas))
+            mape = np.mean(rel_error) * 100
+        return mape
+    except Exception:
+        return 1e6        
+
+
 
 class DecomposedDDM:
     """
@@ -528,6 +638,25 @@ class DecomposedDDM:
             return rmse
         except:
             return 1e6
+            
+    def objective_decomposed_mape(self, params: np.ndarray) -> float:
+    n, Rs = params
+    if n < 1.0 or n > 2.0 or Rs < 0.0 or Rs > 0.5:
+        return 1e6
+    try:
+        Ipv, Isd, Rp = self.compute_linear_params(n, Rs)
+        I_calc = np.zeros(self.n_points)
+        for i in range(self.n_points):
+            exp_arg = (self.V[i] + self.I_meas[i] * Rs) / (n * self.VT)
+            exp_arg = np.clip(exp_arg, -50, 50)
+            I_calc[i] = Ipv - Isd * (np.exp(exp_arg) - 1) - (self.V[i] + self.I_meas[i] * Rs) / Rp
+        I_calc = np.clip(I_calc, -0.5, 1.0)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            rel_error = np.abs((self.I_meas - I_calc) / np.where(self.I_meas == 0, 1e-12, self.I_meas))
+            mape = np.mean(rel_error) * 100
+        return mape
+    except Exception:
+        return 1e6        
 
 class DecomposedTDM:
     """
@@ -620,6 +749,26 @@ class DecomposedTDM:
             return rmse
         except Exception:
             return 1e6
+            
+    def objective_decomposed_mape(self, params: np.ndarray) -> float:
+    n, Rs = params
+    if n < 1.0 or n > 2.0 or Rs < 0.0 or Rs > 0.5:
+        return 1e6
+    try:
+        Ipv, Isd, Rp = self.compute_linear_params(n, Rs)
+        I_calc = np.zeros(self.n_points)
+        for i in range(self.n_points):
+            exp_arg = (self.V[i] + self.I_meas[i] * Rs) / (n * self.VT)
+            exp_arg = np.clip(exp_arg, -50, 50)
+            I_calc[i] = Ipv - Isd * (np.exp(exp_arg) - 1) - (self.V[i] + self.I_meas[i] * Rs) / Rp
+        I_calc = np.clip(I_calc, -0.5, 1.0)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            rel_error = np.abs((self.I_meas - I_calc) / np.where(self.I_meas == 0, 1e-12, self.I_meas))
+            mape = np.mean(rel_error) * 100
+        return mape
+    except Exception:
+        return 1e6      
+        
 class DecomposedModule:
 
     def __init__(self, data: PVData, max_iter: int = 5):
@@ -695,6 +844,7 @@ class DecomposedModule:
             Ipv, Isd, Rp = self.compute_linear_params(n, Rs, I_guess)
         return Ipv, Isd, Rp, I_guess
 
+    
     def objective_decomposed(self, params: np.ndarray) -> float:
         n, Rs = params
         if n < 1.0 or n > 2.0 or Rs < 0.0 or Rs > 0.5:
@@ -705,6 +855,25 @@ class DecomposedModule:
             return rmse
         except Exception:
             return 1e6
+            
+    def objective_decomposed_mape(self, params: np.ndarray) -> float:
+    n, Rs = params
+    if n < 1.0 or n > 2.0 or Rs < 0.0 or Rs > 0.5:
+        return 1e6
+    try:
+        Ipv, Isd, Rp = self.compute_linear_params(n, Rs)
+        I_calc = np.zeros(self.n_points)
+        for i in range(self.n_points):
+            exp_arg = (self.V[i] + self.I_meas[i] * Rs) / (n * self.VT)
+            exp_arg = np.clip(exp_arg, -50, 50)
+            I_calc[i] = Ipv - Isd * (np.exp(exp_arg) - 1) - (self.V[i] + self.I_meas[i] * Rs) / Rp
+        I_calc = np.clip(I_calc, -0.5, 1.0)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            rel_error = np.abs((self.I_meas - I_calc) / np.where(self.I_meas == 0, 1e-12, self.I_meas))
+            mape = np.mean(rel_error) * 100
+        return mape
+    except Exception:
+        return 1e6        
 
 
 def create_rtc_single_diode_model() -> Tuple[SingleDiodeModel, PVData]:
