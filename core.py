@@ -31,6 +31,8 @@ class ES_HHA:
 
         self.llh_usage_count = defaultdict(int)
         self.pool_usage_count = defaultdict(int)
+        self.pool_usage_history = []
+      
 
         self.fdc_history = []
         self.pd_history = []
@@ -335,6 +337,11 @@ class ES_HHA:
         final_population = np.where(improvement_mask[:, None], new_population, population)
         final_fitness = np.where(improvement_mask, new_fitness, fitness)
 
+        iteration_counts = defaultdict(int)
+        for info in iteration_llh_info:
+            iteration_counts[info['pool_type']] += 1
+        self.pool_usage_history.append(dict(iteration_counts))                        
+
         best_new_idx = np.argmin(new_fitness)
         if new_fitness[best_new_idx] < best_fitness:
             new_best_solution = new_population[best_new_idx].copy()
@@ -421,5 +428,6 @@ class ES_HHA:
             'distance_to_optimum_history': self.distance_to_optimum_history,
             'optimum_comparison_history': self.optimum_comparison_history,
             'execution_time': end_time - start_time,
+            'pool_usage_history': self.pool_usage_history,
             'config': asdict(self.config)
         }
