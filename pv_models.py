@@ -218,13 +218,13 @@ class DoubleDiodeModel:
         
     def objective_mape(self, params: np.ndarray) -> float:
     # целевая функция MAPE (в процентах)
-    I_calc = self.compute_current(params)
-    I_meas = self.data.current
+        I_calc = self.compute_current(params)
+        I_meas = self.data.current
     # защита от деления на ноль
-    with np.errstate(divide='ignore', invalid='ignore'):
-        rel_error = np.abs((I_meas - I_calc) / np.where(I_meas == 0, 1e-12, I_meas))
-        mape = np.mean(rel_error) * 100
-    return mape    
+        with np.errstate(divide='ignore', invalid='ignore'):
+           rel_error = np.abs((I_meas - I_calc) / np.where(I_meas == 0, 1e-12, I_meas))
+           mape = np.mean(rel_error) * 100
+        return mape    
 
 class TripleDiodeModel:
     """
