@@ -83,7 +83,33 @@ def plot_fitness_convergence(fitness_history, best_fitness, best_iteration):
     plt.grid(True, alpha=0.3)
     plt.show()
 
-
+def plot_pool_usage_dynamics(pool_usage_history, title="Pool Usage Dynamics"):
+    if not pool_usage_history:
+        print("No pool usage history to plot.")
+        return
+    
+    iterations = range(len(pool_usage_history))
+    pool_types = ['exploitation', 'exploration', 'balanced_exploitation', 'balanced_exploration']
+    data = {pt: [] for pt in pool_types}
+    
+    for it in pool_usage_history:
+        total = sum(it.values())
+        for pt in pool_types:
+            count = it.get(pt, 0)
+            data[pt].append(count / total if total > 0 else 0)
+    
+    plt.figure(figsize=(10, 6))
+    plt.stackplot(iterations, 
+                  [data[pt] for pt in pool_types],
+                  labels=pool_types,
+                  alpha=0.7)
+    plt.xlabel('Iteration')
+    plt.ylabel('Fraction of pool usage')
+    plt.title(title)
+    plt.legend(loc='upper right')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
 
 def run_single_diode_decomposed(verbose: bool = True, plot: bool = False, metric: str = 'rmse'):
 
@@ -129,6 +155,10 @@ def run_single_diode_decomposed(verbose: bool = True, plot: bool = False, metric
 
     optimizer = ES_HHA(objective, config, iteration_callback=print_intermediate)
     results = optimizer.optimize()
+    if plot:
+        plot_operator_usage(results['llh_usage'], results['pool_usage'], title="SDM Operator Usage")
+        plot_fitness_convergence(fitness_hist, best_val, best_iter)
+        plot_pool_usage_dynamics(results['pool_usage_history'], title="SDM Pool Usage Dynamics")
 
     best_solution = results['best_solution']
     best_fitness = results['best_fitness']
