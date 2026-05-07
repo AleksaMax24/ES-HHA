@@ -85,7 +85,7 @@ def plot_fitness_convergence(fitness_history, best_fitness, best_iteration):
 
 
 
-def run_single_diode_decomposed(verbose: bool = True, plot: bool = False):
+def run_single_diode_decomposed(verbose: bool = True, plot: bool = False, metric: str = 'rmse'):
 
     print("\n" + "=" * 60)
     print("SINGLE DIODE MODEL (decomposed) – Yan et al. 2021")
@@ -120,7 +120,14 @@ def run_single_diode_decomposed(verbose: bool = True, plot: bool = False):
         ub_opt=lb_nonlinear
     )
 
-    optimizer = ES_HHA(decomp_model.objective_decomposed, config)
+     if metric == 'rmse':
+        objective = decomp_model.objective_decomposed
+    elif metric == 'mape':
+        objective = decomp_model.objective_decomposed_mape
+    else:
+        raise ValueError(f"Unknown metric {metric}")
+
+    optimizer = ES_HHA(objective, config, iteration_callback=print_intermediate)
     results = optimizer.optimize()
 
     best_solution = results['best_solution']
@@ -153,7 +160,7 @@ def run_single_diode_decomposed(verbose: bool = True, plot: bool = False):
     }
 
 
-def run_double_diode_full(verbose: bool = True, plot: bool = False):
+def run_double_diode_full(verbose: bool = True, plot: bool = False, metric: str = 'rmse'):
     """
     Извлечение 7 параметров DDM (полный поиск).
     Ожидаемый RMSE = 9.8248e-04
@@ -190,7 +197,16 @@ def run_double_diode_full(verbose: bool = True, plot: bool = False):
         ub_opt=ub
     )
 
-    optimizer = ES_HHA(model.objective, config)
+    if metric == 'rmse':
+        objective = model.objective
+    elif metric == 'mape':
+        if not hasattr(model, 'objective_mape'):
+            raise AttributeError("DoubleDiodeModel has no 'objective_mape' method. Please add it to pv_models.py")
+        objective = model.objective_mape
+    else:
+        raise ValueError(f"Unknown metric {metric}")
+
+    optimizer = ES_HHA(objective, config, iteration_callback=print_intermediate)
     results = optimizer.optimize()
 
     best_solution = results['best_solution']
@@ -222,7 +238,7 @@ def run_double_diode_full(verbose: bool = True, plot: bool = False):
     }
 
 
-def run_triple_diode_decomposed(verbose: bool = True, plot: bool = False):
+def run_triple_diode_decomposed(verbose: bool = True, plot: bool = False, metric: str = 'rmse'):
     """
     Извлечение параметров TDM с декомпозицией (n1,n2,n3,Rs).
     Ожидаемый RMSE ~9.82e-04
@@ -260,7 +276,14 @@ def run_triple_diode_decomposed(verbose: bool = True, plot: bool = False):
         ub_opt=ub
     )
 
-    optimizer = ES_HHA(decomp.objective_decomposed, config)
+    if metric == 'rmse':
+        objective = decomp_model.objective_decomposed
+    elif metric == 'mape':
+        objective = decomp_model.objective_decomposed_mape
+    else:
+        raise ValueError(f"Unknown metric {metric}")
+
+    optimizer = ES_HHA(objective, config, iteration_callback=print_intermediate)
     results = optimizer.optimize()
 
     best = results['best_solution']
@@ -295,7 +318,7 @@ def run_triple_diode_decomposed(verbose: bool = True, plot: bool = False):
     }
 
 
-def run_stm6_module_decomposed(verbose: bool = True, plot: bool = False):
+def run_stm6_module_decomposed(verbose: bool = True, plot: bool = False, metric: str = 'rmse'):
     """STM6-40/36 с декомпозицией (n, Rs) – ожидаемый RMSE 1.7298e-03"""
     print("\n" + "=" * 60)
     print("PV MODULE STM6-40/36 (decomposed) – Yan et al. 2021")
@@ -329,7 +352,14 @@ def run_stm6_module_decomposed(verbose: bool = True, plot: bool = False):
         lb_opt=lb,
         ub_opt=ub
     )
-    optimizer = ES_HHA(decomp.objective_decomposed, config)
+    if metric == 'rmse':
+        objective = decomp_model.objective_decomposed
+    elif metric == 'mape':
+        objective = decomp_model.objective_decomposed_mape
+    else:
+        raise ValueError(f"Unknown metric {metric}")
+
+    optimizer = ES_HHA(objective, config, iteration_callback=print_intermediate)
     results = optimizer.optimize()
 
     best_solution = results['best_solution']
@@ -362,7 +392,7 @@ def run_stm6_module_decomposed(verbose: bool = True, plot: bool = False):
     }
 
 
-def run_stp6_module_decomposed(verbose: bool = True, plot: bool = False):
+def run_stp6_module_decomposed(verbose: bool = True, plot: bool = False, metric: str = 'rmse'):
     """STP6-120/36 с декомпозицией (n, Rs) – ожидаемый RMSE 1.6601e-02"""
     print("\n" + "=" * 60)
     print("PV MODULE STP6-120/36 (decomposed) – Yan et al. 2021")
@@ -396,7 +426,14 @@ def run_stp6_module_decomposed(verbose: bool = True, plot: bool = False):
         lb_opt=lb,
         ub_opt=ub
     )
-    optimizer = ES_HHA(decomp.objective_decomposed, config)
+    if metric == 'rmse':
+        objective = decomp_model.objective_decomposed
+    elif metric == 'mape':
+        objective = decomp_model.objective_decomposed_mape
+    else:
+        raise ValueError(f"Unknown metric {metric}")
+
+    optimizer = ES_HHA(objective, config, iteration_callback=print_intermediate)
     results = optimizer.optimize()
 
     best_solution = results['best_solution']
@@ -429,7 +466,7 @@ def run_stp6_module_decomposed(verbose: bool = True, plot: bool = False):
     }
 
 
-def run_all_yan_experiments(plot: bool = False):
+def run_all_yan_experiments(plot: bool = False, metric: str = 'rmse'):
     """Последовательно запускает все эксперименты (SDM, DDM, TDM, STM6, STP6)"""
     print("\n" + "=" * 70)
     print("RUNNING ALL EXPERIMENTS FROM YAN et al. 2021 (EJADE-D)")
@@ -437,11 +474,11 @@ def run_all_yan_experiments(plot: bool = False):
     print("=" * 70)
 
     results = {}
-    results['SDM'] = run_single_diode_decomposed(verbose=True, plot=plot)
-    results['DDM'] = run_double_diode_full(verbose=True, plot=plot)  # или run_double_diode_decomposed
-    results['TDM'] = run_triple_diode_decomposed(verbose=True, plot=plot)
-    results['STM6'] = run_stm6_module_decomposed(verbose=True, plot=plot)
-    results['STP6'] = run_stp6_module_decomposed(verbose=True, plot=plot)
+    results['SDM'] = run_single_diode_decomposed(verbose=True, plot=plot, metric=metric)
+    results['DDM'] = run_double_diode_full(verbose=True, plot=plot, metric=metric)
+    results['TDM'] = run_triple_diode_decomposed(verbose=True, plot=plot, metric=metric)
+    results['STM6'] = run_stm6_module_decomposed(verbose=True, plot=plot, metric=metric)
+    results['STP6'] = run_stp6_module_decomposed(verbose=True, plot=plot, metric=metric)
 
     print("\n" + "=" * 70)
     print("SUMMARY")
@@ -460,17 +497,19 @@ if __name__ == "__main__":
     # 'sdm_decomposed', 'ddm_full', 'tdm_decomposed', 'stm6_decomposed', 'stp6_decomposed', 'all'
     mode = "all"  # пример
 
+    metric = "rmse"
+
     if mode == "sdm_decomposed":
-        run_single_diode_decomposed(verbose=True, plot=True)
+        run_single_diode_decomposed(verbose=True, plot=True, metric=metric)
     elif mode == "ddm_full":
-        run_double_diode_full(verbose=True, plot=True)
+        run_double_diode_full(verbose=True, plot=True, metric=metric)
     elif mode == "tdm_decomposed":
-        run_triple_diode_decomposed(verbose=True, plot=True)
+        run_triple_diode_decomposed(verbose=True, plot=True, metric=metric)
     elif mode == "stm6_decomposed":
-        run_stm6_module_decomposed(verbose=True, plot=True)
+        run_stm6_module_decomposed(verbose=True, plot=True, metric=metric)
     elif mode == "stp6_decomposed":
-        run_stp6_module_decomposed(verbose=True, plot=True)
+        run_stp6_module_decomposed(verbose=True, plot=True, metric=metric)
     elif mode == "all":
-        run_all_yan_experiments(plot=True)
+        run_all_yan_experiments(plot=True, metric=metric)
     else:
         print(f"Unknown mode: {mode}")
