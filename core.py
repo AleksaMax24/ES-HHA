@@ -1,3 +1,13 @@
+"""
+core.py
+Ядро алгоритма ES-HHA:
+- Класс ES_HHA - основная реализация алгоритма
+- Метрики FDC и PD
+- Выбор операторов на основе эволюционного статуса
+- Механизмы адаптации и "встряски"
+- Поддержка параллельных вычислений
+"""
+
 import numpy as np
 import time
 from collections import defaultdict
@@ -10,19 +20,15 @@ from operators import LLHOperator, LLHPoolManager
 from config import ES_HHA_Config
 
 
-def _evaluate_individual(x: np.ndarray,
-                         lb: float,
-                         ub: float,
-                         objective_func: Callable) -> float:
+def _evaluate_individual(x: np.ndarray, lb: float, ub: float, objective_func: Callable) -> float:
     constrained = np.clip(x, lb, ub)
     return objective_func(constrained)
 
 
 class ES_HHA:
-    def __init__(self, objective_function: Callable, config: ES_HHA_Config):
+    def __init__(self, objective_function: Callable, config: ES_HHA_Config, iteration_callback=None):
         self.objective_function = objective_function
         self.config = config
-
         self.use_parallel = config.use_parallel
         self.n_workers = config.n_workers if config.n_workers > 0 else mp.cpu_count()
         self.pool = None
@@ -32,7 +38,6 @@ class ES_HHA:
         self.llh_usage_count = defaultdict(int)
         self.pool_usage_count = defaultdict(int)
         self.pool_usage_history = []
-      
 
         self.fdc_history = []
         self.pd_history = []
@@ -41,7 +46,6 @@ class ES_HHA:
         self.optimum_comparison_history = []
         self.improvements_history = []
         self.operator_success_history = []
-
         self.best_solutions_history = []
         self.stagnation_counter = 0
         self.adaptive_cr = config.Cr_binomial
@@ -56,9 +60,9 @@ class ES_HHA:
         self.initial_best_fitness = None
         self.last_best_fitness = None
         self.no_improvement_count = 0
-
         self.fitness_window = []
         self.window_size = 20
+        self.iteration_callback = iteration_callback
 
     def __del__(self):
         if self.pool is not None:
@@ -69,15 +73,22 @@ class ES_HHA:
                 pass
 
     def _apply_constraints(self, x: np.ndarray) -> np.ndarray:
-        return np.clip(x, self.lb, self.ub)
+        # применяет ограничения: либо clip, либо тангенс
+        if self.config.use_soft_constraints:
+            lb = np.array(self.lb) if not isinstance(self.lb, np.ndarray) else self.lb
+            ub = np.array(self.ub) if not isinstance(self.ub, np.ndarray) else self.ub
+            # tanh(x) даёт (-1, 1)
+            norm = np.tanh(x)
+            # отображаем в [lb, ub] проверить не маленькие ли они, может из за них PD большой:(
+            result = lb + (ub - lb) * (norm + 1.0) / 2.0
+            return result
+        else:
+            return np.clip(x, self.lb, self.ub)
 
     def _evaluate_population_parallel(self, population: np.ndarray) -> np.ndarray:
         if self.pool is None:
             self.pool = mp.Pool(processes=self.n_workers)
-        eval_func = partial(_evaluate_individual,
-                            lb=self.lb,
-                            ub=self.ub,
-                            objective_func=self.objective_function)
+        eval_func = partial(_evaluate_individual, lb=self.lb, ub=self.ub, objective_func=self.objective_function)
         try:
             fitness = np.array(self.pool.map(eval_func, population))
         except Exception as e:
@@ -99,8 +110,7 @@ class ES_HHA:
         else:
             return self._evaluate_population_sequential(population)
 
-    def calculate_FDC(self, population: np.ndarray, fitness: np.ndarray,
-                      best_solution: np.ndarray) -> float:
+    def calculate_FDC(self, population: np.ndarray, fitness: np.ndarray, best_solution: np.ndarray) -> float:
         optimum = self.config.global_optimum if self.config.global_optimum is not None else best_solution
         differences = population - optimum
         distances = np.sqrt(np.einsum('ij,ij->i', differences, differences))
@@ -187,9 +197,8 @@ class ES_HHA:
         self.pool_usage_count[pool_type] += 1
         return selected_operator, selection_info
 
-    def apply_LLH(self, operator: LLHOperator, population: np.ndarray,
-                  best_solution: np.ndarray, current_index: int,
-                  fitness: np.ndarray = None, pool_type: str = None) -> np.ndarray:
+    def apply_LLH(self, operator: LLHOperator, population: np.ndarray, best_solution: np.ndarray,
+                  current_index: int, fitness: np.ndarray = None, pool_type: str = None) -> np.ndarray:
         kwargs = {'p_best': self.config.p_best}
         if pool_type and ('exploitation' in pool_type):
             kwargs['R'] = self.config.R_exploitation
@@ -305,10 +314,11 @@ class ES_HHA:
                 self.adaptive_cr = max(0.1, self.adaptive_cr - 0.02)
                 self.adaptive_F = max(0.4, self.adaptive_F - 0.01)
 
-        if need_more_exploration:
-            self.config.w1 = min(0.4, self.config.w1 - 0.01)
-        else:
-            self.config.w1 = min(0.7, self.config.w1 + 0.005)
+        # адаптация w1 отключаю, но существенных улучшений и ухудшений не дает, мб для диплома пригодится
+        #if need_more_exploration:
+            #self.config.w1 = min(0.4, self.config.w1 - 0.01)
+        #else:
+            #self.config.w1 = min(0.7, self.config.w1 + 0.005)
 
         new_population = np.empty_like(population)
         iteration_llh_info = []
@@ -340,7 +350,7 @@ class ES_HHA:
         iteration_counts = defaultdict(int)
         for info in iteration_llh_info:
             iteration_counts[info['pool_type']] += 1
-        self.pool_usage_history.append(dict(iteration_counts))                        
+        self.pool_usage_history.append(dict(iteration_counts))
 
         best_new_idx = np.argmin(new_fitness)
         if new_fitness[best_new_idx] < best_fitness:
@@ -355,9 +365,8 @@ class ES_HHA:
         comparison = self.compare_with_optimum(new_best_solution, new_best_fitness)
         self.best_fitness_history.append(new_best_fitness)
 
-        return (final_population, final_fitness,
-                new_best_solution, new_best_fitness, improvements_count,
-                iteration_llh_info, distance, comparison)
+        return (final_population, final_fitness, new_best_solution, new_best_fitness,
+                improvements_count, iteration_llh_info, distance, comparison)
 
     def optimize(self) -> Dict:
         start_time = time.time()
@@ -399,6 +408,8 @@ class ES_HHA:
                 if comparison is not None:
                     print(f"Fitness diff: {comparison['fitness_difference']:.6e}")
             iteration += 1
+            if self.iteration_callback is not None:
+                self.iteration_callback(iteration, best_solution, best_fitness)
 
         end_time = time.time()
         if self.pool is not None:
@@ -431,3 +442,6 @@ class ES_HHA:
             'pool_usage_history': self.pool_usage_history,
             'config': asdict(self.config)
         }
+
+
+
