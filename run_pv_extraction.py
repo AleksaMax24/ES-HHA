@@ -186,7 +186,7 @@ def run_single_diode_decomposed(verbose: bool = True, plot: bool = False, metric
         ub_init=ub_nonlinear,
         lb_opt=lb_nonlinear,
         use_soft_constraints=use_soft_constraints,
-        ub_opt=lb_nonlinear
+        ub_opt=ub_nonlinear
     )
 
     if metric == 'rmse':
@@ -224,6 +224,12 @@ def run_single_diode_decomposed(verbose: bool = True, plot: bool = False, metric
         plot_fitness_convergence(fitness_hist, best_val, best_iter)
         if 'pool_usage_history' in results:
             plot_pool_usage_dynamics(results['pool_usage_history'], title="SDM Pool Usage Dynamics")
+        plot_fdc_pd_evolution(results['fdc_history'], results['pd_history'],
+                              title="FDC and PD Evolution (SDM)")
+        plot_fitness_statistics(results['fitness_history'],
+                                results.get('mean_fitness_history', []),
+                                results.get('max_fitness_history', []),
+                                title="Fitness Statistics (SDM)")
 
     return {
         'Ipv': Ipv, 'Isd': Isd, 'Rs': Rs, 'Rp': Rp, 'n': n,
@@ -317,6 +323,12 @@ def run_double_diode_full(verbose: bool = True, plot: bool = False, metric: str 
         plot_fitness_convergence(fitness_hist, best_val, best_iter)
         if 'pool_usage_history' in results:
             plot_pool_usage_dynamics(results['pool_usage_history'], title="SDM Pool Usage Dynamics")
+        plot_fdc_pd_evolution(results['fdc_history'], results['pd_history'],
+                              title="FDC and PD Evolution (SDM)")
+        plot_fitness_statistics(results['fitness_history'],
+                                results.get('mean_fitness_history', []),
+                                results.get('max_fitness_history', []),
+                                title="Fitness Statistics (SDM)")
 
     return {
         'Ipv': Ipv, 'Isd1': Isd1, 'Isd2': Isd2, 'Rs': Rs, 'Rp': Rp, 'n1': n1, 'n2': n2,
@@ -413,6 +425,12 @@ def run_triple_diode_decomposed(verbose: bool = True, plot: bool = False, metric
         plot_fitness_convergence(fitness_hist, best_val, best_iter)
         if 'pool_usage_history' in results:
             plot_pool_usage_dynamics(results['pool_usage_history'], title="SDM Pool Usage Dynamics")
+        plot_fdc_pd_evolution(results['fdc_history'], results['pd_history'],
+                              title="FDC and PD Evolution (SDM)")
+        plot_fitness_statistics(results['fitness_history'],
+                                results.get('mean_fitness_history', []),
+                                results.get('max_fitness_history', []),
+                                title="Fitness Statistics (SDM)")
 
     return {
         'Ipv': Ipv, 'Isd1': Isd1, 'Isd2': Isd2, 'Isd3': Isd3,
@@ -506,6 +524,12 @@ def run_stm6_module_decomposed(verbose: bool = True, plot: bool = False, metric:
         plot_fitness_convergence(fitness_hist, best_val, best_iter)
         if 'pool_usage_history' in results:
             plot_pool_usage_dynamics(results['pool_usage_history'], title="SDM Pool Usage Dynamics")
+        plot_fdc_pd_evolution(results['fdc_history'], results['pd_history'],
+                              title="FDC and PD Evolution (SDM)")
+        plot_fitness_statistics(results['fitness_history'],
+                                results.get('mean_fitness_history', []),
+                                results.get('max_fitness_history', []),
+                                title="Fitness Statistics (SDM)")
 
     return {
         'Ipv': Ipv, 'Isd': Isd, 'Rs': Rs, 'Rp': Rp, 'n': n,
@@ -598,12 +622,66 @@ def run_stp6_module_decomposed(verbose: bool = True, plot: bool = False, metric:
         plot_fitness_convergence(fitness_hist, best_val, best_iter)
         if 'pool_usage_history' in results:
             plot_pool_usage_dynamics(results['pool_usage_history'], title="SDM Pool Usage Dynamics")
+        plot_fdc_pd_evolution(results['fdc_history'], results['pd_history'],
+                              title="FDC and PD Evolution (SDM)")
+        plot_fitness_statistics(results['fitness_history'],
+                                results.get('mean_fitness_history', []),
+                                results.get('max_fitness_history', []),
+                                title="Fitness Statistics (SDM)")
 
     return {
         'Ipv': Ipv, 'Isd': Isd, 'Rs': Rs, 'Rp': Rp, 'n': n,
         'best_fitness': best_fitness, 'RMSE': best_fitness,
         'best_iteration': best_iter, 'history': results
     }
+
+def plot_fdc_pd_evolution(fdc_history, pd_history, title="FDC and PD Evolution"):
+    # график изменения FDC и PD по итерациям
+    if not fdc_history or not pd_history:
+        print("No FDC/PD history to plot.")
+        return
+    iterations = range(len(fdc_history))
+    plt.figure(figsize=(10, 5))
+    plt.plot(iterations, fdc_history, 'b-', label='FDC', linewidth=1.5)
+    plt.plot(iterations, pd_history, 'r-', label='PD', linewidth=1.5)
+    plt.xlabel('Iteration')
+    plt.ylabel('Value')
+    plt.title(title)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_fitness_statistics(fitness_history, mean_fitness_history, max_fitness_history,
+                            title="Fitness Statistics"):
+    #график лучшего, среднего и худшего фитнеса по итерациям
+    if not fitness_history:
+        print("No fitness history to plot.")
+        return
+    min_len = min(len(fitness_history), len(mean_fitness_history), len(max_fitness_history))
+    if min_len == 0:
+        print("Not enough data to plot fitness statistics.")
+        return
+
+    fitness_history = fitness_history[:min_len]
+    mean_fitness_history = mean_fitness_history[:min_len]
+    max_fitness_history = max_fitness_history[:min_len]
+    iterations = range(len(fitness_history))
+    plt.figure(figsize=(10, 6))
+    plt.plot(iterations, fitness_history, 'g-', label='Best (min)', linewidth=2)
+    if mean_fitness_history:
+        plt.plot(iterations, mean_fitness_history, 'b--', label='Mean', linewidth=1.5)
+    if max_fitness_history:
+        plt.plot(iterations, max_fitness_history, 'r:', label='Max (worst)', linewidth=1.5)
+    plt.xlabel('Iteration')
+    plt.ylabel('Fitness (log scale)')
+    plt.yscale('log')
+    plt.title(title)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
 
 
 def run_all_yan_experiments(plot: bool = False, metric: str = 'rmse', use_soft_constraints: bool = False):
@@ -634,7 +712,7 @@ def run_all_yan_experiments(plot: bool = False, metric: str = 'rmse', use_soft_c
 if __name__ == "__main__":
     # режимы:
     # 'sdm_decomposed', 'ddm_full', 'tdm_decomposed', 'stm6_decomposed', 'stp6_decomposed', 'all'
-    mode = "sdm_decomposed"  # пример
+    mode = "ddm_full"  # пример
     metric = "rmse" # rmse/mape
     use_soft_constraints = True # перевключение clip(False) и тангенс(True)
 

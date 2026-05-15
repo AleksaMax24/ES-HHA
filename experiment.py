@@ -99,10 +99,11 @@ if __name__ == "__main__":
         lb_opt=lb,
         ub_opt=ub,
         test_function_name=TEST_FUNCTION,
-        global_optimum=optimum,  # массив
+        global_optimum=optimum,
         verbose=True,
         log_interval=5
     )
+
 
     print(f"\nFunction: {TEST_FUNCTION}")
     print(f"Population: {POPULATION_SIZE}, Dims: {DIMENSIONS}, MaxFEs: {MAX_FES}")

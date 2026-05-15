@@ -19,11 +19,19 @@ from functools import partial
 from operators import LLHOperator, LLHPoolManager
 from config import ES_HHA_Config
 
-
-def _evaluate_individual(x: np.ndarray, lb: float, ub: float, objective_func: Callable) -> float:
-    constrained = np.clip(x, lb, ub)
+def apply_constraints_static(x, lb, ub, use_soft_constraints):
+    #ограничения: либо clip, либо тангенс
+    if use_soft_constraints:
+        lb = np.array(lb) if not isinstance(lb, np.ndarray) else lb
+        ub = np.array(ub) if not isinstance(ub, np.ndarray) else ub
+        norm = np.tanh(x)                     # отображаем x в (-1, 1)
+        result = lb + (ub - lb) * (norm + 1.0) / 2.0
+        return result
+    else:
+        return np.clip(x, lb, ub)
+def _evaluate_individual(x: np.ndarray, lb: float, ub: float, objective_func: Callable, use_soft_constraints: bool) -> float:
+    constrained = apply_constraints_static(x, lb, ub, use_soft_constraints)
     return objective_func(constrained)
-
 
 class ES_HHA:
     def __init__(self, objective_function: Callable, config: ES_HHA_Config, iteration_callback=None):
@@ -63,6 +71,9 @@ class ES_HHA:
         self.fitness_window = []
         self.window_size = 20
         self.iteration_callback = iteration_callback
+        self.mean_fitness_history = []  # средний фитнес по популяции
+        self.min_fitness_history = []  # минимальный фитнес (то же, что и  best_fitness_history, просто для анализа)
+        self.max_fitness_history = []  # максимальный фитнес (наихудший)
 
     def __del__(self):
         if self.pool is not None:
@@ -83,12 +94,16 @@ class ES_HHA:
             result = lb + (ub - lb) * (norm + 1.0) / 2.0
             return result
         else:
-            return np.clip(x, self.lb, self.ub)
+            return apply_constraints_static(x, self.lb, self.ub, self.config.use_soft_constraints)
 
     def _evaluate_population_parallel(self, population: np.ndarray) -> np.ndarray:
         if self.pool is None:
             self.pool = mp.Pool(processes=self.n_workers)
-        eval_func = partial(_evaluate_individual, lb=self.lb, ub=self.ub, objective_func=self.objective_function)
+        eval_func = partial(_evaluate_individual,
+                            lb=self.lb,
+                            ub=self.ub,
+                            objective_func=self.objective_function,
+                            use_soft_constraints=self.config.use_soft_constraints)
         try:
             fitness = np.array(self.pool.map(eval_func, population))
         except Exception as e:
@@ -347,6 +362,7 @@ class ES_HHA:
         final_population = np.where(improvement_mask[:, None], new_population, population)
         final_fitness = np.where(improvement_mask, new_fitness, fitness)
 
+
         iteration_counts = defaultdict(int)
         for info in iteration_llh_info:
             iteration_counts[info['pool_type']] += 1
@@ -364,6 +380,9 @@ class ES_HHA:
         distance = self.calculate_distance_to_optimum(new_best_solution)
         comparison = self.compare_with_optimum(new_best_solution, new_best_fitness)
         self.best_fitness_history.append(new_best_fitness)
+
+        self.mean_fitness_history.append(np.mean(final_fitness))
+        self.max_fitness_history.append(np.max(final_fitness))
 
         return (final_population, final_fitness, new_best_solution, new_best_fitness,
                 improvements_count, iteration_llh_info, distance, comparison)
@@ -440,7 +459,9 @@ class ES_HHA:
             'optimum_comparison_history': self.optimum_comparison_history,
             'execution_time': end_time - start_time,
             'pool_usage_history': self.pool_usage_history,
-            'config': asdict(self.config)
+            'config': asdict(self.config),
+            'mean_fitness_history': self.mean_fitness_history,
+            'max_fitness_history': self.max_fitness_history
         }
 
 

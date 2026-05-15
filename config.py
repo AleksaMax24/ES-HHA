@@ -166,12 +166,15 @@ class ES_HHA_Config:
     # Параметры низкоуровневых эвристик
     F_exploitation: float = 0.8
     F_exploration: float = 0.8
-    R_exploitation: float = 1.0
-    R_exploration: float = 1.0
+    #R_exploitation: float = 1.0
+    #R_exploration: float = 1.0
     Cr_binomial: float = 0.1
     Cr_exponential: float = 0.1
-    R_adaptation_rate: float = 0.5
+    #R_adaptation_rate: float = 0.5
     p_best: float = 0.2
+    R_exploitation: float = 1.0  # было 1.0 (можно оставить)
+    R_exploration: float = 10.0  # было 1.0 – увеличить
+    R_adaptation_rate: float = 0.05  # было 0.5 – уменьшить
 
     # Параметры улучшений (встряска)
     shake_intensity: float = 0.1
